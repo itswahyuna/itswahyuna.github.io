@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wahyuna Profile</title>
+    <link rel="icon" href="wahyuna.jpeg" type="image/jpeg">
+    <link rel="apple-touch-icon" href="wahyuna.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+
+            background: #03050D;
+
+            color: white;
+
+            transition: color .4s ease, background .4s ease;
+        }
+
+        
+
+        
+        #app {
+
+            width: 100%;
+
+            max-width: 900px;
+
+            padding: 20px;
+
+        }
+
+        
+        .biodata {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 30px;
+            border-radius: 25px;
+            background-size: cover;
+            background-position: center;
+              border: 1px solid rgba(239, 240, 255, 0.18);
+            box-shadow:
+                0 0 8px rgba(80, 120, 255, .08);
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 0.7px solid rgba(88,101,255,0.18);
+            box-shadow: 0 0 6px rgba(88,101,255,0.06);
+        }
+
+        .text {
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        #typ::after{
+    content:"|";
+    animation:blink .8s infinite;
+}
+
+@keyframes blink{
+    50%{
+        opacity:0;
+    }
+}
+
+        .bio {
+            margin-top: 8px;
+            color: #ddd;
+        }
+
+        .minat {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .minat-item {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .25);
+            color: #ddd;
+        }
+
+        .connect {
+            margin-top: 45px;
+        }
+
+        .connect-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .connect-title span {
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, .2);
+        }
+
+        .connect-title h2 {
+            font-size: 14px;
+            letter-spacing: 5px;
+            color: #aaa;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .link-card {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-radius: 20px;
+            background:
+                linear-gradient(120deg,
+                    rgba(255, 255, 255, .07),
+                    rgba(255, 255, 255, .02));
+            border: 1px solid rgba(80, 120, 255, .18);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            text-decoration: none;
+            color: inherit;
+            outline: none;
+        }
+
+        @media (hover: hover) {
+            .link-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+                border-color: rgba(255, 255, 255, 0.35);
+                background: rgba(255, 255, 255, 0.12);
+            }
+
+            .link-card:active {
+                transform: translateY(-1px) scale(0.99);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+                border-color: rgba(255, 255, 255, 0.28);
+            }
+        }
+
+        @media (hover: none) {
+            .link-card:active {
+                transform: translateY(-4px);
+                box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+                border-color: rgba(255, 255, 255, 0.35);
+                background: rgba(255, 255, 255, 0.12);
+            }
+        }
+
+        .link-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            background: #080d1d;
+            margin-right: 20px;
+            overflow: hidden;
+        }
+
+        .link-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .link-text {
+
+            flex: 1;
+
+        }
+
+        .link-text h3 {
+
+            font-size: 22px;
+
+        }
+
+        .link-text p {
+
+            color: #aaa;
+
+            margin-top: 4px;
+
+        }
+
+        .arrow {
+
+            width: 55px;
+
+            height: 55px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 30px;
+
+            border: 1px solid rgba(88,101,255,0.26);
+            background: rgba(88,101,255,0.02);
+
+        }
+
+
+
+        .theme-switch {
+
+            margin-top: 40px;
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+        }
+
+        .theme-switch button {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: transparent;
+            color: inherit;
+            font-weight: 600;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+
+        .theme-switch button:hover {
+            transform: translateY(-3px);
+        }
+
+        .link-card, .theme-switch button {
+            user-select: none;
+        }
+
+        .link-card, .theme-switch button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .theme-switch button:active {
+            transform: scale(0.98);
+            box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s ease, visibility .25s ease;
+            z-index: 999;
+        }
+
+        .image-modal.open {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .image-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, .75);
+            backdrop-filter: blur(6px);
+        }
+
+        .image-modal-content {
+            position: relative;
+            width: min(92vw, 720px);
+            max-height: 92vh;
+            border-radius: 28px;
+            overflow: hidden;
+            transform: scale(.92);
+            opacity: 0;
+            transition: transform .25s ease, opacity .25s ease;
+            z-index: 1;
+        }
+
+        .image-modal.open .image-modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .image-modal-content img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,.25);
+            background: rgba(0,0,0,.35);
+            color: white;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            z-index: 2;
+        }
+
+        .image-modal-close:hover {
+            background: rgba(0,0,0,.55);
+        }
+
+        body.bright .image-modal-close {
+            border-color: rgba(0,0,0,.16);
+            background: rgba(255,255,255,.85);
+            color: #111;
+        }
+
+        body.bright .image-modal-close:hover {
+            background: rgba(255,255,255,.95);
+        }
+
+        body.bright .theme-switch button {
+            border-color: rgba(0, 0, 0, 0.14);
+        }
+
+        
+        body.bright {
+
+            background:
+                radial-gradient(circle at top left, rgba(88, 101, 255, .15), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(80, 120, 255, .12), transparent 40%),
+                #f5f7ff;
+
+            color: #111;
+
+        }
+
+        body.bright .biodata {
+
+            background:
+                linear-gradient(rgba(255, 255, 255, .75),
+                    rgba(240, 244, 255, .8)),
+                url("space.jpg");
+
+            border: 1px solid rgba(80, 120, 255, .18);
+
+            box-shadow:
+                0 0 8px rgba(80, 120, 255, .06);
+
+        }
+
+        body.bright .profile-img {
+            border: 2px solid rgba(88,101,255,0.18);
+        }
+
+        body.bright .bio {
+
+            color: #555;
+
+        }
+
+        body.bright .link-card {
+
+            background:
+                linear-gradient(120deg,
+                    rgba(255, 255, 255, .9),
+                    rgba(240, 244, 255, .7));
+
+            border-color: rgba(80, 120, 255, .35);
+
+            box-shadow:
+                0 0 12px rgba(80, 120, 255, .1);
+
+        }
+
+        body.bright .link-icon {
+
+            background: #eef1ff;
+
+        }
+
+        body.bright .minat-item {
+
+            background: rgba(88, 101, 255, .08);
+
+            color: #4450b8;
+
+            border-color: rgba(88, 101, 255, .2);
+
+        }
+
+        body.bright .link-text p {
+
+            color: #666;
+
+        }
+
+
+        body.bright .connect-title h2 {
+
+            color: #aaa;
+
+        }
+
+        body.bright .connect-title span {
+
+            background: rgba(88, 101, 255, .25);
+
+        }
+
+        @media (min-width: 601px) {
+             .theme-switch button{
+            cursor: pointer;
+        }
+    }
+
+       
+        @media(max-width:600px) {
+
+            #app {
+
+                padding: 10px;
+
+            }
+
+            .biodata {
+
+                padding: 20px;
+
+                gap: 15px;
+
+            }
+
+            .profile-img {
+
+                width: 80px;
+
+                height: 80px;
+
+            }
+
+            h1 {
+
+                font-size: 17px;
+
+            }
+
+            .link-card {
+
+                padding: 12px;
+
+            }
+
+            .link-icon {
+
+                width: 50px;
+
+                height: 50px;
+
+                margin-right: 12px;
+
+            }
+
+            .link-text h3 {
+
+                font-size: 17px;
+
+            }
+
+            .link-text p {
+
+                font-size: 11px;
+
+            }
+
+            .arrow {
+
+                width: 40px;
+
+                height: 40px;
+
+                font-size: 22px;
+
+            }
+
+        }
+
+        @media (max-width: 312px) {
+            h2 {
+                font-size: 9px !important;
+            }
+        }
+
+          @media (max-width: 303px) {
+            .profile-img {
+               display: none;
+            }
+        }
+
+        .tr {
+            border-radius: 50%;
+        }
+        .username {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            color: rgba(219, 219, 219, 0.85);
+            font-size: 13px;
+            line-height: 1.3;
+            font-weight: 400;
+        }
+
+        .username .handle {
+            color: inherit;
+        }
+
+
+        .username .verified {
+            display: inline-grid;
+            place-items: center;
+            width: 1.35em;
+            height: 1.35em;
+            background: #1DA1F2;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.75em;
+            line-height: 1;
+            margin-left: 1px;
+        }
+
+        .username .verified i {
+            color: #fff;
+            font-size: 0.75em;
+        }
+
+        body.bright .username .verified {
+            background: #1DA1F2;
+        }
+
+        .arrow i {
+            font-size: 20px;
+            color: rgba(88,101,255,0.9);
+        }
+
+        body.bright .username {
+            color: rgba(17,17,17,0.8);
+        }
+        .site-footer {
+            margin-top: 28px;
+            padding: 12px 0;
+            display: flex;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .site-footer .footer-inner {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .site-footer p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.55);
+            margin: 0;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        body.bright .site-footer p {
+            color: rgba(17,17,17,0.55);
+        }
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(3,5,13,0.98), rgba(3,5,13,0.92));
+            z-index: 99999;
+            transition: opacity .45s cubic-bezier(.2,.9,.25,1), visibility .45s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .splash-brand { position: relative; display: flex; align-items: center; justify-content: center; }
+
+        .splash-title {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            background: linear-gradient(90deg, #9fb3ff, #7a8dff 40%, #cbd8ff 70%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: slidemask 1.6s ease-in-out infinite;
+            text-transform: none;
+        }
+
+        .splash-accent {
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 6px;
+            border-radius: 6px;
+            background: linear-gradient(90deg,#5865ff, #9fb3ff);
+            opacity: .9;
+            filter: blur(6px);
+            animation: accentPulse 1.6s ease-in-out infinite;
+        }
+
+        @keyframes slidemask {
+            0% { background-position: 0% 50%; transform: translateY(0) scale(1); }
+            50% { background-position: 100% 50%; transform: translateY(-4px) scale(1.02); }
+            100% { background-position: 0% 50%; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes accentPulse {
+            0% { opacity: .6; transform: translateX(-50%) scaleX(.9); }
+            50% { opacity: 1; transform: translateX(-50%) scaleX(1.02); }
+            100% { opacity: .6; transform: translateX(-50%) scaleX(.9); }
+        }
+
+        .loader-sub { color: rgba(205,215,255,0.85); font-weight:600; letter-spacing:0.2px; }
+
+        body.bright .page-loader { background: linear-gradient(135deg, rgba(245,247,255,0.98), rgba(245,247,255,0.96)); }
+        body.bright .splash-title { background: linear-gradient(90deg,#6b7cff,#98aaff); }
+        body.bright .loader-sub { color: rgba(20,20,30,0.8); }
+
+        .modal-loader {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            background: rgba(0,0,0,0.35);
+            z-index: 3;
+            transition: opacity .2s ease, visibility .2s ease;
+        }
+
+        .modal-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        ::selection { background: #bdbdbd; color: #111; }
+        ::-moz-selection { background: #bdbdbd; color: #111; }
+
+    </style>
+
+
+</head>
+
+<body>
+    <div id="pageLoader" class="page-loader" role="status" aria-live="polite">
+        <div class="loader-inner">
+            <div class="splash-brand">
+                <div class="splash-title" aria-hidden="true">Wahyuna</div>
+                <div class="splash-accent" aria-hidden="true"></div>
+            </div>
+            <div class="loader-sub">Memuat…</div>
+        </div>
+    </div>
+
+    <div id="app">
+
+        <div class="biodata">
+
+            <img class="profile-img" src="wahyuna.jpeg">
+
+            <div class="text">
+
+                <h1 id="typ">Wahyuna</h1>
+                <div class="username" aria-label="Username and verified">
+                    <span class="handle">@its.wahyuna</span>
+                    <span class="verified" aria-hidden="true"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+                </div>
+
+                <p class="bio">
+                    Want to explore the universe.
+                </p>
+
+                <div class="minat">
+
+                    <p class="minat-item">Radiology</p>
+
+                    <p class="minat-item">Investor</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="connect">
+
+            <div class="connect-title">
+
+                <span></span>
+
+                <h2 class="cwm">✦ CONNECT WITH ME</h2>
+
+                <span></span>
+
+            </div>
+
+            <div class="links">
+
+                <a class="link-card" href="https://instagram.com/its.wahyuna" target="_blank" rel="noopener noreferrer">
+                    <div class="link-icon">
+                        <img src="instagram.webp">
+                    </div>
+                    <div class="link-text">
+                        <h3>Instagram</h3>
+                        <p>My Instagram profile</p>
+                    </div>
+                    <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+                </a>
+                <a class="link-card" href="https://www.threads.net/@its.wahyuna" target="_blank" rel="noopener noreferrer">
+                    <div class="link-icon">
+                        <img class="tr" src="threadss.avif">
+                    </div>
+                    <div class="link-text">
+                        <h3>Threads</h3>
+                        <p>My profile in the threads</p>
+                    </div>
+                    <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+                </a>
+                <div class="link-card">
+                    <div class="link-icon">
+                        <img src="github.png">
+                    </div>
+                    <div class="link-text">
+                        <h3>Github</h3>
+                        <p>My GitHub profile</p>
+                    </div>
+                    <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+                </div>
+                <a class="link-card" href="https://www.roblox.com/share?code=888d8f8d7834eb4eb600c3bba9605e5a&type=Profile&source=ProfileShare&stamp=1784466825138" target="_blank" rel="noopener noreferrer">
+                    <div class="link-icon">
+                        <img src="roblox.webp">
+                    </div>
+                    <div class="link-text">
+                        <h3>Roblox</h3>
+                        <p>Play with me on Roblox.</p>
+                    </div>
+                    <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+                </a>
+                <a class="link-card contact" href="mailto:wahyunapub@gmail.com">
+                    <div class="link-icon">
+                        <img src="gmail.webp">
+                    </div>
+                    <div class="link-text">
+                        <h3>Contact Me</h3>
+                        <p>Send me an email anytime</p>
+                    </div>
+                    <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+       <div class="theme-switch">
+    <button id="th">☀ Bright</button>
+</div>
+
+        <footer class="site-footer" aria-label="Site copyright">
+            <div class="footer-inner">
+                <p>© 2026 Wahyuna</p>
+            </div>
+        </footer>
+
+        <div class="image-modal" id="imageModal">
+            <div class="image-modal-backdrop" id="modalBackdrop"></div>
+            <div class="image-modal-content">
+                    <div id="modalLoader" class="modal-loader hidden" aria-hidden="true">
+                        <div class="loader-ring" style="width:48px;height:48px;"></div>
+                    </div>
+                <button class="image-modal-close" id="modalClose">×</button>
+                <img id="modalImage" src="wahyuna.jpeg" alt="Wahyuna profile full screen">
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById("th");
+        const typing = document.getElementById("typ");
+        const text = "Hi, I'm Wahyuna.";
+
+        function updateThemeButton() {
+            if (document.body.classList.contains("bright")) {
+                themeBtn.textContent = "Dark mode";
+            } else {
+                themeBtn.textContent = "Light mode";
+            }
+        }
+
+        function applyInitialTheme() {
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (!prefersDark) {
+                document.body.classList.add("bright");
+            } else {
+                document.body.classList.remove("bright");
+            }
+            updateThemeButton();
+        }
+
+        themeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("bright");
+            updateThemeButton();
+        });
+
+        applyInitialTheme();
+
+        const profileImg = document.querySelector('.profile-img');
+        const imageModal = document.getElementById('imageModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+
+        const modalImageEl = document.getElementById('modalImage');
+        const modalLoader = document.getElementById('modalLoader');
+
+        function openModal() {
+            if (modalLoader) modalLoader.classList.remove('hidden');
+            imageModal.classList.add('open');
+            if (modalImageEl) {
+                if (modalImageEl.complete) {
+                    if (modalLoader) modalLoader.classList.add('hidden');
+                } else {
+                    modalImageEl.addEventListener('load', () => {
+                        if (modalLoader) modalLoader.classList.add('hidden');
+                    }, { once: true });
+                }
+            }
+        }
+
+        function closeModal() {
+            imageModal.classList.remove('open');
+            if (modalLoader) modalLoader.classList.add('hidden');
+        }
+
+        profileImg.addEventListener('click', openModal);
+        modalClose.addEventListener('click', closeModal);
+        modalBackdrop.addEventListener('click', closeModal);
+
+        let i = 0;
+        let deleting = false;
+
+        function type() {
+            if (!deleting) {
+                typing.textContent = text.substring(0, i + 1);
+                i++;
+                if (i <= text.length) {
+                    setTimeout(type, 120);
+                } else {
+                    deleting = true;
+                    setTimeout(type, 2000);
+                }
+            } else {
+                typing.textContent = text.substring(0, i - 1);
+                i--;
+                if (i > 0) {
+                    setTimeout(type, 70);
+                } else {
+                    deleting = false;
+                    setTimeout(type, 300);
+                }
+            }
+        }
+
+        type();
+
+        
+        (function(){
+            const pageLoader = document.getElementById('pageLoader');
+            const loaderStart = performance.now();
+
+            function hidePageLoader() {
+                const elapsed = performance.now() - loaderStart;
+                const wait = Math.max(0, 500 - elapsed);
+                setTimeout(() => {
+                    if (!pageLoader) return;
+                    pageLoader.classList.add('hidden');
+                    setTimeout(() => {
+                        if (pageLoader && pageLoader.parentNode) pageLoader.parentNode.removeChild(pageLoader);
+                    }, 450);
+                }, wait);
+            }
+
+            window.addEventListener('load', hidePageLoader);
+            
+            setTimeout(hidePageLoader, 4500);
+        })();
+    </script>
+
+</body>
+
+</html>
