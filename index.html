@@ -927,26 +927,12 @@
             localStorage.setItem('wahyuna-theme', document.body.classList.contains('bright') ? 'bright' : 'dark');
         }
 
-        function getSystemThemePreference() {
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                return 'dark';
-            }
-            return 'bright';
-        }
-
         function loadThemePreference() {
             const savedTheme = localStorage.getItem('wahyuna-theme');
             if (savedTheme === 'dark') {
                 document.body.classList.remove('bright');
-            } else if (savedTheme === 'bright') {
-                document.body.classList.add('bright');
             } else {
-                const preferredTheme = getSystemThemePreference();
-                if (preferredTheme === 'dark') {
-                    document.body.classList.remove('bright');
-                } else {
-                    document.body.classList.add('bright');
-                }
+                document.body.classList.add('bright');
             }
         }
 
