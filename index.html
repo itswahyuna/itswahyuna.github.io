@@ -424,30 +424,35 @@
 
             background:
                 linear-gradient(120deg,
-                    rgba(255, 255, 255, .9),
-                    rgba(240, 244, 255, .7));
+                    rgba(255, 255, 255, .95),
+                    rgba(244, 247, 255, .82));
 
-            border-color: rgba(80, 120, 255, .35);
+            border-color: rgba(255, 255, 255, .8);
 
             box-shadow:
-                0 0 12px rgba(80, 120, 255, .1);
+                0 0 0 1px rgba(255, 255, 255, .35),
+                0 10px 24px rgba(17, 24, 39, .08);
 
         }
 
         body.bright .link-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 36px rgba(80, 120, 255, .12);
-            border-color: rgba(80, 120, 255, .45);
+            box-shadow:
+                0 18px 40px rgba(17, 24, 39, .12),
+                0 0 0 1px rgba(255, 255, 255, .55);
+            border-color: rgba(255, 255, 255, .95);
             background-position: 100% 50%;
-            background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(240, 244, 255, .86));
+            background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(240, 244, 255, .9));
         }
 
         body.bright .link-card:active {
             transform: translateY(-1px) scale(0.99);
-            box-shadow: 0 10px 24px rgba(80, 120, 255, .12);
-            border-color: rgba(80, 120, 255, .4);
+            box-shadow:
+                0 12px 24px rgba(17, 24, 39, .1),
+                0 0 0 1px rgba(255, 255, 255, .42);
+            border-color: rgba(255, 255, 255, .88);
             background-position: 100% 50%;
-            background: linear-gradient(120deg, rgba(255, 255, 255, .94), rgba(232, 238, 255, .82));
+            background: linear-gradient(120deg, rgba(255, 255, 255, .96), rgba(236, 241, 255, .84));
         }
 
         body.bright .link-icon {
