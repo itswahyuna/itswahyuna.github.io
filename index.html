@@ -3,7 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#03050D">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f7ff">
+    <meta name="description" content="Wahyuna — Profile.">
+    <meta name="keywords" content="Wahyuna, portfolio, profile, social links, personal website">
+    <meta name="author" content="Wahyuna">
+    <meta property="og:title" content="Wahyuna Profile">
+    <meta property="og:description" content="Wahyuna — Profile.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://itswahyuna.github.io/wahyuna.jpeg">
+    <meta property="og:url" content="https://itswahyuna.github.io/">
+    <meta property="og:site_name" content="Wahyuna Profile">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Wahyuna Profile">
+    <meta name="twitter:description" content="Wahyuna — Profile.">
+    <meta name="twitter:image" content="https://itswahyuna.github.io/wahyuna.jpeg">
     <title>Wahyuna Profile</title>
     <link rel="icon" href="wahyuna.jpeg" type="image/jpeg">
     <link rel="apple-touch-icon" href="wahyuna.jpeg">
@@ -51,11 +66,11 @@
             gap: 25px;
             padding: 30px;
             border-radius: 25px;
+            background: transparent;
             background-size: cover;
             background-position: center;
-              border: 1px solid rgba(239, 240, 255, 0.18);
-            box-shadow:
-                0 0 8px rgba(80, 120, 255, .08);
+            border: 1.5px solid rgba(140, 145, 165, 0.35);
+            box-shadow: none;
         }
 
         .profile-img {
@@ -146,12 +161,16 @@
                     rgba(255, 255, 255, .07),
                     rgba(255, 255, 255, .02));
             border: 1px solid rgba(80, 120, 255, .18);
-            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease, background-position .35s ease;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
             text-decoration: none;
             color: inherit;
             outline: none;
+            background-size: 200% 200%;
+            background-position: 0% 50%;
+            position: relative;
+            overflow: hidden;
         }
 
         @media (hover: hover) {
@@ -159,7 +178,8 @@
                 transform: translateY(-4px);
                 box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
                 border-color: rgba(255, 255, 255, 0.35);
-                background: rgba(255, 255, 255, 0.12);
+                background-position: 100% 50%;
+                background: linear-gradient(120deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
             }
 
             .link-card:active {
@@ -174,7 +194,8 @@
                 transform: translateY(-4px);
                 box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
                 border-color: rgba(255, 255, 255, 0.35);
-                background: rgba(255, 255, 255, 0.12);
+                background-position: 100% 50%;
+                background: linear-gradient(120deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
             }
         }
 
@@ -379,17 +400,9 @@
         }
 
         body.bright .biodata {
-
-            background:
-                linear-gradient(rgba(255, 255, 255, .75),
-                    rgba(240, 244, 255, .8)),
-                url("space.jpg");
-
-            border: 1px solid rgba(80, 120, 255, .18);
-
-            box-shadow:
-                0 0 8px rgba(80, 120, 255, .06);
-
+            background: transparent;
+            border: 1.5px solid rgba(120, 125, 140, 0.28);
+            box-shadow: none;
         }
 
         body.bright .profile-img {
@@ -414,6 +427,22 @@
             box-shadow:
                 0 0 12px rgba(80, 120, 255, .1);
 
+        }
+
+        body.bright .link-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(80, 120, 255, .12);
+            border-color: rgba(80, 120, 255, .45);
+            background-position: 100% 50%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(240, 244, 255, .86));
+        }
+
+        body.bright .link-card:active {
+            transform: translateY(-1px) scale(0.99);
+            box-shadow: 0 10px 24px rgba(80, 120, 255, .12);
+            border-color: rgba(80, 120, 255, .4);
+            background-position: 100% 50%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, .94), rgba(232, 238, 255, .82));
         }
 
         body.bright .link-icon {
@@ -551,11 +580,23 @@
             color: rgba(219, 219, 219, 0.85);
             font-size: 13px;
             line-height: 1.3;
-            font-weight: 400;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            position: relative;
+            z-index: 2;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
         }
 
         .username .handle {
             color: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+            cursor: default;
+            pointer-events: none;
+            padding: 2px 0;
         }
 
 
@@ -643,48 +684,45 @@
         .splash-brand { position: relative; display: flex; align-items: center; justify-content: center; }
 
         .splash-title {
-            font-size: 48px;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            background: linear-gradient(90deg, #9fb3ff, #7a8dff 40%, #cbd8ff 70%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: slidemask 1.6s ease-in-out infinite;
-            text-transform: none;
+            font-size: 44px;
+            font-weight: 700;
+            letter-spacing: 0.28em;
+            color: #dfe5ff;
+            text-transform: uppercase;
+            text-shadow: 0 10px 30px rgba(88, 101, 255, 0.16);
         }
 
-        .splash-accent {
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 6px;
-            border-radius: 6px;
-            background: linear-gradient(90deg,#5865ff, #9fb3ff);
-            opacity: .9;
-            filter: blur(6px);
-            animation: accentPulse 1.6s ease-in-out infinite;
+        .loader-dots {
+            display: inline-flex;
+            gap: 6px;
+            margin-top: 4px;
         }
 
-        @keyframes slidemask {
-            0% { background-position: 0% 50%; transform: translateY(0) scale(1); }
-            50% { background-position: 100% 50%; transform: translateY(-4px) scale(1.02); }
-            100% { background-position: 0% 50%; transform: translateY(0) scale(1); }
+        .loader-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            animation: dotPulse 1s ease-in-out infinite;
         }
 
-        @keyframes accentPulse {
-            0% { opacity: .6; transform: translateX(-50%) scaleX(.9); }
-            50% { opacity: 1; transform: translateX(-50%) scaleX(1.02); }
-            100% { opacity: .6; transform: translateX(-50%) scaleX(.9); }
+        .loader-dots span:nth-child(2) { animation-delay: .16s; }
+        .loader-dots span:nth-child(3) { animation-delay: .32s; }
+
+        @keyframes dotPulse {
+            0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
         }
 
-        .loader-sub { color: rgba(205,215,255,0.85); font-weight:600; letter-spacing:0.2px; }
+        .loader-sub { color: rgba(205,215,255,0.85); font-weight:400; letter-spacing:0.2px; }
 
         body.bright .page-loader { background: linear-gradient(135deg, rgba(245,247,255,0.98), rgba(245,247,255,0.96)); }
-        body.bright .splash-title { background: linear-gradient(90deg,#6b7cff,#98aaff); }
+        body.bright .splash-title {
+            color: #1f2a44;
+            text-shadow: 0 8px 24px rgba(88, 101, 255, 0.12);
+        }
         body.bright .loader-sub { color: rgba(20,20,30,0.8); }
+        body.bright .loader-dots span { background: rgba(17,24,39,0.8); }
 
         .modal-loader {
             position: absolute;
@@ -706,14 +744,18 @@
 
 </head>
 
-<body>
+<body class="bright">
     <div id="pageLoader" class="page-loader" role="status" aria-live="polite">
         <div class="loader-inner">
             <div class="splash-brand">
                 <div class="splash-title" aria-hidden="true">Wahyuna</div>
-                <div class="splash-accent" aria-hidden="true"></div>
             </div>
-            <div class="loader-sub">Memuat…</div>
+
+            <div class="loader-dots" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </div>
 
@@ -732,7 +774,7 @@
                 </div>
 
                 <p class="bio">
-                    Want to explore the universe.
+                    I want to explore the universe.
                 </p>
 
                 <div class="minat">
@@ -767,7 +809,7 @@
                     </div>
                     <div class="link-text">
                         <h3>Instagram</h3>
-                        <p>My Instagram profile</p>
+                        <p>Visit my Instagram profile</p>
                     </div>
                     <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
                 </a>
@@ -777,20 +819,20 @@
                     </div>
                     <div class="link-text">
                         <h3>Threads</h3>
-                        <p>My profile in the threads</p>
+                        <p>Visit my Threads profile</p>
                     </div>
                     <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
                 </a>
-                <div class="link-card">
+                <a class="link-card" href="https://github.com/itswahyuna" target="_blank" rel="noopener noreferrer">
                     <div class="link-icon">
-                        <img src="github.png">
+                        <img src="github.webp">
                     </div>
                     <div class="link-text">
-                        <h3>Github</h3>
-                        <p>My GitHub profile</p>
+                        <h3>GitHub</h3>
+                        <p>Visit my GitHub profile</p>
                     </div>
                     <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
-                </div>
+                </a>
                 <a class="link-card" href="https://www.roblox.com/share?code=888d8f8d7834eb4eb600c3bba9605e5a&type=Profile&source=ProfileShare&stamp=1784466825138" target="_blank" rel="noopener noreferrer">
                     <div class="link-icon">
                         <img src="roblox.webp">
@@ -807,7 +849,7 @@
                     </div>
                     <div class="link-text">
                         <h3>Contact Me</h3>
-                        <p>Send me an email anytime</p>
+                        <p>Email me anytime</p>
                     </div>
                     <div class="arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
                 </a>
@@ -846,30 +888,51 @@
         const typing = document.getElementById("typ");
         const text = "Hi, I'm Wahyuna.";
 
+        function updateThemeColor() {
+            const metaThemes = document.querySelectorAll('meta[name="theme-color"]');
+            if (!metaThemes.length) return;
+            const color = document.body.classList.contains('bright') ? '#f5f7ff' : '#03050D';
+            metaThemes.forEach((metaTheme) => {
+                metaTheme.content = color;
+            });
+        }
+
         function updateThemeButton() {
             if (document.body.classList.contains("bright")) {
                 themeBtn.textContent = "Dark mode";
             } else {
                 themeBtn.textContent = "Light mode";
             }
+            updateThemeColor();
+        }
+
+        function saveThemePreference() {
+            localStorage.setItem('wahyuna-theme', document.body.classList.contains('bright') ? 'bright' : 'dark');
+        }
+
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem('wahyuna-theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.remove('bright');
+            } else {
+                document.body.classList.add('bright');
+            }
         }
 
         function applyInitialTheme() {
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            if (!prefersDark) {
-                document.body.classList.add("bright");
-            } else {
-                document.body.classList.remove("bright");
-            }
+            loadThemePreference();
             updateThemeButton();
         }
 
         themeBtn.addEventListener("click", () => {
             document.body.classList.toggle("bright");
+            saveThemePreference();
             updateThemeButton();
+            updateThemeColor();
         });
 
         applyInitialTheme();
+        updateThemeColor();
 
         const profileImg = document.querySelector('.profile-img');
         const imageModal = document.getElementById('imageModal');
