@@ -394,10 +394,7 @@
         
         body.bright {
 
-            background:
-                radial-gradient(circle at top left, rgba(88, 101, 255, .15), transparent 35%),
-                radial-gradient(circle at bottom right, rgba(80, 120, 255, .12), transparent 40%),
-                #f5f7ff;
+            background: #ffffff;
 
             color: #111;
 
@@ -427,7 +424,7 @@
                     rgba(255, 255, 255, .9),
                     rgba(240, 244, 255, .7));
 
-            border-color: rgba(120, 125, 140, .28);
+            border: 1.2px solid rgba(0, 0, 0, 0.12);
 
             box-shadow:
                 0 0 12px rgba(120, 125, 140, .08);
@@ -437,28 +434,27 @@
         @media (hover: hover) {
             body.bright .link-card:hover {
                 transform: translateY(-4px);
-                box-shadow: 0 16px 36px rgba(80, 120, 255, .12);
-                border-color: rgba(120, 125, 140, .36);
+                box-shadow: 0 0 12px rgba(120, 125, 140, .08);
+                border: 1.2px solid rgba(0, 0, 0, 0.18);
                 background-position: 100% 50%;
-                background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(240, 244, 255, .86));
+                background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(232, 238, 255, .92));
             }
 
             body.bright .link-card:active {
-                transform: translateY(-1px) scale(0.99);
-                box-shadow: 0 10px 24px rgba(80, 120, 255, .12);
-                border-color: rgba(120, 125, 140, .32);
-                background-position: 100% 50%;
-                background: linear-gradient(120deg, rgba(255, 255, 255, .94), rgba(232, 238, 255, .82));
+                transform: translateY(-1px) scale(0.98);
+                box-shadow: 0 0 12px rgba(120, 125, 140, .08);
+                border: 1.2px solid rgba(0, 0, 0, 0.28);
+                background: linear-gradient(120deg, rgba(255, 255, 255, .96), rgba(220, 228, 255, .88));
             }
         }
 
         @media (hover: none) {
             body.bright .link-card:active {
-                transform: translateY(-4px);
-                box-shadow: 0 16px 36px rgba(80, 120, 255, .12);
-                border-color: rgba(120, 125, 140, .36);
-                background-position: 100% 50%;
-                background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(240, 244, 255, .86));
+                transform: translateY(-3px);
+                box-shadow: 0 0 12px rgba(120, 125, 140, .08);
+                border: 1.2px solid rgba(0, 0, 0, 0.24);
+                background: linear-gradient(120deg, rgba(255, 255, 255, .98), rgba(224, 232, 255, .9));
+                transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background 0.15s ease, border 0.15s ease;
             }
         }
 
