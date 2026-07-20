@@ -75,8 +75,8 @@
         }
 
         .profile-img {
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             object-fit: cover;
             border: 0.7px solid rgba(88,101,255,0.18);
@@ -503,6 +503,7 @@
        
         @media(max-width:600px) {
 
+
             #app {
 
                 padding: 10px;
@@ -519,9 +520,9 @@
 
             .profile-img {
 
-                width: 80px;
+                width: 90px;
 
-                height: 80px;
+                height: 90px;
 
             }
 
@@ -706,13 +707,15 @@
         .splash-brand { position: relative; display: flex; align-items: center; justify-content: center; }
 
         .splash-title {
-            font-size: 44px;
+            font-size: 42px;
             font-weight: 700;
             letter-spacing: 0.28em;
             color: #dfe5ff;
             text-transform: uppercase;
             text-shadow: 0 10px 30px rgba(88, 101, 255, 0.16);
         }
+
+
 
         .loader-dots {
             display: inline-flex;
@@ -760,6 +763,20 @@
 
         ::selection { background: #bdbdbd; color: #111; }
         ::-moz-selection { background: #bdbdbd; color: #111; }
+
+
+          @media (max-width: 323px) {
+            .profile-img {
+                display: none;
+            }
+        }
+
+         @media(max-width:600px) {
+
+             .splash-title {
+            font-size: 7vw;
+        }
+        }
 
     </style>
 
