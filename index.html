@@ -927,12 +927,26 @@
             localStorage.setItem('wahyuna-theme', document.body.classList.contains('bright') ? 'bright' : 'dark');
         }
 
+        function getSystemThemePreference() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+            }
+            return 'bright';
+        }
+
         function loadThemePreference() {
             const savedTheme = localStorage.getItem('wahyuna-theme');
             if (savedTheme === 'dark') {
                 document.body.classList.remove('bright');
-            } else {
+            } else if (savedTheme === 'bright') {
                 document.body.classList.add('bright');
+            } else {
+                const preferredTheme = getSystemThemePreference();
+                if (preferredTheme === 'dark') {
+                    document.body.classList.remove('bright');
+                } else {
+                    document.body.classList.add('bright');
+                }
             }
         }
 
@@ -1013,10 +1027,11 @@
         (function(){
             const pageLoader = document.getElementById('pageLoader');
             const loaderStart = performance.now();
+            const minSplashMs = 700;
 
             function hidePageLoader() {
                 const elapsed = performance.now() - loaderStart;
-                const wait = Math.max(0, 500 - elapsed);
+                const wait = Math.max(0, minSplashMs - elapsed);
                 setTimeout(() => {
                     if (!pageLoader) return;
                     pageLoader.classList.add('hidden');
