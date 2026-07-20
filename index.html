@@ -434,20 +434,32 @@
 
         }
 
-        body.bright .link-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 36px rgba(80, 120, 255, .12);
-            border-color: rgba(80, 120, 255, .45);
-            background-position: 100% 50%;
-            background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(240, 244, 255, .86));
+        @media (hover: hover) {
+            body.bright .link-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 16px 36px rgba(80, 120, 255, .12);
+                border-color: rgba(80, 120, 255, .45);
+                background-position: 100% 50%;
+                background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(240, 244, 255, .86));
+            }
+
+            body.bright .link-card:active {
+                transform: translateY(-1px) scale(0.99);
+                box-shadow: 0 10px 24px rgba(80, 120, 255, .12);
+                border-color: rgba(80, 120, 255, .4);
+                background-position: 100% 50%;
+                background: linear-gradient(120deg, rgba(255, 255, 255, .94), rgba(232, 238, 255, .82));
+            }
         }
 
-        body.bright .link-card:active {
-            transform: translateY(-1px) scale(0.99);
-            box-shadow: 0 10px 24px rgba(80, 120, 255, .12);
-            border-color: rgba(80, 120, 255, .4);
-            background-position: 100% 50%;
-            background: linear-gradient(120deg, rgba(255, 255, 255, .94), rgba(232, 238, 255, .82));
+        @media (hover: none) {
+            body.bright .link-card:active {
+                transform: translateY(-4px);
+                box-shadow: 0 16px 36px rgba(80, 120, 255, .12);
+                border-color: rgba(80, 120, 255, .45);
+                background-position: 100% 50%;
+                background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(240, 244, 255, .86));
+            }
         }
 
         body.bright .link-icon {
