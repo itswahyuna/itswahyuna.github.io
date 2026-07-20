@@ -602,7 +602,6 @@
         }
 
         .username .handle {
-            color: #656565;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -611,6 +610,10 @@
             cursor: default;
             pointer-events: none;
             padding: 2px 0;
+        }
+ 
+        body.bright .username .handle {
+            color: rgba(17,17,17,0.8);
         }
 
 
@@ -641,9 +644,14 @@
             color: rgba(88,101,255,0.9);
         }
 
-        body.bright .username {
-            color: rgba(17,17,17,0.8);
+        body.bright .username .handle {
+            color: rgba(78, 78, 78, 0.8);
         }
+
+        body.dark .username .handle {
+            color: rgba(194, 192, 192, 0.85);
+        }
+        
         .site-footer {
             margin-top: 28px;
             padding: 12px 0;
