@@ -320,10 +320,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
             visibility: hidden;
             opacity: 0;
             pointer-events: none;
-            transition: opacity .3s ease;
+
+            transition: opacity .25s ease;
             z-index: 9999;
         }
 
@@ -333,36 +335,32 @@
             pointer-events: auto;
         }
 
+
         .image-modal-backdrop {
             position: absolute;
             inset: 0;
 
-            background: rgba(15, 15, 20, .22);
+            background: rgba(15, 15, 20, .18);
 
-            backdrop-filter: blur(6px) saturate(150%);
-            -webkit-backdrop-filter: blur(6px) saturate(150%);
+            backdrop-filter: blur(8px) saturate(130%);
+            -webkit-backdrop-filter: blur(8px) saturate(130%);
 
             opacity: 0;
 
             transition:
-                opacity .35s ease,
-                backdrop-filter .35s ease,
-                -webkit-backdrop-filter .35s ease,
-                background .35s ease;
+                opacity .3s ease,
+                background .3s ease;
         }
 
         .image-modal.open .image-modal-backdrop {
             opacity: 1;
-
-            background: rgba(15, 15, 20, .32);
-
-            backdrop-filter: blur(12px) saturate(150%);
-            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            background: rgba(15, 15, 20, .24);
         }
 
 
         .image-modal-content {
             position: relative;
+
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -370,12 +368,12 @@
             max-width: 95vw;
             max-height: 95vh;
 
-            transform: scale(.92);
+            transform: scale(.94);
             opacity: 0;
 
             transition:
                 transform .35s cubic-bezier(.22, 1, .36, 1),
-                opacity .35s ease;
+                opacity .25s ease;
 
             z-index: 1;
         }
@@ -400,7 +398,7 @@
             border-radius: 14px;
 
             box-shadow:
-                0 20px 60px rgba(0, 0, 0, .35);
+                0 20px 60px rgba(0, 0, 0, .3);
         }
 
 
@@ -416,10 +414,10 @@
             border: 1px solid rgba(255, 255, 255, .25);
             border-radius: 50%;
 
-            background: rgba(0, 0, 0, .55);
+            background: rgba(0, 0, 0, .45);
 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
 
             color: #fff;
 
@@ -427,6 +425,7 @@
             font-weight: 600;
 
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
 
             display: flex;
             justify-content: center;
@@ -434,21 +433,17 @@
 
             z-index: 2;
 
-            transform: scale(1);
-
             transition:
-                transform .35s cubic-bezier(.22, 1, .36, 1),
-                background .35s ease,
-                opacity .35s ease;
+                transform .25s cubic-bezier(.22, 1, .36, 1),
+                background .25s ease;
         }
 
         .image-modal-close:hover {
-            transform: scale(1.08);
-            background: rgba(0, 0, 0, .7);
+            background: rgba(0, 0, 0, .65);
         }
 
         .image-modal-close:active {
-            transform: scale(.92);
+            transform: scale(.9);
         }
 
         body.bright .switch-d button {
