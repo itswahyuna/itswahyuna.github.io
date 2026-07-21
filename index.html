@@ -323,7 +323,7 @@
             visibility: hidden;
             opacity: 0;
             pointer-events: none;
-            transition: opacity .35s ease;
+            transition: opacity .3s ease;
             z-index: 9999;
         }
 
@@ -336,23 +336,37 @@
         .image-modal-backdrop {
             position: absolute;
             inset: 0;
-            background: rgba(15, 15, 20, .28);
-            backdrop-filter: blur(0px) saturate(180%);
-            -webkit-backdrop-filter: blur(0px) saturate(180%);
+
+            background: rgba(15, 15, 20, .22);
+
+            backdrop-filter: blur(6px) saturate(150%);
+            -webkit-backdrop-filter: blur(6px) saturate(150%);
+
+            opacity: 0;
+
+            transition:
+                opacity .35s ease,
+                backdrop-filter .35s ease,
+                -webkit-backdrop-filter .35s ease,
+                background .35s ease;
         }
-            
 
         .image-modal.open .image-modal-backdrop {
-            background: rgba(15, 15, 20, .45);
-            backdrop-filter: blur(15px) saturate(180%);
-            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            opacity: 1;
+
+            background: rgba(15, 15, 20, .32);
+
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
         }
+
 
         .image-modal-content {
             position: relative;
             display: inline-flex;
             justify-content: center;
             align-items: center;
+
             max-width: 95vw;
             max-height: 95vh;
 
@@ -371,10 +385,13 @@
             opacity: 1;
         }
 
+
         .image-modal-content img {
             display: block;
+
             max-width: 95vw;
             max-height: 95vh;
+
             width: auto;
             height: auto;
 
@@ -386,8 +403,10 @@
                 0 20px 60px rgba(0, 0, 0, .35);
         }
 
+
         .image-modal-close {
             position: absolute;
+
             top: 10px;
             right: 10px;
 
@@ -407,7 +426,7 @@
             font-size: 26px;
             font-weight: 600;
 
-            cursor: unset;
+            cursor: pointer;
 
             display: flex;
             justify-content: center;
