@@ -306,87 +306,131 @@
             border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .image-modal {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            visibility: hidden;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .25s ease, visibility .25s ease;
-            z-index: 999;
-        }
 
-        .image-modal.open {
-            visibility: visible;
-            opacity: 1;
-            pointer-events: auto;
-        }
+  
 
-        .image-modal-backdrop {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, .75);
-            backdrop-filter: blur(6px);
-        }
+        
 
-        .image-modal-content {
-            position: relative;
-            width: min(92vw, 720px);
-            max-height: 92vh;
-            border-radius: 28px;
-            overflow: hidden;
-            transform: scale(.92);
-            opacity: 0;
-            transition: transform .25s ease, opacity .25s ease;
-            z-index: 1;
-        }
+       .image-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease;
+    z-index: 9999;
+}
 
-        .image-modal.open .image-modal-content {
-            transform: scale(1);
-            opacity: 1;
-        }
+.image-modal.open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
 
-        .image-modal-content img {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: contain;
-        }
+.image-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 15, 20, .28);
+    backdrop-filter: blur(0px) saturate(180%);
+    -webkit-backdrop-filter: blur(0px) saturate(180%);
+    transition:
+        backdrop-filter .35s ease,
+        -webkit-backdrop-filter .35s ease,
+        background .35s ease;
+}
 
-        .image-modal-close {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,.25);
-            background: rgba(0,0,0,.35);
-            color: white;
-            font-size: 24px;
-            line-height: 1;
-            cursor: pointer;
-            display: grid;
-            place-items: center;
-            z-index: 2;
-        }
+.image-modal.open .image-modal-backdrop {
+    background: rgba(15, 15, 20, .45);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+}
 
-        .image-modal-close:hover {
-            background: rgba(0,0,0,.55);
-        }
+.image-modal-content {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 95vw;
+    max-height: 95vh;
 
-        body.bright .image-modal-close {
-            border-color: rgba(0,0,0,.16);
-            background: rgba(255,255,255,.85);
-            color: #111;
-        }
+    transform: scale(.92);
+    opacity: 0;
 
-        body.bright .image-modal-close:hover {
-            background: rgba(255,255,255,.95);
-        }
+    transition:
+        transform .35s cubic-bezier(.22,1,.36,1),
+        opacity .35s ease;
+
+    z-index: 1;
+}
+
+.image-modal.open .image-modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.image-modal-content img {
+    display: block;
+    max-width: 95vw;
+    max-height: 95vh;
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.35);
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 50%;
+
+    background: rgba(0,0,0,.55);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    color: #fff;
+
+    font-size: 26px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 2;
+
+    transform: scale(1);
+
+    transition:
+        transform .35s cubic-bezier(.22,1,.36,1),
+        background .35s ease,
+        opacity .35s ease;
+}
+
+.image-modal-close:hover {
+    transform: scale(1.08);
+    background: rgba(0,0,0,.7);
+}
+
+.image-modal-close:active {
+    transform: scale(.92);
+}
 
         body.bright .switch-d button {
             border-color: rgba(0, 0, 0, 0.14);
@@ -777,6 +821,8 @@
             font-size: 7vw;
         }
         }
+
+        
 
     </style>
 
