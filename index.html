@@ -336,26 +336,16 @@
         }
 
 
-        .image-modal-backdrop {
-            position: absolute;
-            inset: 0;
+       .image-modal-backdrop {
+    position: absolute;
+    inset: 0;
 
-            background: rgba(15, 15, 20, .18);
+    background: rgba(15, 15, 20, .24);
 
-            backdrop-filter: blur(8px) saturate(130%);
-            -webkit-backdrop-filter: blur(8px) saturate(130%);
+    backdrop-filter: blur(8px) saturate(130%);
+    -webkit-backdrop-filter: blur(8px) saturate(130%);
+}
 
-            opacity: 0;
-
-            transition:
-                opacity .3s ease,
-                background .3s ease;
-        }
-
-        .image-modal.open .image-modal-backdrop {
-            opacity: 1;
-            background: rgba(15, 15, 20, .24);
-        }
 
 
         .image-modal-content {
