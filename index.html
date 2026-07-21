@@ -333,6 +333,17 @@
             pointer-events: auto;
         }
 
+        .image-modal-backdrop {
+            position: absolute;
+            inset: 0;
+
+            background: rgba(15, 15, 20, .24);
+
+            backdrop-filter: blur(8px) saturate(130%);
+            -webkit-backdrop-filter: blur(8px) saturate(130%);
+        }
+
+
         .image-modal-content {
             position: relative;
 
@@ -344,32 +355,6 @@
             max-height: 95vh;
 
             transform: scale(.92);
-            opacity: 0;
-
-            transition:
-                transform .35s cubic-bezier(.22, 1, .36, 1),
-                opacity .25s ease;
-
-            z-index: 1;
-        }
-
-        .image-modal.open .image-modal-content {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-
-        .image-modal-content {
-            position: relative;
-
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-
-            max-width: 95vw;
-            max-height: 95vh;
-
-            transform: scale(.94);
             opacity: 0;
 
             transition:
