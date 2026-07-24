@@ -868,31 +868,42 @@
             }
         }
 
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            background: #222;
-            color: #fff;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-size: 14px;
-            opacity: 0;
-            pointer-events: none;
-            transition: .25s;
-            z-index: 999999;
-        }
+       .toast{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%) translateY(-20px);
+    max-width:80vw;
+    min-width:220px;
+    width:max-content;
+    padding:14px 18px;
+    border-radius:14px;
+    text-align:center;
+    font-size:14px;
+    font-weight:500;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s ease;
+    z-index:999999;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
 
-        body.bright .toast {
-            background: #111;
-            color: #fff;
-        }
+body:not(.bright) .toast{
+    background:#1b1d25;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+body.bright .toast{
+    background:#fff;
+    color:#111;
+    border:1px solid rgba(0,0,0,.08);
+}
     </style>
 
 
@@ -1169,6 +1180,7 @@
 
         function showToast(text){
     const toast=document.getElementById("toast");
+
     toast.textContent=text;
     toast.classList.add("show");
 
@@ -1185,19 +1197,42 @@ document.querySelectorAll(".link-card").forEach(card=>{
 
         e.preventDefault();
 
-        const url=this.href;
         const nama=this.querySelector("h3").textContent;
 
+        let url=this.getAttribute("href");
+
+        if(url.startsWith("mailto:")){
+
+            // Email → salin alamat saja
+            url=url.replace(/^mailto:/,"");
+
+        }else{
+
+            // Tambahkan parameter from=itswahyuna
+            const u=new URL(url);
+
+            u.searchParams.set("from","itswahyuna");
+
+            url=u.toString();
+        }
+
         try{
+
             await navigator.clipboard.writeText(url);
+
             showToast(`Link ${nama} telah disalin`);
+
         }catch{
+
             showToast("Gagal menyalin link");
+
         }
 
     });
 
 });
+
+
     </script>
 
 </body>
