@@ -882,7 +882,7 @@
 
             text-align: center;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             letter-spacing: .1px;
 
             opacity: 0;
@@ -1219,6 +1219,7 @@
             }, 2000);
         }
 
+
         document.querySelectorAll(".link-card").forEach(card => {
 
             card.addEventListener("contextmenu", async function (e) {
@@ -1228,31 +1229,35 @@
                 const nama = this.querySelector("h3").textContent;
 
                 let url = this.getAttribute("href");
+                let toastText = "";
 
                 if (url.startsWith("mailto:")) {
 
-                    // Email → salin alamat saja
                     url = url.replace(/^mailto:/, "");
+
+                    toastText = "Email copied";
 
                 } else {
 
-                    // Tambahkan parameter from=itswahyuna
                     const u = new URL(url);
 
                     u.searchParams.set("utm_source", "itswahyuna");
 
                     url = u.toString();
+
+                    toastText = `${nama} link copied`;
                 }
+
 
                 try {
 
                     await navigator.clipboard.writeText(url);
 
-                    showToast(`Link ${nama} telah disalin`);
+                    showToast(toastText);
 
                 } catch {
 
-                    showToast("Gagal menyalin link");
+                    showToast("Failed to copy");
 
                 }
 
