@@ -867,6 +867,32 @@
                 font-size: 7vw;
             }
         }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #222;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: .25s;
+            z-index: 999999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        body.bright .toast {
+            background: #111;
+            color: #fff;
+        }
     </style>
 
 
@@ -1004,6 +1030,8 @@
 
     </div>
 
+    <div id="toast" class="toast"></div>
+
     <script>
         const themeBtn = document.getElementById("th");
         const typing = document.getElementById("typ");
@@ -1135,6 +1163,41 @@
 
             setTimeout(hidePageLoader, 4500);
         })();
+
+
+
+
+        function showToast(text){
+    const toast=document.getElementById("toast");
+    toast.textContent=text;
+    toast.classList.add("show");
+
+    clearTimeout(toast.timer);
+
+    toast.timer=setTimeout(()=>{
+        toast.classList.remove("show");
+    },2000);
+}
+
+document.querySelectorAll(".link-card").forEach(card=>{
+
+    card.addEventListener("contextmenu",async function(e){
+
+        e.preventDefault();
+
+        const url=this.href;
+        const nama=this.querySelector("h3").textContent;
+
+        try{
+            await navigator.clipboard.writeText(url);
+            showToast(`Link ${nama} telah disalin`);
+        }catch{
+            showToast("Gagal menyalin link");
+        }
+
+    });
+
+});
     </script>
 
 </body>
