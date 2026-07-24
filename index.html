@@ -1028,41 +1028,22 @@
         }
 
         function saveThemePreference() {
-            localStorage.setItem("wahyuna-theme", document.body.classList.contains("bright") ? "bright" : "dark");
+            localStorage.setItem('wahyuna-theme', document.body.classList.contains('bright') ? 'bright' : 'dark');
         }
 
-        const mq = window.matchMedia("(prefers-color-scheme: light)");
-        const ig = /Instagram/i.test(navigator.userAgent);
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem('wahyuna-theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.remove('bright');
+            } else {
+                document.body.classList.add('bright');
+            }
+        }
 
         function applyInitialTheme() {
-            const t = localStorage.getItem("wahyuna-theme");
-            document.body.classList.toggle("bright", t ? t === "bright" : ig || mq.matches);
+            loadThemePreference();
             updateThemeButton();
-            updateThemeColor();
         }
-
-        mq.addEventListener("change", e => {
-            if (!localStorage.getItem("wahyuna-theme") && !ig) {
-                document.body.classList.toggle("bright", e.matches);
-                updateThemeButton();
-                updateThemeColor();
-            }
-        });
-
-        themeBtn.addEventListener("click", () => {
-            document.body.classList.toggle("bright");
-            saveThemePreference();
-            updateThemeButton();
-            updateThemeColor();
-        });
-
-        applyInitialTheme();
-
-        mediaQuery.addEventListener("change", (e) => {
-            document.body.classList.toggle("bright", e.matches);
-            updateThemeButton();
-            updateThemeColor();
-        });
 
         themeBtn.addEventListener("click", () => {
             document.body.classList.toggle("bright");
