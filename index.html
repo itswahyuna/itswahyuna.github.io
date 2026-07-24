@@ -868,42 +868,70 @@
             }
         }
 
-       .toast{
-    position:fixed;
-    top:20px;
-    left:50%;
-    transform:translateX(-50%) translateY(-20px);
-    max-width:80vw;
-    min-width:220px;
-    width:max-content;
-    padding:14px 18px;
-    border-radius:14px;
-    text-align:center;
-    font-size:14px;
-    font-weight:500;
-    opacity:0;
-    pointer-events:none;
-    transition:.25s ease;
-    z-index:999999;
-    box-shadow:0 10px 30px rgba(0,0,0,.15);
-}
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-25px);
 
-.toast.show{
-    opacity:1;
-    transform:translateX(-50%) translateY(0);
-}
+            max-width: 80vw;
+            min-width: 220px;
 
-body:not(.bright) .toast{
-    background:#1b1d25;
-    color:#fff;
-    border:1px solid rgba(255,255,255,.08);
-}
+            padding: 14px 20px;
+            border-radius: 16px;
 
-body.bright .toast{
-    background:#fff;
-    color:#111;
-    border:1px solid rgba(0,0,0,.08);
-}
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: .1px;
+
+            opacity: 0;
+            pointer-events: none;
+
+            transition:
+                opacity .25s ease,
+                transform .25s cubic-bezier(.22, 1, .36, 1);
+
+            z-index: 999999;
+
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            box-shadow:
+                0 12px 35px rgba(0, 0, 0, .25);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        body:not(.bright) .toast {
+            background:
+                linear-gradient(135deg,
+                    rgba(255, 255, 255, .16),
+                    rgba(255, 255, 255, .08));
+
+            color: #ffffff;
+
+            border:
+                1px solid rgba(255, 255, 255, .22);
+        }
+
+        body.bright .toast {
+            background:
+                linear-gradient(135deg,
+                    rgba(255, 255, 255, .96),
+                    rgba(245, 247, 255, .96));
+
+            color: #111111;
+
+            border:
+                1px solid rgba(0, 0, 0, .12);
+
+            box-shadow:
+                0 12px 35px rgba(0, 0, 0, .18);
+        }
     </style>
 
 
@@ -1178,59 +1206,59 @@ body.bright .toast{
 
 
 
-        function showToast(text){
-    const toast=document.getElementById("toast");
+        function showToast(text) {
+            const toast = document.getElementById("toast");
 
-    toast.textContent=text;
-    toast.classList.add("show");
+            toast.textContent = text;
+            toast.classList.add("show");
 
-    clearTimeout(toast.timer);
+            clearTimeout(toast.timer);
 
-    toast.timer=setTimeout(()=>{
-        toast.classList.remove("show");
-    },2000);
-}
-
-document.querySelectorAll(".link-card").forEach(card=>{
-
-    card.addEventListener("contextmenu",async function(e){
-
-        e.preventDefault();
-
-        const nama=this.querySelector("h3").textContent;
-
-        let url=this.getAttribute("href");
-
-        if(url.startsWith("mailto:")){
-
-            // Email → salin alamat saja
-            url=url.replace(/^mailto:/,"");
-
-        }else{
-
-            // Tambahkan parameter from=itswahyuna
-            const u=new URL(url);
-
-            u.searchParams.set("from","itswahyuna");
-
-            url=u.toString();
+            toast.timer = setTimeout(() => {
+                toast.classList.remove("show");
+            }, 2000);
         }
 
-        try{
+        document.querySelectorAll(".link-card").forEach(card => {
 
-            await navigator.clipboard.writeText(url);
+            card.addEventListener("contextmenu", async function (e) {
 
-            showToast(`Link ${nama} telah disalin`);
+                e.preventDefault();
 
-        }catch{
+                const nama = this.querySelector("h3").textContent;
 
-            showToast("Gagal menyalin link");
+                let url = this.getAttribute("href");
 
-        }
+                if (url.startsWith("mailto:")) {
 
-    });
+                    // Email → salin alamat saja
+                    url = url.replace(/^mailto:/, "");
 
-});
+                } else {
+
+                    // Tambahkan parameter from=itswahyuna
+                    const u = new URL(url);
+
+                    u.searchParams.set("utm_source", "itswahyuna");
+
+                    url = u.toString();
+                }
+
+                try {
+
+                    await navigator.clipboard.writeText(url);
+
+                    showToast(`Link ${nama} telah disalin`);
+
+                } catch {
+
+                    showToast("Gagal menyalin link");
+
+                }
+
+            });
+
+        });
 
 
     </script>
