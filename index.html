@@ -1059,6 +1059,12 @@
             updateThemeColor();
         }
 
+        mediaQuery.addEventListener("change", (e) => {
+            document.body.classList.toggle("bright", e.matches);
+            updateThemeButton();
+            updateThemeColor();
+        });
+
         themeBtn.addEventListener("click", () => {
             document.body.classList.toggle("bright");
             saveThemePreference();
