@@ -1040,9 +1040,23 @@
             }
         }
 
+        //function applyInitialTheme() {
+        //    loadThemePreference();
+        //    updateThemeButton();
+        //}
+
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
+
         function applyInitialTheme() {
-            loadThemePreference();
+            if (mediaQuery.matches) {
+                document.body.classList.add("bright");
+            } else {
+                document.body.classList.remove("bright");
+            }
+
+            // loadThemePreference();
             updateThemeButton();
+            updateThemeColor();
         }
 
         themeBtn.addEventListener("click", () => {
