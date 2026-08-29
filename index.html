@@ -99,10 +99,10 @@
             display: flex;
             justify-content: center;
 
-            background: #03050D;
+            background: #010203;
 
             color: white;
-            padding-top: 10px;
+            padding-top: 8px;
 
             transition: color .4s ease, background .4s ease;
         }
@@ -1001,17 +1001,17 @@
         .floating-comment-widget {
             position: fixed;
             left: 50%;
-            bottom: 18px;
+            bottom: 10px;
             width: min(92vw, 430px);
             transform: translate(-50%, 0);
             border-radius: 26px;
             overflow-y: auto;
             overflow-x: hidden;
-            background: rgba(17, 24, 39, 0.92);
+            background: rgba(14, 17, 23, 0.98);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.22);
-            backdrop-filter: blur(18px) saturate(1.15);
-            -webkit-backdrop-filter: blur(18px) saturate(1.15);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.26);
+            backdrop-filter: blur(16px) saturate(1);
+            -webkit-backdrop-filter: blur(16px) saturate(1);
             z-index: 1200;
             transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), max-height 0.38s ease, opacity 0.28s ease, box-shadow 0.28s ease, height 0.28s ease;
             max-height: min(72vh, 520px);
@@ -1104,8 +1104,8 @@
             justify-content: center;
             gap: 8px;
             padding: 14px 18px 10px;
-            background: rgba(255, 255, 255, 0.04);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(18, 20, 24, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             position: relative;
             user-select: none;
             cursor: grab;
@@ -1223,10 +1223,10 @@
         .floating-field input,
         .floating-field textarea {
             width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: 14px;
-            background: rgba(255, 255, 255, 0.03);
-            color: #fff;
+            background: rgba(20, 22, 27, 0.9);
+            color: #f5f5f5;
             padding: 12px 14px;
             font-size: 14px;
             outline: none;
@@ -1260,9 +1260,9 @@
 
         .floating-field input:focus,
         .floating-field textarea:focus {
-            border-color: rgba(46, 125, 255, 0.8);
-            box-shadow: 0 0 0 3px rgba(46, 125, 255, 0.08);
-            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.14);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+            background: rgba(22, 24, 29, 0.96);
         }
 
         body.bright .floating-field input:focus,
