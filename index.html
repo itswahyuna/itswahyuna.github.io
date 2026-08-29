@@ -1533,12 +1533,12 @@
 
             <label class="floating-field">
                 <span>Name</span>
-                <input type="text" name="name" placeholder="Enter your anonymous name" autocomplete="name">
+                <input type="text" name="name" maxlength="100" placeholder="Enter your anonymous name" autocomplete="name">
             </label>
 
             <label class="floating-field">
                 <span>Message</span>
-                <textarea name="message" rows="3" placeholder="Enter your anonymous message"></textarea>
+                <textarea name="message" rows="3" maxlength="1000" placeholder="Enter your anonymous message"></textarea>
             </label>
 
             <div class="floating-actions">
@@ -1716,11 +1716,15 @@
         function updateFloatingLabelText() {
             const compactLabel = window.innerWidth <= 260 ? 'Message' : 'Anonymous message';
             if (floatingCommentTitleText) floatingCommentTitleText.textContent = compactLabel;
-            if (floatingSubmitText) floatingSubmitText.textContent = window.innerWidth <= 260 ? 'Message' : 'Send';
+            if (floatingTriggerButton) floatingTriggerButton.textContent = window.innerWidth <= 260 ? 'Send' : 'Message';
+            if (floatingSubmitText) floatingSubmitText.textContent = 'Send';
         }
 
         function validateFloatingForm() {
             if (!floatingCommentForm || !floatingSubmitButton || !floatingNameInput || !floatingTextarea) return;
+
+            floatingNameInput.maxLength = 100;
+            floatingTextarea.maxLength = 1000;
 
             const name = floatingNameInput.value.trim();
             const message = floatingTextarea.value.trim();
