@@ -32,6 +32,66 @@
             user-select: none;
         }
 
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(82, 96, 127, 0.7) transparent;
+        }
+
+        *::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background: rgba(82, 96, 127, 0.72);
+            border-radius: 999px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 72, 96, 0.9);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .floating-comment-widget {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .floating-comment-widget::-webkit-scrollbar,
+        .floating-field textarea::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            html,
+            body,
+            .floating-comment-widget,
+            .floating-field textarea,
+            .floating-comment-form {
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            html::-webkit-scrollbar,
+            body::-webkit-scrollbar,
+            *::-webkit-scrollbar,
+            .floating-comment-widget::-webkit-scrollbar,
+            .floating-field textarea::-webkit-scrollbar {
+                width: 0 !important;
+                height: 0 !important;
+                display: none !important;
+            }
+        }
+
         body {
 
             min-height: 100vh;
@@ -54,9 +114,9 @@
 
             width: 100%;
 
-            max-width: 900px;
+            max-width: 760px;
 
-            padding: 20px;
+            padding: 18px 16px 20px;
 
         }
 
@@ -65,8 +125,8 @@
             width: 100%;
             display: flex;
             align-items: center;
-            gap: 25px;
-            padding: 30px;
+            gap: 18px;
+            padding: 22px 20px;
             border-radius: 25px;
             background: transparent;
             background-size: cover;
@@ -76,12 +136,12 @@
         }
 
         .profile-img {
-            width: 130px;
-            height: 130px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             object-fit: cover;
-            border: 0.7px solid rgba(88, 101, 255, 0.18);
-            box-shadow: 0 0 6px rgba(88, 101, 255, 0.06);
+            border: 0.7px solid rgba(37, 99, 235, 0.2);
+            box-shadow: 0 0 6px rgba(37, 99, 235, 0.08);
         }
 
         .text {
@@ -160,31 +220,28 @@
         .link-card {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
+            padding: 13px 16px;
             border-radius: 20px;
             background:
                 linear-gradient(120deg,
                     rgba(255, 255, 255, .07),
                     rgba(255, 255, 255, .02));
             border: 1px solid rgba(80, 120, 255, .18);
-            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease, background-position .35s ease;
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
             text-decoration: none;
             color: inherit;
             outline: none;
-            background-size: 200% 200%;
-            background-position: 0% 50%;
             position: relative;
             overflow: hidden;
         }
 
         @media (hover: hover) {
             .link-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
-                border-color: rgba(255, 255, 255, 0.35);
-                background-position: 100% 50%;
+                transform: translateY(-1px) scale(0.99);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+                border-color: rgba(255, 255, 255, 0.28);
                 background: linear-gradient(120deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
             }
 
@@ -200,7 +257,6 @@
                 transform: translateY(-4px);
                 box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
                 border-color: rgba(255, 255, 255, 0.35);
-                background-position: 100% 50%;
                 background: linear-gradient(120deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
             }
         }
@@ -259,33 +315,42 @@
 
             font-size: 30px;
 
-            border: 1px solid rgba(88, 101, 255, 0.26);
-            background: rgba(88, 101, 255, 0.02);
+            border: 1px solid rgba(35, 113, 255, 0.26);
+            background: rgba(35, 113, 255, 0.02);
 
         }
 
 
 
         .switch-d {
-
             margin-top: 40px;
-
             display: flex;
-
             justify-content: center;
-
-            gap: 15px;
-
+            align-items: center;
+            gap: 12px;
+            flex-wrap: nowrap;
         }
 
         .switch-d button {
             padding: 12px 25px;
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.22);
-            background: transparent;
+            background: rgba(255, 255, 255, 0.04);
             color: inherit;
             font-weight: 600;
             transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 260px) {
+            .switch-d {
+                flex-direction: column;
+                flex-wrap: wrap;
+            }
+
+            .switch-d button {
+                width: min(220px, 80vw);
+            }
         }
 
 
@@ -434,8 +499,8 @@
 
         body.bright .switch-d button {
             border-color: rgba(0, 0, 0, 0.14);
+            background: rgba(37, 99, 235, 0.08);
         }
-
 
         body.bright {
 
@@ -452,8 +517,8 @@
         }
 
         body.bright .profile-img {
-            border: 0.7px solid rgba(88, 101, 255, 0.18);
-            box-shadow: 0 0 6px rgba(88, 101, 255, 0.06);
+            border: 0.7px solid rgba(37, 99, 235, 0.18);
+            box-shadow: 0 0 6px rgba(37, 99, 235, 0.06);
         }
 
         body.bright .bio {
@@ -466,40 +531,40 @@
 
             background:
                 linear-gradient(120deg,
-                    rgba(255, 255, 255, .9),
-                    rgba(240, 244, 255, .7));
+                    rgba(255, 255, 255, .96),
+                    rgba(232, 240, 255, .9));
 
-            border: 1.2px solid rgba(0, 0, 0, 0.12);
+            border: 1.2px solid rgba(37, 99, 235, 0.18);
 
             box-shadow:
-                0 0 12px rgba(120, 125, 140, .08);
+                0 3px 10px rgba(30, 64, 175, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.75);
 
         }
 
         @media (hover: hover) {
             body.bright .link-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 0 12px rgba(120, 125, 140, .08);
-                border: 1.2px solid rgba(0, 0, 0, 0.18);
-                background-position: 100% 50%;
-                background: linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(232, 238, 255, .92));
+                transform: translateY(-1px) scale(0.985);
+                box-shadow: 0 10px 20px rgba(30, 64, 175, 0.12), inset 0 0 0 1px rgba(37, 99, 235, 0.14);
+                border-color: rgba(37, 99, 235, 0.42);
+                background: linear-gradient(120deg, rgba(255, 255, 255, .98), rgba(220, 232, 255, .92));
             }
 
             body.bright .link-card:active {
-                transform: translateY(-1px) scale(0.98);
-                box-shadow: 0 0 12px rgba(120, 125, 140, .08);
-                border: 1.2px solid rgba(0, 0, 0, 0.28);
-                background: linear-gradient(120deg, rgba(255, 255, 255, .96), rgba(220, 228, 255, .88));
+                transform: translateY(-1px) scale(0.985);
+                box-shadow: 0 10px 20px rgba(30, 64, 175, 0.12), inset 0 0 0 1px rgba(37, 99, 235, 0.14);
+                border-color: rgba(37, 99, 235, 0.42);
+                background: linear-gradient(120deg, rgba(255, 255, 255, .98), rgba(220, 232, 255, .92));
             }
         }
 
         @media (hover: none) {
             body.bright .link-card:active {
-                transform: translateY(-3px);
-                box-shadow: 0 0 12px rgba(120, 125, 140, .08);
-                border: 1.2px solid rgba(0, 0, 0, 0.24);
-                background: linear-gradient(120deg, rgba(255, 255, 255, .98), rgba(224, 232, 255, .9));
-                transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background 0.15s ease, border 0.15s ease;
+                transform: translateY(1px) scale(0.985);
+                box-shadow: 0 8px 18px rgba(30, 64, 175, 0.12), inset 0 0 0 1px rgba(37, 99, 235, 0.18);
+                border-color: rgba(37, 99, 235, 0.4);
+                background: linear-gradient(120deg, rgba(245, 248, 255, 1), rgba(224, 232, 255, .94));
+                transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
             }
         }
 
@@ -511,11 +576,11 @@
 
         body.bright .minat-item {
 
-            background: rgba(88, 101, 255, .08);
+            background: rgba(37, 99, 235, .08);
 
-            color: #4450b8;
+            color: #3359c8;
 
-            border-color: rgba(88, 101, 255, .2);
+            border-color: rgba(37, 99, 235, .2);
 
         }
 
@@ -687,7 +752,7 @@
 
         .arrow i {
             font-size: 20px;
-            color: rgba(88, 101, 255, 0.9);
+            color: rgba(37, 99, 235, 0.9);
         }
 
         body.bright .username .handle {
@@ -763,7 +828,7 @@
             letter-spacing: 0.28em;
             color: #dfe5ff;
             text-transform: uppercase;
-            text-shadow: 0 10px 30px rgba(88, 101, 255, 0.16);
+            text-shadow: 0 10px 30px rgba(29, 125, 255, 0.16);
         }
 
 
@@ -817,7 +882,7 @@
 
         body.bright .splash-title {
             color: #1f2a44;
-            text-shadow: 0 8px 24px rgba(88, 101, 255, 0.12);
+            text-shadow: 0 8px 24px rgba(38, 122, 255, 0.12);
         }
 
         body.bright .loader-sub {
@@ -931,6 +996,387 @@
 
             box-shadow:
                 0 12px 35px rgba(0, 0, 0, .18);
+        }
+
+        .floating-comment-widget {
+            position: fixed;
+            left: 50%;
+            bottom: 18px;
+            width: min(92vw, 430px);
+            transform: translate(-50%, 0);
+            border-radius: 26px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: rgba(17, 24, 39, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.22);
+            backdrop-filter: blur(18px) saturate(1.15);
+            -webkit-backdrop-filter: blur(18px) saturate(1.15);
+            z-index: 1200;
+            transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), max-height 0.38s ease, opacity 0.28s ease, box-shadow 0.28s ease, height 0.28s ease;
+            max-height: min(72vh, 520px);
+            opacity: 1;
+        }
+
+        .floating-comment-widget::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        body.bright .floating-comment-widget {
+            background: rgba(255, 255, 255, 0.97);
+            border-color: rgba(15, 23, 42, 0.12);
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.14);
+        }
+
+        .floating-comment-widget.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-height: 0;
+            height: 0;
+            transform: translate(-50%, 22px);
+        }
+
+        @keyframes sheetOpenAnimation {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 30px) scaleY(0.94);
+                transform-origin: bottom center;
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, 0) scaleY(1);
+                transform-origin: bottom center;
+            }
+        }
+
+        .floating-comment-widget.is-opening {
+            animation: sheetOpenAnimation 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+            transform-origin: bottom center;
+        }
+
+        @keyframes sheetCloseAnimation {
+            0% {
+                opacity: 1;
+                height: var(--sheet-close-height, 360px);
+                max-height: var(--sheet-close-height, 360px);
+                transform: translate(-50%, 0) scaleY(1);
+                transform-origin: bottom center;
+            }
+            100% {
+                opacity: 0;
+                height: 0;
+                max-height: 0;
+                transform: translate(-50%, 18px) scaleY(0.08);
+                transform-origin: bottom center;
+            }
+        }
+
+        .floating-comment-widget.closing {
+            animation: sheetCloseAnimation 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            overflow: hidden;
+            transform-origin: bottom center;
+            will-change: transform, height, opacity;
+        }
+
+        .floating-comment-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.09);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+            z-index: 1199;
+        }
+
+        .floating-comment-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .floating-comment-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 18px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            user-select: none;
+            cursor: grab;
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .floating-comment-header:active {
+            cursor: grabbing;
+        }
+
+        body.bright .floating-comment-header {
+            background: rgba(245, 247, 255, 0.96);
+            border-bottom-color: rgba(15, 23, 42, 0.1);
+        }
+
+        .floating-comment-header::before {
+            content: "";
+            width: 46px;
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.2);
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        body.bright .floating-comment-header::before {
+            background: rgba(15, 23, 42, 0.12);
+        }
+
+        .floating-comment-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+        }
+
+        body.bright .floating-comment-title {
+            color: rgba(17, 17, 17, 0.82);
+        }
+
+        .floating-comment-close {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            font-size: 20px;
+            line-height: 1;
+            cursor: default;
+            -webkit-tap-highlight-color: transparent;
+            tap-highlight-color: transparent;
+            outline: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .floating-comment-close i {
+            font-size: 14px;
+            line-height: 1;
+            display: block;
+        }
+
+        body.bright .floating-comment-close {
+            border-color: rgba(15, 23, 42, 0.08);
+            background: rgba(15, 23, 42, 0.04);
+            color: #111;
+        }
+
+        .floating-comment-close:active {
+            transform: translateY(-50%) scale(0.95);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body.bright .floating-comment-close:active {
+            background: rgba(15, 23, 42, 0.08);
+        }
+
+        .floating-comment-form {
+            padding: 16px 18px 18px;
+            display: grid;
+            gap: 14px;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            align-items: start;
+        }
+
+        .floating-field {
+            display: grid;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.76);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        body.bright .floating-field {
+            color: rgba(17, 17, 17, 0.78);
+        }
+
+        .floating-field input,
+        .floating-field textarea {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+            padding: 12px 14px;
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            min-height: 46px;
+            max-height: 220px;
+            overflow-y: auto;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, height 0.12s ease;
+        }
+
+        .floating-field textarea {
+            min-height: 90px;
+        }
+
+        body.bright .floating-field input,
+        body.bright .floating-field textarea {
+            border-color: rgba(15, 23, 42, 0.14);
+            background: rgba(246, 249, 255, 0.98);
+            color: #111;
+        }
+
+        .floating-field input::placeholder,
+        .floating-field textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        body.bright .floating-field input::placeholder,
+        body.bright .floating-field textarea::placeholder {
+            color: rgba(17, 17, 17, 0.4);
+        }
+
+        .floating-field input:focus,
+        .floating-field textarea:focus {
+            border-color: rgba(46, 125, 255, 0.8);
+            box-shadow: 0 0 0 3px rgba(46, 125, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        body.bright .floating-field input:focus,
+        body.bright .floating-field textarea:focus {
+            background: rgba(244, 247, 255, 0.96);
+            border-color: rgba(35, 113, 255, 0.7);
+            box-shadow: 0 0 0 3px rgba(35, 113, 255, 0.12);
+        }
+
+        .floating-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2px;
+            padding-bottom: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .floating-primary {
+            width: auto;
+            min-width: 104px;
+            height: 40px;
+            min-height: 40px;
+            border: none;
+            border-radius: 12px;
+            padding: 0 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: default;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            tap-highlight-color: transparent;
+            transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease, filter 0.2s ease;
+            background: linear-gradient(135deg, #1f74ff, #2f8bff);
+            color: #fff;
+            box-shadow: none;
+        }
+
+        .floating-primary:disabled {
+            cursor: not-allowed;
+            background: linear-gradient(135deg, rgba(63, 68, 94, 0.96), rgba(39, 43, 60, 0.94));
+            color: rgba(255, 255, 255, 0.6);
+            box-shadow: none;
+            filter: saturate(0.6) brightness(0.9);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            width: auto;
+            min-width: 104px;
+            height: 40px;
+            min-height: 40px;
+            padding: 0 18px;
+            border-radius: 12px;
+        }
+
+        body.bright .floating-primary:disabled {
+            background: linear-gradient(135deg, #edf1fb, #e1e6f3);
+            color: rgba(17, 17, 17, 0.6);
+            border-color: rgba(15, 23, 42, 0.12);
+            filter: saturate(0.9);
+        }
+
+        .floating-primary:not(:disabled):active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 600px) {
+            .floating-comment-overlay {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .floating-comment-widget {
+                left: 50%;
+                right: auto;
+                bottom: 0;
+                width: min(100vw - 12px, 430px);
+                max-width: none;
+                min-width: 0;
+                transform: translate(-50%, 0);
+                border-radius: 22px 22px 0 0;
+                border-left: none;
+                border-right: none;
+                border-bottom: none;
+                border-top: 1px solid rgba(15, 23, 42, 0.08);
+                max-height: calc(100vh - 18px);
+                box-shadow: 0 -8px 22px rgba(15, 23, 42, 0.08);
+            }
+
+            .floating-comment-widget.hidden {
+                transform: translate(-50%, 18px);
+            }
+
+            .floating-comment-header {
+                padding: 14px 16px 10px;
+            }
+
+            .floating-comment-title {
+                font-size: 14px;
+                letter-spacing: 0.01em;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 260px) {
+            .floating-actions {
+                justify-content: center;
+            }
+
+            .floating-primary {
+                width: 100%;
+                min-width: 0;
+            }
         }
     </style>
 
@@ -1047,7 +1493,8 @@
 
 
         <div class="switch-d">
-            <button id="th">Bright</button>
+            <button id="th">Dark mode</button>
+            <button type="button" id="floatingTriggerButton" class="floating-trigger-button">Message</button>
         </div>
 
         <footer class="site-footer" aria-label="Site hak-cipta">
@@ -1069,10 +1516,42 @@
 
     </div>
 
+    <div class="floating-comment-overlay" id="floatingCommentOverlay"></div>
+
+    <div class="floating-comment-widget" id="floatingCommentWidget">
+        <div class="floating-comment-header" id="floatingCommentHeader">
+            <div class="floating-comment-title">
+                <span id="floatingCommentTitleText">Anonymous message</span>
+            </div>
+            <button type="button" class="floating-comment-close" id="floatingCommentClose" aria-label="Close message form">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <form class="floating-comment-form" id="floatingCommentForm">
+            <input type="hidden" name="device" id="deviceInput" value="">
+
+            <label class="floating-field">
+                <span>Name</span>
+                <input type="text" name="name" placeholder="Enter your anonymous name" autocomplete="name">
+            </label>
+
+            <label class="floating-field">
+                <span>Message</span>
+                <textarea name="message" rows="3" placeholder="Enter your anonymous message"></textarea>
+            </label>
+
+            <div class="floating-actions">
+                <button type="submit" class="floating-primary" id="floatingSubmitText">Send</button>
+            </div>
+        </form>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <script>
         const themeBtn = document.getElementById("th");
+        const floatingTriggerButton = document.getElementById("floatingTriggerButton");
         const typing = document.getElementById("typ");
         const text = "Hi, I'm Wahyuna.";
 
@@ -1220,7 +1699,363 @@
         }
 
 
+        const floatingCommentWidget = document.getElementById('floatingCommentWidget');
+        const floatingCommentClose = document.getElementById('floatingCommentClose');
+        const floatingCommentForm = document.getElementById('floatingCommentForm');
+        const floatingCommentOverlay = document.getElementById('floatingCommentOverlay');
+        const floatingCommentHeader = document.getElementById('floatingCommentHeader');
+        const floatingCommentTitleText = document.getElementById('floatingCommentTitleText');
+        const floatingSubmitText = document.getElementById('floatingSubmitText');
+        const floatingTextarea = floatingCommentForm?.querySelector('textarea');
+        const floatingNameInput = floatingCommentForm?.querySelector('input[name="name"]');
+        const floatingSubmitButton = floatingCommentForm?.querySelector('button[type="submit"]');
+        let floatingCommentOpenTimer = null;
+        let floatingCommentCloseTimer = null;
+        let floatingCommentIsOpen = false;
+
+        function updateFloatingLabelText() {
+            const compactLabel = window.innerWidth <= 260 ? 'Message' : 'Anonymous message';
+            if (floatingCommentTitleText) floatingCommentTitleText.textContent = compactLabel;
+            if (floatingSubmitText) floatingSubmitText.textContent = window.innerWidth <= 260 ? 'Message' : 'Send';
+        }
+
+        function validateFloatingForm() {
+            if (!floatingCommentForm || !floatingSubmitButton || !floatingNameInput || !floatingTextarea) return;
+
+            const name = floatingNameInput.value.trim();
+            const message = floatingTextarea.value.trim();
+            const isValid = name.length > 0 && message.length > 0;
+
+            floatingSubmitButton.disabled = !isValid;
+        }
+
+        function setFloatingCommentOpen(isOpen) {
+            if (!floatingCommentWidget) return;
+
+            clearTimeout(floatingCommentOpenTimer);
+            clearTimeout(floatingCommentCloseTimer);
+
+            if (isOpen) {
+                if (floatingCommentIsOpen && !floatingCommentWidget.classList.contains('hidden')) return;
+
+                floatingCommentWidget.classList.remove('hidden', 'closing');
+                floatingCommentWidget.classList.remove('is-opening');
+                floatingCommentWidget.style.height = '';
+                floatingCommentWidget.style.maxHeight = '';
+                floatingCommentWidget.style.opacity = '0';
+                floatingCommentWidget.style.transform = 'translate(-50%, 30px) scaleY(0.94)';
+                floatingCommentWidget.style.visibility = 'visible';
+                if (floatingCommentOverlay) {
+                    floatingCommentOverlay.classList.remove('hidden');
+                }
+                document.body.style.overflow = 'hidden';
+                requestAnimationFrame(() => {
+                    floatingCommentWidget.classList.add('is-opening');
+                    floatingCommentWidget.style.opacity = '1';
+                    floatingCommentWidget.style.transform = 'translate(-50%, 0) scaleY(1)';
+                });
+                floatingCommentOpenTimer = window.setTimeout(() => {
+                    floatingCommentWidget.classList.remove('is-opening');
+                    floatingCommentWidget.style.opacity = '';
+                    floatingCommentWidget.style.transform = '';
+                    floatingCommentIsOpen = true;
+                }, 420);
+                return;
+            }
+
+            if (!floatingCommentIsOpen && floatingCommentWidget.classList.contains('hidden')) return;
+
+            const closeDuration = 800;
+            const currentHeight = floatingCommentWidget.offsetHeight || floatingCommentWidget.scrollHeight || 360;
+
+            floatingCommentIsOpen = false;
+            floatingCommentWidget.classList.remove('hidden');
+            floatingCommentWidget.classList.remove('closing');
+            floatingCommentWidget.style.setProperty('--sheet-close-height', `${currentHeight}px`);
+            floatingCommentWidget.style.visibility = 'visible';
+            floatingCommentWidget.style.height = `${currentHeight}px`;
+            floatingCommentWidget.style.maxHeight = `${currentHeight}px`;
+            floatingCommentWidget.style.opacity = '1';
+            floatingCommentWidget.style.transform = 'translate(-50%, 0)';
+
+            if (floatingCommentOverlay) {
+                floatingCommentOverlay.classList.add('hidden');
+            }
+
+            document.body.style.overflow = '';
+
+            requestAnimationFrame(() => {
+                floatingCommentWidget.classList.add('closing');
+            });
+
+            floatingCommentCloseTimer = window.setTimeout(() => {
+                floatingCommentWidget.classList.add('hidden');
+                floatingCommentWidget.classList.remove('closing');
+                floatingCommentWidget.style.height = '';
+                floatingCommentWidget.style.maxHeight = '';
+                floatingCommentWidget.style.opacity = '';
+                floatingCommentWidget.style.transform = '';
+                floatingCommentWidget.style.overflow = '';
+                floatingCommentWidget.style.visibility = 'hidden';
+                floatingCommentWidget.style.removeProperty('--sheet-close-height');
+            }, closeDuration);
+        }
+
+        function autoGrowTextarea() {
+            if (!floatingTextarea) return;
+
+            floatingTextarea.style.height = 'auto';
+            const nextHeight = Math.min(floatingTextarea.scrollHeight, window.innerHeight * 0.3);
+            floatingTextarea.style.height = `${nextHeight}px`;
+            validateFloatingForm();
+        }
+
+        let dragState = null;
+        let dragHandlersBound = false;
+
+        function handleSheetPointerDown(event) {
+            if (!floatingCommentWidget) return;
+            if (event.target && event.target.closest('.floating-comment-close')) return;
+
+            const rect = floatingCommentWidget.getBoundingClientRect();
+            dragState = {
+                startY: event.clientY,
+                startHeight: rect.height,
+            };
+
+            floatingCommentWidget.style.transition = 'none';
+            event.currentTarget?.setPointerCapture?.(event.pointerId);
+            event.preventDefault();
+        }
+
+        function handleSheetPointerMove(event) {
+            if (!dragState || !floatingCommentWidget) return;
+            const deltaY = event.clientY - dragState.startY;
+            if (deltaY <= 0) return;
+            event.preventDefault();
+            const minHeight = 140;
+            const nextHeight = Math.max(minHeight, dragState.startHeight - deltaY * 1.2);
+            floatingCommentWidget.style.height = `${nextHeight}px`;
+        }
+
+        function handleSheetPointerUp() {
+            if (!dragState || !floatingCommentWidget) return;
+
+            const currentHeight = floatingCommentWidget.getBoundingClientRect().height;
+            const closeThreshold = Math.max(170, dragState.startHeight * 0.48);
+            floatingCommentWidget.style.transition = 'height 0.28s ease, transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), max-height 0.38s ease, opacity 0.28s ease, box-shadow 0.28s ease';
+
+            if (currentHeight <= closeThreshold) {
+                floatingCommentWidget.style.height = '0px';
+                window.setTimeout(() => setFloatingCommentOpen(false), 180);
+            } else {
+                floatingCommentWidget.style.height = `${dragState.startHeight}px`;
+                window.requestAnimationFrame(() => {
+                    floatingCommentWidget.style.height = '';
+                });
+            }
+
+            dragState = null;
+        }
+
+        function bindSheetDragHandlers() {
+            if (!floatingCommentHeader || dragHandlersBound) return;
+            floatingCommentHeader.addEventListener('pointerdown', handleSheetPointerDown);
+            floatingCommentHeader.addEventListener('pointermove', handleSheetPointerMove);
+            floatingCommentHeader.addEventListener('pointerup', handleSheetPointerUp);
+            floatingCommentHeader.addEventListener('pointerleave', handleSheetPointerUp);
+            floatingCommentHeader.addEventListener('pointercancel', handleSheetPointerUp);
+            dragHandlersBound = true;
+        }
+
+        function unbindSheetDragHandlers() {
+            if (!floatingCommentHeader || !dragHandlersBound) return;
+            floatingCommentHeader.removeEventListener('pointerdown', handleSheetPointerDown);
+            floatingCommentHeader.removeEventListener('pointermove', handleSheetPointerMove);
+            floatingCommentHeader.removeEventListener('pointerup', handleSheetPointerUp);
+            floatingCommentHeader.removeEventListener('pointerleave', handleSheetPointerUp);
+            floatingCommentHeader.removeEventListener('pointercancel', handleSheetPointerUp);
+            dragHandlersBound = false;
+        }
+
+        function syncSheetMode() {
+            bindSheetDragHandlers();
+        }
+
+        syncSheetMode();
+        floatingTriggerButton?.addEventListener('click', () => setFloatingCommentOpen(true));
+        floatingCommentClose.addEventListener('click', () => setFloatingCommentOpen(false));
+        floatingCommentOverlay.addEventListener('click', () => setFloatingCommentOpen(false));
+        floatingNameInput?.addEventListener('input', validateFloatingForm);
+        floatingTextarea?.addEventListener('input', autoGrowTextarea);
+        window.addEventListener('resize', () => {
+            updateFloatingLabelText();
+            syncSheetMode();
+        });
+
+        // API
+        const API = "https://wahyunaserver.wahyunadragon.workers.dev/am";
+
+        function detectDevice() {
+            const ua = navigator.userAgent;
+
+            if (/android/i.test(ua)) return 'Android';
+            if (/iphone|ipad|ipod/i.test(ua)) return 'iPhone/iPad/iPod';
+            if (/windows/i.test(ua)) return 'Windows';
+            if (/macintosh|mac os x/i.test(ua)) return 'Mac';
+            if (/linux/i.test(ua)) return 'Linux';
+
+            return 'Unknown';
+        }
+
+        // reset data jika beda hari
+        function getTodayKey() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function canSendToday() {
+            const storageKey = 'anonymous-message-daily-count';
+            const today = getTodayKey();
+            const todayData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+            const savedDay = Object.keys(todayData)[0];
+            if (savedDay && savedDay !== today) {
+                localStorage.removeItem(storageKey);
+                return true;
+            }
+
+            const count = Number(todayData[today] || 0);
+            return count < 3;
+        }
+
+        function markSentToday() {
+            const storageKey = 'anonymous-message-daily-count';
+            const today = getTodayKey();
+            const todayData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+            if (Object.keys(todayData).length === 0 || Object.keys(todayData)[0] !== today) {
+                localStorage.setItem(storageKey, JSON.stringify({ [today]: 1 }));
+                return;
+            }
+
+            todayData[today] = Number(todayData[today] || 0) + 1;
+            localStorage.setItem(storageKey, JSON.stringify(todayData));
+        }
+
+        floatingCommentForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(floatingCommentForm);
+            const name = (formData.get('name') || '').toString().trim();
+            const message = (formData.get('message') || '').toString().trim();
+            const device = detectDevice();
+            const deviceInput = document.getElementById('deviceInput');
+
+            if (!name) {
+                showToast('Please enter your anonymous name');
+                return;
+            }
+
+            if (!message) {
+                showToast('Please enter your anonymous message');
+                return;
+            }
+
+            if (!device) {
+                showToast('Device is required');
+                return;
+            }
+
+            if (!canSendToday()) {
+                setFloatingCommentOpen(false);
+                return;
+            }
+
+            if (deviceInput) {
+                deviceInput.value = device;
+            }
+
+            setFloatingCommentOpen(false);
+
+            try {
+                const response = await fetch(API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        message: message,
+                        device: device
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || 'error');
+                }
+
+                markSentToday();
+                showToast('Anonymous message has been sent');
+
+                floatingCommentForm.reset();
+                if (deviceInput) {
+                    deviceInput.value = '';
+                }
+                validateFloatingForm();
+                autoGrowTextarea();
+            } catch (error) {
+                console.error(error);
+                setFloatingCommentOpen(true);
+                showToast('error');
+            }
+        });
+        // END API
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldAutoOpenAnonymousMessage = urlParams.get('message')?.trim().toLowerCase() === 'anonymous';
+
+        if (shouldAutoOpenAnonymousMessage) {
+            setFloatingCommentOpen(true);
+        } else {
+            floatingCommentWidget.classList.add('hidden');
+            floatingCommentWidget.style.visibility = 'hidden';
+            floatingCommentOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            floatingCommentIsOpen = false;
+        }
+
+        updateFloatingLabelText();
+        validateFloatingForm();
+        autoGrowTextarea();
+
         document.querySelectorAll(".link-card").forEach(card => {
+
+            card.addEventListener("click", function (event) {
+                const href = this.getAttribute("href");
+                if (!href) return;
+                if (event.defaultPrevented) return;
+                if (event.button !== 0) return;
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+                event.preventDefault();
+
+                const target = this.getAttribute("target") || "_self";
+                const delay = 170;
+
+                setTimeout(() => {
+                    if (target && target.toLowerCase() === "_blank") {
+                        window.open(href, "_blank", "noopener,noreferrer");
+                    } else {
+                        window.location.href = href;
+                    }
+                }, delay);
+            });
 
             card.addEventListener("contextmenu", async function (e) {
 

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      padding: 12px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .date {
+      font-size: 12px;
+      color: #777;
+    }
+
+    .name {
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    .message {
+      margin: 4px 0;
+    }
+
+    .device {
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Messages</h2>
+
+  <ul id="messages">
+    <li>Loading...</li>
+  </ul>
+
+
+  <script>
+    const API =
+      "https://wahyunaserver.wahyunadragon.workers.dev/am";
+
+
+    async function loadMessages() {
+
+      const container =
+        document.getElementById("messages");
+
+      try {
+
+        const response = await fetch(API);
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+
+        container.innerHTML = "";
+
+
+        result.data.forEach(item => {
+
+          const li =
+            document.createElement("li");
+
+          const date =
+            new Date(item.timestamp)
+              .toLocaleString("id-ID");
+
+
+          li.innerHTML = `
+            <div class="date">
+              ${date}
+            </div>
+
+            <div class="name">
+              ${escapeHTML(item.name)}
+            </div>
+
+            <div class="message">
+              ${escapeHTML(item.message)}
+            </div>
+
+            <div class="device">
+              Device: ${escapeHTML(item.device)}
+            </div>
+          `;
+
+
+          container.appendChild(li);
+
+        });
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+          "<li>error.</li>";
+
+      }
+
+    }
+
+
+    function escapeHTML(text) {
+
+      const div =
+        document.createElement("div");
+
+      div.textContent = text;
+
+      return div.innerHTML;
+
+    }
+
+
+    loadMessages();
+  </script>
+
+</body>
+</html>
