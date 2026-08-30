@@ -1019,6 +1019,11 @@
             opacity: 1;
         }
 
+        body:not(.bright) .floating-comment-widget {
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.01), 0 18px 34px rgba(0, 0, 0, 0.14);
+        }
+
         .floating-comment-widget::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -1378,14 +1383,23 @@
                 min-width: 0;
                 transform: translate(0, 0);
                 border-radius: 28px 28px 0 0;
+                border: none;
                 border-left: none;
                 border-right: none;
                 border-bottom: none;
-                border-top: 1px solid rgba(255, 255, 255, 0.16);
-                border: 1px solid rgba(255, 255, 255, 0.16);
+                border-top: none;
                 max-height: calc(100vh - 10px);
-                box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 -10px 28px rgba(0, 0, 0, 0.38);
+                box-shadow: none;
                 background: rgba(12, 14, 18, 0.98);
+            }
+
+            body:not(.bright) .floating-comment-widget {
+                border: none;
+                border-left: none;
+                border-right: none;
+                border-bottom: none;
+                border-top: none;
+                box-shadow: none;
             }
 
             .floating-comment-widget.hidden {
@@ -1405,7 +1419,7 @@
             .floating-comment-header {
                 padding: 14px 16px 10px;
                 background: rgba(18, 20, 24, 0.96);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+                border-bottom: none;
             }
 
             .floating-comment-header::before {
