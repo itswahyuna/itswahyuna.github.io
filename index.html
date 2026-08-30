@@ -1988,13 +1988,32 @@
             bindSheetDragHandlers();
         }
 
+        function setAnonymousMessageBlocked() {
+            const storageKey = 'anonymous-message-blocked';
+            const today = getTodayKey();
+            const blocked = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            blocked[today] = true;
+            localStorage.setItem(storageKey, JSON.stringify(blocked));
+        }
+
+        function isAnonymousMessageBlockedToday() {
+            const storageKey = 'anonymous-message-blocked';
+            const today = getTodayKey();
+            const blocked = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            return Boolean(blocked[today]);
+        }
+
         syncSheetMode();
 
         const urlParams = new URLSearchParams(window.location.search);
         const shouldAutoOpenAnonymousMessage = urlParams.get('message')?.trim().toLowerCase() === 'anonymous';
+        const isBlocked = isAnonymousMessageBlockedToday();
 
-        if (shouldAutoOpenAnonymousMessage) {
-            setFloatingCommentOpen(true);
+        if (shouldAutoOpenAnonymousMessage && !isBlocked) {
+            setFloatingCommentOpen(false);
+            window.setTimeout(() => {
+                setFloatingCommentOpen(true);
+            }, 1150);
         } else {
             setFloatingCommentOpen(false);
         }
@@ -2003,7 +2022,14 @@
         validateFloatingForm();
         autoGrowTextarea();
 
-        floatingTriggerButton?.addEventListener('click', () => setFloatingCommentOpen(true));
+        floatingTriggerButton?.addEventListener('click', () => {
+            if (isAnonymousMessageBlockedToday()) {
+                showToast('You have already sent 3 messages today');
+                setFloatingCommentOpen(false);
+                return;
+            }
+            setFloatingCommentOpen(true);
+        });
         floatingCommentClose.addEventListener('click', () => setFloatingCommentOpen(false));
         floatingCommentOverlay.addEventListener('click', () => setFloatingCommentOpen(false));
         floatingNameInput?.addEventListener('input', validateFloatingForm);
@@ -2049,7 +2075,11 @@
             }
 
             const count = Number(todayData[today] || 0);
-            return count < 3;
+            if (count >= 3) {
+                setAnonymousMessageBlocked();
+                return false;
+            }
+            return true;
         }
 
         function markSentToday() {
@@ -2093,6 +2123,7 @@
             if (!canSendToday()) {
                 resetFloatingForm();
                 setFloatingCommentOpen(false);
+                setAnonymousMessageBlocked();
                 showToast('You have already sent 3 messages today');
                 return;
             }
@@ -2140,6 +2171,7 @@
                 if (isSpam || isDailyLimit) {
                     resetFloatingForm();
                     setFloatingCommentOpen(false);
+                    setAnonymousMessageBlocked();
                     showToast('You have already sent 3 messages today');
                     return;
                 }
