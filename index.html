@@ -72,6 +72,7 @@
         }
 
         @media (max-width: 767px) {
+
             html,
             body,
             .floating-comment-widget,
@@ -1008,8 +1009,8 @@
             overflow-y: auto;
             overflow-x: hidden;
             background: rgba(14, 17, 23, 0.98);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.26);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 14px 28px rgba(0, 0, 0, 0.36);
             backdrop-filter: blur(16px) saturate(1);
             -webkit-backdrop-filter: blur(16px) saturate(1);
             z-index: 1200;
@@ -1044,6 +1045,7 @@
                 transform: translate(-50%, 30px) scaleY(0.94);
                 transform-origin: bottom center;
             }
+
             100% {
                 opacity: 1;
                 transform: translate(-50%, 0) scaleY(1);
@@ -1056,6 +1058,20 @@
             transform-origin: bottom center;
         }
 
+        @keyframes mobileSheetOpenAnimation {
+            0% {
+                opacity: 0;
+                transform: translate(0, 30px) scaleY(0.94);
+                transform-origin: bottom center;
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(0, 0) scaleY(1);
+                transform-origin: bottom center;
+            }
+        }
+
         @keyframes sheetCloseAnimation {
             0% {
                 opacity: 1;
@@ -1064,11 +1080,30 @@
                 transform: translate(-50%, 0) scaleY(1);
                 transform-origin: bottom center;
             }
+
             100% {
                 opacity: 0;
                 height: 0;
                 max-height: 0;
                 transform: translate(-50%, 18px) scaleY(0.08);
+                transform-origin: bottom center;
+            }
+        }
+
+        @keyframes mobileSheetCloseAnimation {
+            0% {
+                opacity: 1;
+                height: var(--sheet-close-height, 360px);
+                max-height: var(--sheet-close-height, 360px);
+                transform: translate(0, 0) scaleY(1);
+                transform-origin: bottom center;
+            }
+
+            100% {
+                opacity: 0;
+                height: 0;
+                max-height: 0;
+                transform: translate(0, 18px) scaleY(0.08);
                 transform-origin: bottom center;
             }
         }
@@ -1105,7 +1140,7 @@
             gap: 8px;
             padding: 14px 18px 10px;
             background: rgba(18, 20, 24, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             position: relative;
             user-select: none;
             cursor: grab;
@@ -1127,7 +1162,7 @@
             width: 46px;
             height: 5px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.32);
             position: absolute;
             top: 8px;
             left: 50%;
@@ -1170,7 +1205,6 @@
             line-height: 1;
             cursor: default;
             -webkit-tap-highlight-color: transparent;
-            tap-highlight-color: transparent;
             outline: none;
             display: inline-flex;
             justify-content: center;
@@ -1297,7 +1331,6 @@
             justify-content: center;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            tap-highlight-color: transparent;
             transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease, filter 0.2s ease;
             background: linear-gradient(135deg, #1f74ff, #2f8bff);
             color: #fff;
@@ -1337,45 +1370,76 @@
             }
 
             .floating-comment-widget {
-                left: 50%;
-                right: auto;
+                left: 0;
+                right: 0;
                 bottom: 0;
-                width: min(100vw - 12px, 430px);
+                width: 100vw;
                 max-width: none;
                 min-width: 0;
-                transform: translate(-50%, 0);
-                border-radius: 22px 22px 0 0;
+                transform: translate(0, 0);
+                border-radius: 28px 28px 0 0;
                 border-left: none;
                 border-right: none;
                 border-bottom: none;
-                border-top: 1px solid rgba(15, 23, 42, 0.08);
-                max-height: calc(100vh - 18px);
-                box-shadow: 0 -8px 22px rgba(15, 23, 42, 0.08);
+                border-top: 1px solid rgba(255, 255, 255, 0.16);
+                border: 1px solid rgba(255, 255, 255, 0.16);
+                max-height: calc(100vh - 10px);
+                box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 -10px 28px rgba(0, 0, 0, 0.38);
+                background: rgba(12, 14, 18, 0.98);
             }
 
             .floating-comment-widget.hidden {
-                transform: translate(-50%, 18px);
+                transform: translate(0, 18px);
+            }
+
+            .floating-comment-widget.is-opening {
+                animation: mobileSheetOpenAnimation 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+                transform-origin: bottom center;
+            }
+
+            .floating-comment-widget.closing {
+                animation: mobileSheetCloseAnimation 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+                transform-origin: bottom center;
             }
 
             .floating-comment-header {
                 padding: 14px 16px 10px;
+                background: rgba(18, 20, 24, 0.96);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+            }
+
+            .floating-comment-header::before {
+                background: rgba(255, 255, 255, 0.32);
             }
 
             .floating-comment-title {
                 font-size: 14px;
                 letter-spacing: 0.01em;
                 margin-top: 10px;
+                color: rgba(255, 255, 255, 0.9);
             }
         }
 
         @media (max-width: 260px) {
+            .floating-comment-form {
+                width: 100%;
+                max-width: 100%;
+            }
+
             .floating-actions {
-                justify-content: center;
+                width: 100% !important;
+                display: block !important;
+                justify-content: flex-start;
             }
 
             .floating-primary {
-                width: 100%;
-                min-width: 0;
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                display: flex !important;
+                flex: 1 1 100% !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
             }
         }
     </style>
@@ -1516,14 +1580,15 @@
 
     </div>
 
-    <div class="floating-comment-overlay" id="floatingCommentOverlay"></div>
+    <div class="floating-comment-overlay hidden" id="floatingCommentOverlay"></div>
 
-    <div class="floating-comment-widget" id="floatingCommentWidget">
+    <div class="floating-comment-widget hidden" id="floatingCommentWidget">
         <div class="floating-comment-header" id="floatingCommentHeader">
             <div class="floating-comment-title">
                 <span id="floatingCommentTitleText">Anonymous message</span>
             </div>
-            <button type="button" class="floating-comment-close" id="floatingCommentClose" aria-label="Close message form">
+            <button type="button" class="floating-comment-close" id="floatingCommentClose"
+                aria-label="Close message form">
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
@@ -1533,12 +1598,14 @@
 
             <label class="floating-field">
                 <span>Name</span>
-                <input type="text" name="name" maxlength="100" placeholder="Enter your anonymous name" autocomplete="name">
+                <input type="text" name="name" maxlength="100" placeholder="Enter your anonymous name"
+                    autocomplete="name">
             </label>
 
             <label class="floating-field">
                 <span>Message</span>
-                <textarea name="message" rows="3" maxlength="1000" placeholder="Enter your anonymous message"></textarea>
+                <textarea name="message" rows="3" maxlength="1000"
+                    placeholder="Enter your anonymous message"></textarea>
             </label>
 
             <div class="floating-actions">
@@ -1579,7 +1646,18 @@
 
         function loadThemePreference() {
             const savedTheme = localStorage.getItem('wahyuna-theme');
+
             if (savedTheme === 'dark') {
+                document.body.classList.remove('bright');
+                return;
+            }
+
+            if (savedTheme === 'bright') {
+                document.body.classList.add('bright');
+                return;
+            }
+
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.body.classList.remove('bright');
             } else {
                 document.body.classList.add('bright');
@@ -1716,7 +1794,7 @@
         function updateFloatingLabelText() {
             const compactLabel = window.innerWidth <= 260 ? 'Message' : 'Anonymous message';
             if (floatingCommentTitleText) floatingCommentTitleText.textContent = compactLabel;
-            if (floatingTriggerButton) floatingTriggerButton.textContent = window.innerWidth <= 260 ? 'Send' : 'Message';
+            if (floatingTriggerButton) floatingTriggerButton.textContent = 'Message';
             if (floatingSubmitText) floatingSubmitText.textContent = 'Send';
         }
 
@@ -1736,6 +1814,19 @@
         function setFloatingCommentOpen(isOpen) {
             if (!floatingCommentWidget) return;
 
+            const isMobile = window.innerWidth <= 600;
+            const transformValues = isMobile ? {
+                openStart: 'translate(0, 30px) scaleY(0.94)',
+                openEnd: 'translate(0, 0) scaleY(1)',
+                resting: 'translate(0, 0)',
+                closeEnd: 'translate(0, 18px) scaleY(0.08)'
+            } : {
+                openStart: 'translate(-50%, 30px) scaleY(0.94)',
+                openEnd: 'translate(-50%, 0) scaleY(1)',
+                resting: 'translate(-50%, 0)',
+                closeEnd: 'translate(-50%, 18px) scaleY(0.08)'
+            };
+
             clearTimeout(floatingCommentOpenTimer);
             clearTimeout(floatingCommentCloseTimer);
 
@@ -1747,7 +1838,7 @@
                 floatingCommentWidget.style.height = '';
                 floatingCommentWidget.style.maxHeight = '';
                 floatingCommentWidget.style.opacity = '0';
-                floatingCommentWidget.style.transform = 'translate(-50%, 30px) scaleY(0.94)';
+                floatingCommentWidget.style.transform = transformValues.openStart;
                 floatingCommentWidget.style.visibility = 'visible';
                 if (floatingCommentOverlay) {
                     floatingCommentOverlay.classList.remove('hidden');
@@ -1756,7 +1847,7 @@
                 requestAnimationFrame(() => {
                     floatingCommentWidget.classList.add('is-opening');
                     floatingCommentWidget.style.opacity = '1';
-                    floatingCommentWidget.style.transform = 'translate(-50%, 0) scaleY(1)';
+                    floatingCommentWidget.style.transform = transformValues.openEnd;
                 });
                 floatingCommentOpenTimer = window.setTimeout(() => {
                     floatingCommentWidget.classList.remove('is-opening');
@@ -1780,7 +1871,7 @@
             floatingCommentWidget.style.height = `${currentHeight}px`;
             floatingCommentWidget.style.maxHeight = `${currentHeight}px`;
             floatingCommentWidget.style.opacity = '1';
-            floatingCommentWidget.style.transform = 'translate(-50%, 0)';
+            floatingCommentWidget.style.transform = transformValues.resting;
 
             if (floatingCommentOverlay) {
                 floatingCommentOverlay.classList.add('hidden');
@@ -1812,6 +1903,17 @@
             const nextHeight = Math.min(floatingTextarea.scrollHeight, window.innerHeight * 0.3);
             floatingTextarea.style.height = `${nextHeight}px`;
             validateFloatingForm();
+        }
+
+        function resetFloatingForm() {
+            if (floatingCommentForm) {
+                floatingCommentForm.reset();
+            }
+            if (deviceInput) {
+                deviceInput.value = '';
+            }
+            validateFloatingForm();
+            autoGrowTextarea();
         }
 
         let dragState = null;
@@ -1887,6 +1989,20 @@
         }
 
         syncSheetMode();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldAutoOpenAnonymousMessage = urlParams.get('message')?.trim().toLowerCase() === 'anonymous';
+
+        if (shouldAutoOpenAnonymousMessage) {
+            setFloatingCommentOpen(true);
+        } else {
+            setFloatingCommentOpen(false);
+        }
+
+        updateFloatingLabelText();
+        validateFloatingForm();
+        autoGrowTextarea();
+
         floatingTriggerButton?.addEventListener('click', () => setFloatingCommentOpen(true));
         floatingCommentClose.addEventListener('click', () => setFloatingCommentOpen(false));
         floatingCommentOverlay.addEventListener('click', () => setFloatingCommentOpen(false));
@@ -1975,7 +2091,9 @@
             }
 
             if (!canSendToday()) {
+                resetFloatingForm();
                 setFloatingCommentOpen(false);
+                showToast('You have already sent 3 messages today');
                 return;
             }
 
@@ -2000,43 +2118,46 @@
 
                 const result = await response.json();
 
+
                 if (!response.ok || !result.success) {
                     throw new Error(result.error || 'error');
                 }
 
+
                 markSentToday();
+
                 showToast('Anonymous message has been sent');
 
-                floatingCommentForm.reset();
-                if (deviceInput) {
-                    deviceInput.value = '';
-                }
-                validateFloatingForm();
-                autoGrowTextarea();
+                resetFloatingForm();
+
             } catch (error) {
+
                 console.error(error);
+
+                const isSpam = error.message === 'terdeteksi spam';
+                const isDailyLimit = error.message === 'You have already sent 3 messages today';
+
+                if (isSpam || isDailyLimit) {
+                    resetFloatingForm();
+                    setFloatingCommentOpen(false);
+                    showToast('You have already sent 3 messages today');
+                    return;
+                }
+
                 setFloatingCommentOpen(true);
-                showToast('error');
+
+                if (error.message === 'success') {
+                    showToast('This message has already been sent');
+                }
+                else {
+                    showToast('error');
+                }
             }
+
+            // END API
+
+            resetFloatingForm();
         });
-        // END API
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const shouldAutoOpenAnonymousMessage = urlParams.get('message')?.trim().toLowerCase() === 'anonymous';
-
-        if (shouldAutoOpenAnonymousMessage) {
-            setFloatingCommentOpen(true);
-        } else {
-            floatingCommentWidget.classList.add('hidden');
-            floatingCommentWidget.style.visibility = 'hidden';
-            floatingCommentOverlay.classList.add('hidden');
-            document.body.style.overflow = '';
-            floatingCommentIsOpen = false;
-        }
-
-        updateFloatingLabelText();
-        validateFloatingForm();
-        autoGrowTextarea();
 
         document.querySelectorAll(".link-card").forEach(card => {
 
@@ -2103,7 +2224,6 @@
             });
 
         });
-
 
     </script>
 
