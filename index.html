@@ -1627,8 +1627,7 @@
 
             <label class="floating-field">
                 <span>Name</span>
-                <input type="text" name="name" maxlength="100" placeholder="Enter your anonymous name"
-                    autocomplete="name">
+                <input type="text" id="floatingNameInput" maxlength="100" placeholder="Enter your anonymous name">
             </label>
 
             <label class="floating-field">
@@ -1814,8 +1813,8 @@
         const floatingCommentTitleText = document.getElementById('floatingCommentTitleText');
         const floatingSubmitText = document.getElementById('floatingSubmitText');
         const floatingTextarea = floatingCommentForm?.querySelector('textarea');
-        const floatingNameInput = floatingCommentForm?.querySelector('input[name="name"]');
-        const floatingSubmitButton = floatingCommentForm?.querySelector('button[type="submit"]');
+        const floatingNameInput = document.getElementById('floatingNameInput');
+        const floatingSubmitButton = document.getElementById('floatingSubmitText');
         let floatingCommentOpenTimer = null;
         let floatingCommentCloseTimer = null;
         let floatingCommentIsOpen = false;
@@ -1835,9 +1834,10 @@
 
             const name = floatingNameInput.value.trim();
             const message = floatingTextarea.value.trim();
-            const isValid = name.length > 0 && message.length > 0;
+            const isFormValid = name.length > 0 && message.length > 0;
 
-            floatingSubmitButton.disabled = !isValid;
+            floatingSubmitButton.disabled = !isFormValid;
+           
         }
 
         function setFloatingCommentOpen(isOpen) {
@@ -1873,6 +1873,10 @@
                     floatingCommentOverlay.classList.remove('hidden');
                 }
                 document.body.style.overflow = 'hidden';
+                
+                // Validate form state when opening (check daily limit)
+                validateFloatingForm();
+                
                 requestAnimationFrame(() => {
                     floatingCommentWidget.classList.add('is-opening');
                     floatingCommentWidget.style.opacity = '1';
@@ -2038,7 +2042,7 @@
         const shouldAutoOpenAnonymousMessage = urlParams.get('message')?.trim().toLowerCase() === 'anonymous';
         const isBlocked = isAnonymousMessageBlockedToday();
 
-        if (shouldAutoOpenAnonymousMessage && !isBlocked) {
+        if (shouldAutoOpenAnonymousMessage) {
             setFloatingCommentOpen(false);
             window.setTimeout(() => {
                 setFloatingCommentOpen(true);
@@ -2052,17 +2056,15 @@
         autoGrowTextarea();
 
         floatingTriggerButton?.addEventListener('click', () => {
-            if (isAnonymousMessageBlockedToday()) {
-                showToast('You have already sent 3 messages today');
-                setFloatingCommentOpen(false);
-                return;
-            }
             setFloatingCommentOpen(true);
         });
         floatingCommentClose.addEventListener('click', () => setFloatingCommentOpen(false));
         floatingCommentOverlay.addEventListener('click', () => setFloatingCommentOpen(false));
         floatingNameInput?.addEventListener('input', validateFloatingForm);
-        floatingTextarea?.addEventListener('input', autoGrowTextarea);
+        floatingTextarea?.addEventListener('input', () => {
+            autoGrowTextarea();
+            validateFloatingForm();
+        });
         window.addEventListener('resize', () => {
             updateFloatingLabelText();
             syncSheetMode();
@@ -2083,7 +2085,7 @@
             return 'Unknown';
         }
 
-        // reset data jika beda hari
+        // sisi client
         function getTodayKey() {
             const now = new Date();
             const year = now.getFullYear();
@@ -2095,16 +2097,16 @@
         function canSendToday() {
             const storageKey = 'anonymous-message-daily-count';
             const today = getTodayKey();
-            const todayData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            let todayData = JSON.parse(localStorage.getItem(storageKey) || '{}');
 
-            const savedDay = Object.keys(todayData)[0];
-            if (savedDay && savedDay !== today) {
-                localStorage.removeItem(storageKey);
-                return true;
+            const savedDays = Object.keys(todayData);
+            if (savedDays.length > 0 && savedDays[0] !== today) {
+                todayData = {};
+                localStorage.setItem(storageKey, JSON.stringify(todayData));
             }
 
             const count = Number(todayData[today] || 0);
-            if (count >= 3) {
+                if (count >= 3) {
                 setAnonymousMessageBlocked();
                 return false;
             }
@@ -2114,23 +2116,33 @@
         function markSentToday() {
             const storageKey = 'anonymous-message-daily-count';
             const today = getTodayKey();
-            const todayData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            let todayData = JSON.parse(localStorage.getItem(storageKey) || '{}');
 
-            if (Object.keys(todayData).length === 0 || Object.keys(todayData)[0] !== today) {
-                localStorage.setItem(storageKey, JSON.stringify({ [today]: 1 }));
-                return;
+
+            const savedDays = Object.keys(todayData);
+            if (savedDays.length > 0 && savedDays[0] !== today) {
+                // clear
+                todayData = {};
             }
 
-            todayData[today] = Number(todayData[today] || 0) + 1;
+          
+            const currentCount = Number(todayData[today] || 0);
+            const newCount = currentCount + 1;
+            todayData[today] = newCount;
             localStorage.setItem(storageKey, JSON.stringify(todayData));
+           
         }
 
         floatingCommentForm.addEventListener('submit', async (event) => {
             event.preventDefault();
+          
+            if (floatingSubmitButton.disabled) {
+               false
+                return;
+            }
 
-            const formData = new FormData(floatingCommentForm);
-            const name = (formData.get('name') || '').toString().trim();
-            const message = (formData.get('message') || '').toString().trim();
+            const name = (floatingNameInput?.value || '').toString().trim();
+            const message = (floatingTextarea?.value || '').toString().trim();
             const device = detectDevice();
             const deviceInput = document.getElementById('deviceInput');
 
@@ -2150,13 +2162,13 @@
             }
 
             if (!canSendToday()) {
+                showToast('You have already sent 3 messages today');
                 resetFloatingForm();
                 setFloatingCommentOpen(false);
-                setAnonymousMessageBlocked();
-                showToast('You have already sent 3 messages today');
                 return;
             }
-
+        
+            markSentToday();
             if (deviceInput) {
                 deviceInput.value = device;
             }
@@ -2182,9 +2194,6 @@
                 if (!response.ok || !result.success) {
                     throw new Error(result.error || 'error');
                 }
-
-
-                markSentToday();
 
                 showToast('Anonymous message has been sent');
 
