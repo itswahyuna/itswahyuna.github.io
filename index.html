@@ -490,6 +490,12 @@
                 background .25s ease;
         }
 
+        .image-modal-close i {
+            font-size: 16px;
+            line-height: 1;
+            display: block;
+        }
+
         .image-modal-close:hover {
             background: rgba(0, 0, 0, .65);
         }
@@ -1387,9 +1393,9 @@
                 border-left: none;
                 border-right: none;
                 border-bottom: none;
-                border-top: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
                 max-height: calc(100vh - 10px);
-                box-shadow: none;
+                box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.04), 0 -10px 22px rgba(0, 0, 0, 0.18);
                 background: rgba(12, 14, 18, 0.98);
             }
 
@@ -1398,8 +1404,8 @@
                 border-left: none;
                 border-right: none;
                 border-bottom: none;
-                border-top: none;
-                box-shadow: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.04), 0 -10px 22px rgba(0, 0, 0, 0.18);
             }
 
             .floating-comment-widget.hidden {
@@ -1587,7 +1593,9 @@
                 <div id="modalLoader" class="modal-loader hidden" aria-hidden="true">
                     <div class="loader-ring" style="width:48px;height:48px;"></div>
                 </div>
-                <button class="image-modal-close" id="modalClose">×</button>
+                <button class="image-modal-close" id="modalClose" aria-label="Close image preview">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
                 <img id="modalImage" src="wahyuna.jpeg" alt="Wahyuna profile full screen">
             </div>
         </div>
