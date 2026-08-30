@@ -1585,7 +1585,7 @@
     <div class="floating-comment-widget hidden" id="floatingCommentWidget">
         <div class="floating-comment-header" id="floatingCommentHeader">
             <div class="floating-comment-title">
-                <span id="floatingCommentTitleText">Anonymous message</span>
+                <span id="floatingCommentTitleText">Message</span>
             </div>
             <button type="button" class="floating-comment-close" id="floatingCommentClose"
                 aria-label="Close message form">
@@ -1792,7 +1792,7 @@
         let floatingCommentIsOpen = false;
 
         function updateFloatingLabelText() {
-            const compactLabel = window.innerWidth <= 260 ? 'Message' : 'Anonymous message';
+            const compactLabel = window.innerWidth <= 260 ? 'Message' : 'Message';
             if (floatingCommentTitleText) floatingCommentTitleText.textContent = compactLabel;
             if (floatingTriggerButton) floatingTriggerButton.textContent = 'Message';
             if (floatingSubmitText) floatingSubmitText.textContent = 'Send';
