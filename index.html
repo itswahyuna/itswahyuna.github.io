@@ -1792,7 +1792,7 @@
         let floatingCommentIsOpen = false;
 
         function updateFloatingLabelText() {
-            const compactLabel = window.innerWidth <= 260 ? 'Message' : 'Message';
+            const compactLabel = window.innerWidth <= 160 ? 'Msg' : 'Message';
             if (floatingCommentTitleText) floatingCommentTitleText.textContent = compactLabel;
             if (floatingTriggerButton) floatingTriggerButton.textContent = 'Message';
             if (floatingSubmitText) floatingSubmitText.textContent = 'Send';
