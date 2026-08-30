@@ -1151,12 +1151,19 @@
             gap: 8px;
             padding: 14px 18px 10px;
             background: rgba(18, 20, 24, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             position: relative;
             user-select: none;
             cursor: grab;
             touch-action: none;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (min-width: 601px) {
+            body:not(.bright) .floating-comment-header {
+                border-bottom-color: rgba(255, 255, 255, 0.18);
+                padding-bottom: 11px;
+            }
         }
 
         .floating-comment-header:active {
@@ -1425,7 +1432,7 @@
             .floating-comment-header {
                 padding: 14px 16px 10px;
                 background: rgba(18, 20, 24, 0.96);
-                border-bottom: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.28);
             }
 
             .floating-comment-header::before {
