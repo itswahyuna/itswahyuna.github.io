@@ -1707,11 +1707,13 @@
                 return;
             }
 
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.body.classList.remove('bright');
-            } else {
-                document.body.classList.add('bright');
-            }
+            // if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            //     document.body.classList.remove('bright');
+            // } else {
+            //     document.body.classList.add('bright');
+            // }
+
+            document.body.classList.add('bright');
         }
 
         function applyInitialTheme() {
