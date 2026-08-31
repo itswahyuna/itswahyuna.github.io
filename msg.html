@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +17,6 @@
       font-family:
         -apple-system,
         BlinkMacSystemFont,
-        "SF Pro Display",
         "SF Pro Text",
         Arial,
         sans-serif;
@@ -36,52 +34,25 @@
 
     .login-box {
       width: 100%;
-      max-width: 390px;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border-radius: 28px;
-      padding: 32px 24px 26px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-      animation: showLogin 0.35s ease;
-    }
-
-    @keyframes showLogin {
-      from {
-        opacity: 0;
-        transform: scale(0.96);
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .lock-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 18px;
-      background: #e8e8ed;
-      font-size: 30px;
+      max-width: 360px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px 22px 22px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
 
     .login-title {
       text-align: center;
-      font-size: 27px;
-      font-weight: 700;
-      margin-bottom: 7px;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 6px;
     }
 
     .login-subtitle {
       text-align: center;
       color: #8e8e93;
-      font-size: 15px;
-      margin-bottom: 25px;
+      font-size: 14px;
+      margin-bottom: 22px;
     }
 
     .password-wrapper {
@@ -90,25 +61,26 @@
 
     #password {
       width: 100%;
-      height: 52px;
+      height: 48px;
       border: 1px solid #d1d1d6;
-      border-radius: 14px;
-      padding: 0 48px 0 16px;
-      font-size: 17px;
+      border-radius: 12px;
+      padding: 0 50px 0 14px;
+      font-size: 16px;
       outline: none;
-      background: #f2f2f7;
+      background: #f9f9fb;
+      color: #1c1c1e;
       transition: 0.2s;
     }
 
     #password:focus {
-      background: #fff;
       border-color: #007aff;
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.12);
     }
 
     .show-password {
       position: absolute;
-      right: 15px;
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
       border: none;
@@ -116,25 +88,26 @@
       color: #007aff;
       font-size: 14px;
       cursor: pointer;
+      padding: 4px;
     }
 
     #loginButton {
       width: 100%;
-      height: 52px;
-      margin-top: 14px;
+      height: 48px;
+      margin-top: 12px;
       border: none;
-      border-radius: 14px;
+      border-radius: 12px;
       background: #007aff;
-      color: white;
-      font-size: 17px;
+      color: #ffffff;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.15s;
     }
 
     #loginButton:active {
-      transform: scale(0.97);
-      opacity: 0.8;
+      opacity: 0.7;
+      transform: scale(0.98);
     }
 
     #loginButton:disabled {
@@ -143,11 +116,11 @@
     }
 
     .error {
-      min-height: 20px;
-      margin-top: 13px;
+      min-height: 18px;
+      margin-top: 10px;
       text-align: center;
       color: #ff3b30;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .messages-screen {
@@ -166,8 +139,8 @@
 
     .header h2 {
       margin: 0;
-      font-size: 30px;
-      font-weight: 700;
+      font-size: 28px;
+      font-weight: 600;
     }
 
     .logout {
@@ -175,7 +148,7 @@
       background: #e5e5ea;
       color: #007aff;
       padding: 9px 14px;
-      border-radius: 12px;
+      border-radius: 10px;
       font-size: 14px;
       cursor: pointer;
     }
@@ -187,24 +160,11 @@
     }
 
     li {
-      background: white;
-      padding: 17px;
+      background: #ffffff;
+      padding: 16px;
       margin-bottom: 10px;
-      border-radius: 18px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      animation: showMessage 0.25s ease;
-    }
-
-    @keyframes showMessage {
-      from {
-        opacity: 0;
-        transform: translateY(5px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     .date {
@@ -233,46 +193,7 @@
     .loading {
       text-align: center;
       color: #8e8e93;
-      padding: 30px;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: #000;
-        color: #f2f2f7;
-      }
-
-      .login-box {
-        background: rgba(28, 28, 30, 0.92);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-      }
-
-      .lock-icon {
-        background: #2c2c2e;
-      }
-
-      .login-subtitle {
-        color: #98989d;
-      }
-
-      #password {
-        background: #1c1c1e;
-        border-color: #3a3a3c;
-        color: white;
-      }
-
-      #password:focus {
-        background: #2c2c2e;
-      }
-
-      li {
-        background: #1c1c1e;
-        box-shadow: none;
-      }
-
-      .logout {
-        background: #2c2c2e;
-      }
+      padding: 25px;
     }
   </style>
 </head>
@@ -282,10 +203,6 @@
   <div class="login-screen" id="loginScreen">
 
     <div class="login-box">
-
-      <div class="lock-icon">
-        🔒
-      </div>
 
       <div class="login-title">
         Messages
@@ -374,23 +291,14 @@
       "click",
       () => {
 
-        if (
-          passwordInput.type === "password"
-        ) {
-
+        if (passwordInput.type === "password") {
           passwordInput.type = "text";
-          showPassword.textContent =
-            "Hide";
-
+          showPassword.textContent = "Hide";
         } else {
-
-          passwordInput.type =
-            "password";
-
-          showPassword.textContent =
-            "Show";
-
+          passwordInput.type = "password";
+          showPassword.textContent = "Show";
         }
+
       }
     );
 
@@ -418,17 +326,13 @@
       loginError.textContent = "";
 
       if (!password) {
-
         loginError.textContent =
-          "Admin password required";
-
+          "Please enter your password.";
         return;
       }
 
       loginButton.disabled = true;
-
-      loginButton.textContent =
-        "Checking...";
+      loginButton.textContent = "Checking...";
 
       try {
 
@@ -437,12 +341,9 @@
             RECEIVE_API,
             {
               method: "POST",
-
               headers: {
-                "Content-Type":
-                  "application/json"
+                "Content-Type": "application/json"
               },
-
               body: JSON.stringify({
                 password: password
               })
@@ -456,37 +357,27 @@
           !response.ok ||
           !result.success
         ) {
-
           throw new Error(
-            result.error ||
-            "Invalid password"
+            result.error || "Invalid password"
           );
         }
 
-        loginScreen.style.display =
-          "none";
+        loginScreen.style.display = "none";
+        messagesScreen.style.display = "block";
 
-        messagesScreen.style.display =
-          "block";
-
-        displayMessages(
-          result.data
-        );
+        displayMessages(result.data);
 
       } catch (error) {
 
         console.error(error);
 
         loginError.textContent =
-          "Incorrect password";
+          "Incorrect password or an error occurred.";
 
       } finally {
 
-        loginButton.disabled =
-          false;
-
-        loginButton.textContent =
-          "Sign In";
+        loginButton.disabled = false;
+        loginButton.textContent = "Sign In";
 
       }
     }
@@ -495,10 +386,7 @@
 
       messages.innerHTML = "";
 
-      if (
-        !data ||
-        data.length === 0
-      ) {
+      if (!data || data.length === 0) {
 
         messages.innerHTML = `
           <li class="loading">
@@ -517,12 +405,9 @@
         const date =
           new Date(
             item.timestamp
-          ).toLocaleString(
-            "en-US"
-          );
+          ).toLocaleString("en-US");
 
         li.innerHTML = `
-
           <div class="date">
             ${escapeHTML(date)}
           </div>
@@ -536,10 +421,8 @@
           </div>
 
           <div class="device">
-            Device:
-            ${escapeHTML(item.device)}
+            Device: ${escapeHTML(item.device)}
           </div>
-
         `;
 
         messages.appendChild(li);
@@ -564,20 +447,10 @@
       () => {
 
         passwordInput.value = "";
-
-        messages.innerHTML = `
-          <li class="loading">
-            Loading messages...
-          </li>
-        `;
-
         loginError.textContent = "";
 
-        messagesScreen.style.display =
-          "none";
-
-        loginScreen.style.display =
-          "flex";
+        messagesScreen.style.display = "none";
+        loginScreen.style.display = "flex";
 
       }
     );
@@ -586,4 +459,3 @@
 </body>
 
 </html>
-```
