@@ -1,4 +1,5 @@
-const CACHE_NAME = "itswahyuna-v1.0.8"; 
+const CACHE_NAME = "itswahyuna-v1.0.9"; 
+console.log("versi cache=" + CACHE_NAME);
 const CACHE_FILES = [ 
     "./", 
     "./index.html", 
