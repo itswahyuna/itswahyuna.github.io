@@ -1,5 +1,4 @@
-const CACHE_NAME = "itswahyuna-v1.0.4"; 
- 
+const CACHE_NAME = "itswahyuna-v1.0.5"; 
 const CACHE_FILES = [ 
     "./", 
     "./index.html", 
