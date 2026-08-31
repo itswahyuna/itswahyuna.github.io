@@ -3,21 +3,21 @@
 
 <head>
     <script>
-    if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js")
-        .then(() => {
-            console.log(true);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    navigator.serviceWorker.addEventListener("message", event => {
-        if (event.data?.type === "CACHE_USED") {
-            showToast("using offline mode");
-        }
-    });
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("./sw.js")
+                .then(() => {
+                    console.log(true);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            navigator.serviceWorker.addEventListener("message", event => {
+                if (event.data?.type === "CACHE_USED") {
+                    showToast("using offline mode");
+                }
+            });
 
-}
+        }
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -2150,6 +2150,20 @@
 
         }
 
+        function saveSentMessage(name, message, device) {
+            const storageKey = 'anonymous-messages';
+            const messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+            messages.push({
+                name: name,
+                message: message,
+                device: device,
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem(storageKey, JSON.stringify(messages));
+        }
+
         floatingCommentForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -2185,7 +2199,6 @@
                 return;
             }
 
-            markSentToday();
             if (deviceInput) {
                 deviceInput.value = device;
             }
@@ -2211,6 +2224,9 @@
                 if (!response.ok || !result.success) {
                     throw new Error(result.error || 'error');
                 }
+
+                markSentToday();
+                saveSentMessage(name, message, device);
 
                 showToast('The message has been sent.');
 

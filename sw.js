@@ -1,4 +1,4 @@
-const CACHE_NAME = "itswahyuna-v1.0.2"; 
+const CACHE_NAME = "itswahyuna-v1.0.3"; 
  
 const CACHE_FILES = [ 
     "./", 
@@ -25,7 +25,7 @@ self.addEventListener("install", event => {
                         await cache.put(FONT_AWESOME, response);
                     }
                 } catch (error) {
-                    console.error("Font Awesome gagal di-cache:", error);
+                    console.error(error);
                 }
             })
     ); 
