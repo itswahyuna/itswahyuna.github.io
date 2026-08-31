@@ -2095,6 +2095,9 @@
         // API
         const API = "https://wahyunaserver.wahyunadragon.workers.dev/am";
 
+        let dailySendCount = 0;
+        let dailySendDate = getTodayKey();
+
         function detectDevice() {
             const ua = navigator.userAgent;
 
@@ -2116,64 +2119,22 @@
             return `${year}-${month}-${day}`;
         }
 
-        function canSendToday() {
-            const storageKey = 'anonymous-message-daily-count';
-            const today = getTodayKey();
-            let todayData = JSON.parse(localStorage.getItem(storageKey) || '{}');
-
-            const savedDays = Object.keys(todayData);
-            if (savedDays.length > 0 && savedDays[0] !== today) {
-                todayData = {};
-                localStorage.setItem(storageKey, JSON.stringify(todayData));
-            }
-
-            const count = Number(todayData[today] || 0);
-            if (count >= 3) {
-                setAnonymousMessageBlocked();
-                return false;
-            }
-            return true;
-        }
-
-        function markSentToday() {
-            const storageKey = 'anonymous-message-daily-count';
-            const today = getTodayKey();
-            let todayData = JSON.parse(localStorage.getItem(storageKey) || '{}');
-
-
-            const savedDays = Object.keys(todayData);
-            if (savedDays.length > 0 && savedDays[0] !== today) {
-                // clear
-                todayData = {};
-            }
-
-
-            const currentCount = Number(todayData[today] || 0);
-            const newCount = currentCount + 1;
-            todayData[today] = newCount;
-            localStorage.setItem(storageKey, JSON.stringify(todayData));
-
-        }
-
-        function saveSentMessage(name, message, device) {
-            const storageKey = 'anonymous-messages';
-            const messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
-
-            messages.push({
-                name: name,
-                message: message,
-                device: device,
-                timestamp: new Date().toISOString()
-            });
-
-            localStorage.setItem(storageKey, JSON.stringify(messages));
-        }
-
         floatingCommentForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             if (floatingSubmitButton.disabled) {
                 false
+                return;
+            }
+
+            const today = getTodayKey();
+
+            if (dailySendDate !== today) {
+                dailySendDate = today;
+                dailySendCount = 0;
+            }
+
+            if (dailySendCount >= 200) {
                 return;
             }
 
@@ -2194,13 +2155,6 @@
 
             if (!device) {
                 showToast('Device is required');
-                return;
-            }
-
-            if (!canSendToday()) {
-                showToast('You have already sent 3 messages today');
-                resetFloatingForm();
-                setFloatingCommentOpen(false);
                 return;
             }
 
@@ -2230,8 +2184,7 @@
                     throw new Error(result.error || 'error');
                 }
 
-                markSentToday();
-                saveSentMessage(name, message, device);
+                dailySendCount++;
 
                 showToast('The message has been sent.');
 
