@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Messages</title>
+  <title>Itswahyuna | Admin</title>
 
   <style>
     * {
@@ -212,25 +213,43 @@
 
       <div class="password-wrapper">
 
-        <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          autocomplete="current-password"
+        >
 
-        <button class="show-password" id="showPassword" type="button">
+        <button
+          class="show-password"
+          id="showPassword"
+          type="button"
+        >
           Show
         </button>
 
       </div>
 
-      <button id="loginButton" type="button">
+      <button
+        id="loginButton"
+        type="button"
+      >
         Sign In
       </button>
 
-      <div class="error" id="loginError"></div>
+      <div
+        class="error"
+        id="loginError"
+      ></div>
 
     </div>
 
   </div>
 
-  <main class="messages-screen" id="messagesScreen">
+  <main
+    class="messages-screen"
+    id="messagesScreen"
+  >
 
     <div class="header">
 
@@ -238,7 +257,10 @@
         Messages
       </h2>
 
-      <button class="logout" id="logoutButton">
+      <button
+        class="logout"
+        id="logoutButton"
+      >
         Sign Out
       </button>
 
@@ -289,12 +311,18 @@
       "click",
       () => {
 
-        if (passwordInput.type === "password") {
+        if (
+          passwordInput.type === "password"
+        ) {
+
           passwordInput.type = "text";
           showPassword.textContent = "Hide";
+
         } else {
+
           passwordInput.type = "password";
           showPassword.textContent = "Show";
+
         }
 
       }
@@ -365,8 +393,11 @@
 
         }
 
-        loginScreen.style.display = "none";
-        messagesScreen.style.display = "block";
+        loginScreen.style.display =
+          "none";
+
+        messagesScreen.style.display =
+          "block";
 
         displayMessages(
           result.data
@@ -381,10 +412,70 @@
 
       } finally {
 
-        loginButton.disabled = false;
-        loginButton.textContent = "Sign In";
+        loginButton.disabled =
+          false;
+
+        loginButton.textContent =
+          "Sign In";
 
       }
+
+    }
+
+    function getRelativeTime(timestamp) {
+
+      const messageDate =
+        new Date(timestamp);
+
+      const now =
+        new Date();
+
+      const difference =
+        now.getTime() -
+        messageDate.getTime();
+
+      const seconds =
+        Math.floor(difference / 1000);
+
+      const minutes =
+        Math.floor(seconds / 60);
+
+      const hours =
+        Math.floor(minutes / 60);
+
+      const days =
+        Math.floor(hours / 24);
+
+      if (seconds < 60) {
+        return "Just now";
+      }
+
+      if (minutes < 60) {
+        return minutes === 1
+          ? "1 minute ago"
+          : `${minutes} minutes ago`;
+      }
+
+      if (hours < 24) {
+        return hours === 1
+          ? "1 hour ago"
+          : `${hours} hours ago`;
+      }
+
+      if (days < 30) {
+        return days === 1
+          ? "1 day ago"
+          : `${days} days ago`;
+      }
+
+      return messageDate.toLocaleDateString(
+        "en-US",
+        {
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        }
+      );
 
     }
 
@@ -392,7 +483,10 @@
 
       messages.innerHTML = "";
 
-      if (!data || data.length === 0) {
+      if (
+        !data ||
+        data.length === 0
+      ) {
 
         messages.innerHTML = `
           <li class="loading">
@@ -409,9 +503,9 @@
           document.createElement("li");
 
         const date =
-          new Date(
+          getRelativeTime(
             item.timestamp
-          ).toLocaleString("en-US");
+          );
 
         li.innerHTML = `
           <div class="date">
@@ -456,8 +550,11 @@
         passwordInput.value = "";
         loginError.textContent = "";
 
-        messagesScreen.style.display = "none";
-        loginScreen.style.display = "flex";
+        messagesScreen.style.display =
+          "none";
+
+        loginScreen.style.display =
+          "flex";
 
       }
     );
@@ -466,3 +563,4 @@
 </body>
 
 </html>
+
