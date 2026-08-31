@@ -1,4 +1,4 @@
-const CACHE_NAME = "itswahyuna-v1.0.0";
+const CACHE_NAME = "itswahyuna-v1.0.1";
 
 const CACHE_FILES = [
     "./",
@@ -35,14 +35,14 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
 
-    // request GET
+    // request get
     if (event.request.method !== "GET") {
         return;
     }
 
     event.respondWith(
 
-        // online
+        // online ambil dari server
         fetch(event.request, {
             cache: "no-store"
         })
@@ -65,7 +65,27 @@ self.addEventListener("fetch", event => {
         .catch(() => {
 
             // offline
-            return caches.match(event.request);
+            //  ambil cache
+            return caches.match(event.request).then(cachedResponse => {
+
+                if (cachedResponse) {
+
+                    // info
+                    self.clients.matchAll().then(clients => {
+                        clients.forEach(client => {
+                            client.postMessage({
+                                type: "CACHE_USED"
+                            });
+                        });
+                    });
+
+                    return cachedResponse;
+                }
+
+                return new Response("Offline", {
+                    status: 503
+                });
+            });
         })
     );
 });

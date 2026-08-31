@@ -3,15 +3,21 @@
 
 <head>
     <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("./sw.js")
-                .then(() => {
-                    console.log(true)
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+    if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js")
+        .then(() => {
+            console.log(true);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    navigator.serviceWorker.addEventListener("message", event => {
+        if (event.data?.type === "CACHE_USED") {
+            showToast("using offline mode");
         }
+    });
+
+}
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -2213,6 +2219,18 @@
             } catch (error) {
 
                 console.error(error);
+
+                const errorMessage = error.message || "";
+
+                if (
+                    errorMessage.includes("Failed to fetch") ||
+                    errorMessage.includes("NetworkError") ||
+                    errorMessage.includes("network error") ||
+                    errorMessage.includes("Network request failed")
+                ) {
+                    showToast("No internet connection");
+                    return;
+                }
 
                 const isSpam = error.message === 'terdeteksi spam';
                 const isDailyLimit = error.message === 'You have already sent 3 messages today';
