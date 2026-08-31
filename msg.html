@@ -20,7 +20,7 @@
         "SF Pro Text",
         Arial,
         sans-serif;
-      background: #f2f2f7;
+      background: #ffffff;
       color: #1c1c1e;
     }
 
@@ -29,30 +29,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
+      background: #ffffff;
     }
 
     .login-box {
       width: 100%;
       max-width: 360px;
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 28px 22px 22px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
 
     .login-title {
       text-align: center;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
     }
 
     .login-subtitle {
       text-align: center;
       color: #8e8e93;
-      font-size: 14px;
-      margin-bottom: 22px;
+      font-size: 15px;
+      margin-bottom: 24px;
     }
 
     .password-wrapper {
@@ -61,20 +59,20 @@
 
     #password {
       width: 100%;
-      height: 48px;
+      height: 50px;
       border: 1px solid #d1d1d6;
-      border-radius: 12px;
-      padding: 0 50px 0 14px;
+      border-radius: 13px;
+      padding: 0 52px 0 15px;
       font-size: 16px;
       outline: none;
-      background: #f9f9fb;
+      background: #f2f2f7;
       color: #1c1c1e;
       transition: 0.2s;
     }
 
     #password:focus {
-      border-color: #007aff;
       background: #ffffff;
+      border-color: #007aff;
       box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.12);
     }
 
@@ -88,15 +86,15 @@
       color: #007aff;
       font-size: 14px;
       cursor: pointer;
-      padding: 4px;
+      padding: 5px;
     }
 
     #loginButton {
       width: 100%;
-      height: 48px;
+      height: 50px;
       margin-top: 12px;
       border: none;
-      border-radius: 12px;
+      border-radius: 13px;
       background: #007aff;
       color: #ffffff;
       font-size: 16px;
@@ -117,7 +115,7 @@
 
     .error {
       min-height: 18px;
-      margin-top: 10px;
+      margin-top: 12px;
       text-align: center;
       color: #ff3b30;
       font-size: 13px;
@@ -128,6 +126,7 @@
       max-width: 700px;
       margin: auto;
       padding: 20px;
+      background: #ffffff;
     }
 
     .header {
@@ -145,7 +144,7 @@
 
     .logout {
       border: none;
-      background: #e5e5ea;
+      background: #f2f2f7;
       color: #007aff;
       padding: 9px 14px;
       border-radius: 10px;
@@ -160,11 +159,10 @@
     }
 
     li {
-      background: #ffffff;
+      background: #f2f2f7;
       padding: 16px;
       margin-bottom: 10px;
       border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     .date {
@@ -326,8 +324,10 @@
       loginError.textContent = "";
 
       if (!password) {
+
         loginError.textContent =
           "Please enter your password.";
+
         return;
       }
 
@@ -357,15 +357,20 @@
           !response.ok ||
           !result.success
         ) {
+
           throw new Error(
-            result.error || "Invalid password"
+            result.error ||
+            "Invalid password"
           );
+
         }
 
         loginScreen.style.display = "none";
         messagesScreen.style.display = "block";
 
-        displayMessages(result.data);
+        displayMessages(
+          result.data
+        );
 
       } catch (error) {
 
@@ -380,6 +385,7 @@
         loginButton.textContent = "Sign In";
 
       }
+
     }
 
     function displayMessages(data) {
@@ -428,6 +434,7 @@
         messages.appendChild(li);
 
       });
+
     }
 
     function escapeHTML(text) {
