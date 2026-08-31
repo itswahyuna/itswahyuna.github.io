@@ -1,4 +1,4 @@
-const CACHE_NAME = "itswahyuna-v1.0.5"; 
+const CACHE_NAME = "itswahyuna-v1.0.6"; 
 const CACHE_FILES = [ 
     "./", 
     "./index.html", 
@@ -24,7 +24,7 @@ self.addEventListener("install", event => {
                         await cache.put(FONT_AWESOME, response);
                     }
                 } catch (error) {
-                    console.error(error);
+                    error
                 }
             })
     ); 
