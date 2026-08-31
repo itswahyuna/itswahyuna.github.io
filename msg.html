@@ -1,139 +1,589 @@
+```html
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Messages</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        Arial,
+        sans-serif;
+      background: #f2f2f7;
+      color: #1c1c1e;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 390px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 28px;
+      padding: 32px 24px 26px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+      animation: showLogin 0.35s ease;
+    }
+
+    @keyframes showLogin {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .lock-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      background: #e8e8ed;
+      font-size: 30px;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 27px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: #8e8e93;
+      font-size: 15px;
+      margin-bottom: 25px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    #password {
+      width: 100%;
+      height: 52px;
+      border: 1px solid #d1d1d6;
+      border-radius: 14px;
+      padding: 0 48px 0 16px;
+      font-size: 17px;
+      outline: none;
+      background: #f2f2f7;
+      transition: 0.2s;
+    }
+
+    #password:focus {
+      background: #fff;
+      border-color: #007aff;
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+    }
+
+    .show-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: #007aff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #loginButton {
+      width: 100%;
+      height: 52px;
+      margin-top: 14px;
+      border: none;
+      border-radius: 14px;
+      background: #007aff;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    #loginButton:active {
+      transform: scale(0.97);
+      opacity: 0.8;
+    }
+
+    #loginButton:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .error {
+      min-height: 20px;
+      margin-top: 13px;
+      text-align: center;
+      color: #ff3b30;
+      font-size: 14px;
+    }
+
+    .messages-screen {
+      display: none;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    .logout {
+      border: none;
+      background: #e5e5ea;
+      color: #007aff;
+      padding: 9px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
     }
 
     ul {
       padding: 0;
+      margin: 0;
       list-style: none;
     }
 
     li {
-      padding: 12px 0;
-      border-bottom: 1px solid #ddd;
+      background: white;
+      padding: 17px;
+      margin-bottom: 10px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      animation: showMessage 0.25s ease;
+    }
+
+    @keyframes showMessage {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .date {
       font-size: 12px;
-      color: #777;
+      color: #8e8e93;
     }
 
     .name {
-      font-weight: bold;
-      margin-top: 4px;
+      font-weight: 600;
+      margin-top: 6px;
+      font-size: 16px;
     }
 
     .message {
-      margin: 4px 0;
+      margin: 7px 0;
+      font-size: 16px;
+      line-height: 1.45;
+      word-break: break-word;
     }
 
     .device {
       font-size: 12px;
-      color: #888;
+      color: #8e8e93;
+    }
+
+    .loading {
+      text-align: center;
+      color: #8e8e93;
+      padding: 30px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #000;
+        color: #f2f2f7;
+      }
+
+      .login-box {
+        background: rgba(28, 28, 30, 0.92);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+
+      .lock-icon {
+        background: #2c2c2e;
+      }
+
+      .login-subtitle {
+        color: #98989d;
+      }
+
+      #password {
+        background: #1c1c1e;
+        border-color: #3a3a3c;
+        color: white;
+      }
+
+      #password:focus {
+        background: #2c2c2e;
+      }
+
+      li {
+        background: #1c1c1e;
+        box-shadow: none;
+      }
+
+      .logout {
+        background: #2c2c2e;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <h2>Messages</h2>
+  <div class="login-screen" id="loginScreen">
 
-  <ul id="messages">
-    <li>Loading...</li>
-  </ul>
+    <div class="login-box">
 
+      <div class="lock-icon">
+        🔒
+      </div>
+
+      <div class="login-title">
+        Messages
+      </div>
+
+      <div class="login-subtitle">
+        Enter your admin password
+      </div>
+
+      <div class="password-wrapper">
+
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+
+        <button class="show-password" id="showPassword" type="button">
+          Show
+        </button>
+
+      </div>
+
+      <button id="loginButton" type="button">
+        Sign In
+      </button>
+
+      <div class="error" id="loginError"></div>
+
+    </div>
+
+  </div>
+
+  <main class="messages-screen" id="messagesScreen">
+
+    <div class="header">
+
+      <h2>
+        Messages
+      </h2>
+
+      <button class="logout" id="logoutButton">
+        Sign Out
+      </button>
+
+    </div>
+
+    <ul id="messages">
+
+      <li class="loading">
+        Loading messages...
+      </li>
+
+    </ul>
+
+  </main>
 
   <script>
     const API =
-      "https://wahyunaserver.wahyunadragon.workers.dev/am";
+      "https://wahyunaserver.wahyunadragon.workers.dev";
 
+    const RECEIVE_API =
+      API + "/receive-anonymous-messages";
 
-    async function loadMessages() {
+    const loginScreen =
+      document.getElementById("loginScreen");
 
-      const container =
-        document.getElementById("messages");
+    const messagesScreen =
+      document.getElementById("messagesScreen");
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const loginError =
+      document.getElementById("loginError");
+
+    const messages =
+      document.getElementById("messages");
+
+    const showPassword =
+      document.getElementById("showPassword");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    showPassword.addEventListener(
+      "click",
+      () => {
+
+        if (
+          passwordInput.type === "password"
+        ) {
+
+          passwordInput.type = "text";
+          showPassword.textContent =
+            "Hide";
+
+        } else {
+
+          passwordInput.type =
+            "password";
+
+          showPassword.textContent =
+            "Show";
+
+        }
+      }
+    );
+
+    loginButton.addEventListener(
+      "click",
+      login
+    );
+
+    passwordInput.addEventListener(
+      "keydown",
+      event => {
+
+        if (event.key === "Enter") {
+          login();
+        }
+
+      }
+    );
+
+    async function login() {
+
+      const password =
+        passwordInput.value;
+
+      loginError.textContent = "";
+
+      if (!password) {
+
+        loginError.textContent =
+          "Admin password required";
+
+        return;
+      }
+
+      loginButton.disabled = true;
+
+      loginButton.textContent =
+        "Checking...";
 
       try {
 
-        const response = await fetch(API);
+        const response =
+          await fetch(
+            RECEIVE_API,
+            {
+              method: "POST",
 
-        const result = await response.json();
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
 
-        if (!result.success) {
-          throw new Error(result.error);
+              body: JSON.stringify({
+                password: password
+              })
+            }
+          );
+
+        const result =
+          await response.json();
+
+        if (
+          !response.ok ||
+          !result.success
+        ) {
+
+          throw new Error(
+            result.error ||
+            "Invalid password"
+          );
         }
 
-        container.innerHTML = "";
+        loginScreen.style.display =
+          "none";
 
+        messagesScreen.style.display =
+          "block";
 
-        result.data.forEach(item => {
-
-          const li =
-            document.createElement("li");
-
-          const date =
-            new Date(item.timestamp)
-              .toLocaleString("id-ID");
-
-
-          li.innerHTML = `
-            <div class="date">
-              ${date}
-            </div>
-
-            <div class="name">
-              ${escapeHTML(item.name)}
-            </div>
-
-            <div class="message">
-              ${escapeHTML(item.message)}
-            </div>
-
-            <div class="device">
-              Device: ${escapeHTML(item.device)}
-            </div>
-          `;
-
-
-          container.appendChild(li);
-
-        });
-
+        displayMessages(
+          result.data
+        );
 
       } catch (error) {
 
         console.error(error);
 
-        container.innerHTML =
-          "<li>error.</li>";
+        loginError.textContent =
+          "Incorrect password";
+
+      } finally {
+
+        loginButton.disabled =
+          false;
+
+        loginButton.textContent =
+          "Sign In";
 
       }
-
     }
 
+    function displayMessages(data) {
+
+      messages.innerHTML = "";
+
+      if (
+        !data ||
+        data.length === 0
+      ) {
+
+        messages.innerHTML = `
+          <li class="loading">
+            No messages yet.
+          </li>
+        `;
+
+        return;
+      }
+
+      data.forEach(item => {
+
+        const li =
+          document.createElement("li");
+
+        const date =
+          new Date(
+            item.timestamp
+          ).toLocaleString(
+            "en-US"
+          );
+
+        li.innerHTML = `
+
+          <div class="date">
+            ${escapeHTML(date)}
+          </div>
+
+          <div class="name">
+            ${escapeHTML(item.name)}
+          </div>
+
+          <div class="message">
+            ${escapeHTML(item.message)}
+          </div>
+
+          <div class="device">
+            Device:
+            ${escapeHTML(item.device)}
+          </div>
+
+        `;
+
+        messages.appendChild(li);
+
+      });
+    }
 
     function escapeHTML(text) {
 
       const div =
         document.createElement("div");
 
-      div.textContent = text;
+      div.textContent =
+        String(text);
 
       return div.innerHTML;
 
     }
 
+    logoutButton.addEventListener(
+      "click",
+      () => {
 
-    loadMessages();
+        passwordInput.value = "";
+
+        messages.innerHTML = `
+          <li class="loading">
+            Loading messages...
+          </li>
+        `;
+
+        loginError.textContent = "";
+
+        messagesScreen.style.display =
+          "none";
+
+        loginScreen.style.display =
+          "flex";
+
+      }
+    );
   </script>
 
 </body>
+
 </html>
+```
