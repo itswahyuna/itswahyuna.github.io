@@ -2245,6 +2245,7 @@
                     errorMessage.includes("Network request failed")
                 ) {
                     showToast("No internet connection");
+                    resetFloatingForm();
                     return;
                 }
 
