@@ -2280,7 +2280,7 @@
                 }
                 document.body.style.overflow = 'hidden';
 
-                // Validate form state when opening (check daily limit)
+                // cek limit
                 validateFloatingForm();
 
                 requestAnimationFrame(() => {
@@ -2650,74 +2650,10 @@
                 }
             }
 
-            // END API
+            // end api
 
             resetFloatingForm();
         });
-
-        (async function() {
-            const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-            const langMap = {
-                'id': 'id', 'en': 'en', 'es': 'es', 'fr': 'fr', 'de': 'de', 'it': 'it', 'ja': 'ja', 'ko': 'ko',
-                'pt': 'pt', 'ru': 'ru', 'zh': 'zh', 'ar': 'ar', 'th': 'th', 'vi': 'vi'
-            };
-            
-            const targetLang = langMap[userLang] || 'en';
-            
-            if (targetLang === 'en') {
-                return;
-            }
-            
-            try {
-                const walker = document.createTreeWalker(
-                    document.body,
-                    NodeFilter.SHOW_TEXT,
-                    null,
-                    false
-                );
-
-                const nodesToTranslate = [];
-                let node;
-                
-                while (node = walker.nextNode()) {
-                    const text = node.textContent.trim();
-                    if (text && text.length > 0 && 
-                        !node.parentElement?.classList.contains('notranslate') &&
-                        !node.closest('script') &&
-                        !node.closest('style')) {
-                        nodesToTranslate.push(node);
-                    }
-                }
-
-                if (nodesToTranslate.length === 0) return;
-
-                const textsToTranslate = nodesToTranslate.map(n => n.textContent.trim()).filter(t => t);
-                
-                if (textsToTranslate.length === 0) return;
-
-                const promises = textsToTranslate.map(text => {
-                    const params = new URLSearchParams({
-                        q: text,
-                        langpair: `en|${targetLang}`
-                    });
-                    return fetch(`https://api.mymemory.translated.net/get?${params}`)
-                        .then(r => r.json())
-                        .then(data => data.responseData.translatedText)
-                        .catch(() => text);
-                });
-
-                const translatedTexts = await Promise.all(promises);
-
-                nodesToTranslate.forEach((node, index) => {
-                    if (translatedTexts[index]) {
-                        node.textContent = translatedTexts[index];
-                    }
-                });
-
-            } catch (error) {
-                void error;
-            }
-        })();
 
         document.querySelectorAll(".link-card").forEach(card => {
 
