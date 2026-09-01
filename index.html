@@ -1991,7 +1991,7 @@
         function updateThemeColor() {
             const metaThemes = document.querySelectorAll('meta[name="theme-color"]');
             if (!metaThemes.length) return;
-            const color = document.body.classList.contains('bright') ? '#f5f7ff' : '#03050D';
+            const color = document.body.classList.contains('bright') ? '#ffffff' : '#010203';
             metaThemes.forEach((metaTheme) => {
                 metaTheme.content = color;
             });
