@@ -215,19 +215,6 @@
             box-shadow: none;
         }
 
-        /* Google Translate Styles */
-        .goog-te-banner-frame {
-            display: none !important;
-        }
-        
-        .goog-te-gadget {
-            display: none !important;
-        }
-        
-        body {
-            top: 0 !important;
-        }
-
         #app {
 
             width: 100%;
@@ -1944,9 +1931,6 @@
             </div>
         </footer>
 
-        <!-- Google Translate Element Container -->
-        <div id="google_translate_element" style="display:none;"></div>
-
         <div class="image-modal" id="imageModal">
             <div class="image-modal-backdrop" id="modalBackdrop"></div>
             <div class="image-modal-content">
@@ -2672,44 +2656,79 @@
         });
 
         // Auto-translate feature based on user's browser language
-        (function initAutoTranslate() {
+        (async function initAutoTranslate() {
             const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
             const supportedLangs = ['id', 'en'];
+            const langMap = {
+                'es': 'es', 'fr': 'fr', 'de': 'de', 'it': 'it', 'ja': 'ja', 'ko': 'ko',
+                'pt': 'pt', 'ru': 'ru', 'zh': 'zh', 'ar': 'ar', 'th': 'th', 'vi': 'vi'
+            };
             
             // Only translate if user's language is not Indonesian or English
             if (supportedLangs.includes(userLang)) {
                 return;
             }
 
-            // Load Google Translate API
-            const script = document.createElement('script');
-            script.src = 'https://translate.googleapis.com/translate_a/element.js?cb=googleTranslateElementInit';
-            document.head.appendChild(script);
+            const targetLang = langMap[userLang] || userLang;
             
-            window.googleTranslateElementInit = function() {
-                try {
-                    new google.translate.TranslateElement(
-                        {
-                            pageLanguage: 'en',
-                            includedLanguages: 'id,en,es,fr,de,it,ja,ko,pt,ru,zh-CN,zh-TW,ar,th,vi',
-                            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                            autoDisplay: false
-                        },
-                        'google_translate_element'
-                    );
-                    
-                    // Auto-trigger translation to user's language
-                    setTimeout(() => {
-                        const select = document.querySelector('.goog-te-combo');
-                        if (select) {
-                            select.value = userLang;
-                            select.dispatchEvent(new Event('change'));
-                        }
-                    }, 200);
-                } catch (e) {
-                    console.log('Translation service unavailable');
+            try {
+                // Get all text nodes except WAHYUNA brand
+                const walker = document.createTreeWalker(
+                    document.body,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+
+                const nodesToTranslate = [];
+                let node;
+                
+                while (node = walker.nextNode()) {
+                    // Skip empty text and notranslate elements
+                    const text = node.textContent.trim();
+                    if (text && text.length > 0 && !node.parentElement?.classList.contains('notranslate')) {
+                        nodesToTranslate.push(node);
+                    }
                 }
-            };
+
+                if (nodesToTranslate.length === 0) return;
+
+                // Collect all text to translate
+                const textsToTranslate = nodesToTranslate.map(n => n.textContent.trim()).filter(t => t);
+                
+                if (textsToTranslate.length === 0) return;
+
+                // Translate using LibreTranslate API
+                const response = await fetch('https://libretranslate.de/translate', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        q: textsToTranslate.join('\n'),
+                        source: 'en',
+                        target: targetLang
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.log('Translation API error');
+                    return;
+                }
+
+                const data = await response.json();
+                const translatedTexts = data.translatedText.split('\n');
+
+                // Apply translations back to DOM
+                nodesToTranslate.forEach((node, index) => {
+                    if (translatedTexts[index]) {
+                        node.textContent = translatedTexts[index];
+                    }
+                });
+
+            } catch (error) {
+                console.log('Translation failed:', error);
+            }
         })();
 
         document.querySelectorAll(".link-card").forEach(card => {
