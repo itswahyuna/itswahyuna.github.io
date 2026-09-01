@@ -2697,26 +2697,19 @@
                 
                 if (textsToTranslate.length === 0) return;
 
-                // Translate using LibreTranslate API
-                const response = await fetch('https://libretranslate.de/translate', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        q: textsToTranslate.join('\n'),
-                        source: 'en',
-                        target: targetLang
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                // Translate using MyMemory API (CORS-friendly)
+                const promises = textsToTranslate.map(text => {
+                    const params = new URLSearchParams({
+                        q: text,
+                        langpair: `en|${targetLang}`
+                    });
+                    return fetch(`https://api.mymemory.translated.net/get?${params}`)
+                        .then(r => r.json())
+                        .then(data => data.responseData.translatedText)
+                        .catch(() => text);
                 });
 
-                if (!response.ok) {
-                    console.log('Translation API error');
-                    return;
-                }
-
-                const data = await response.json();
-                const translatedTexts = data.translatedText.split('\n');
+                const translatedTexts = await Promise.all(promises);
 
                 // Apply translations back to DOM
                 nodesToTranslate.forEach((node, index) => {
