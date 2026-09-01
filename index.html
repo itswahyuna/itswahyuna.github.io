@@ -2655,8 +2655,7 @@
             resetFloatingForm();
         });
 
-        // Auto-translate feature based on user's browser language
-        (async function initAutoTranslate() {
+        (async function() {
             const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
             const langMap = {
                 'id': 'id', 'en': 'en', 'es': 'es', 'fr': 'fr', 'de': 'de', 'it': 'it', 'ja': 'ja', 'ko': 'ko',
@@ -2665,13 +2664,11 @@
             
             const targetLang = langMap[userLang] || 'en';
             
-            // Skip translation if target is English (page is already in English)
             if (targetLang === 'en') {
                 return;
             }
             
             try {
-                // Get all text nodes except WAHYUNA brand
                 const walker = document.createTreeWalker(
                     document.body,
                     NodeFilter.SHOW_TEXT,
@@ -2683,7 +2680,6 @@
                 let node;
                 
                 while (node = walker.nextNode()) {
-                    // Skip empty text and notranslate elements
                     const text = node.textContent.trim();
                     if (text && text.length > 0 && !node.parentElement?.classList.contains('notranslate')) {
                         nodesToTranslate.push(node);
@@ -2692,12 +2688,10 @@
 
                 if (nodesToTranslate.length === 0) return;
 
-                // Collect all text to translate
                 const textsToTranslate = nodesToTranslate.map(n => n.textContent.trim()).filter(t => t);
                 
                 if (textsToTranslate.length === 0) return;
 
-                // Translate using MyMemory API (CORS-friendly)
                 const promises = textsToTranslate.map(text => {
                     const params = new URLSearchParams({
                         q: text,
@@ -2711,7 +2705,6 @@
 
                 const translatedTexts = await Promise.all(promises);
 
-                // Apply translations back to DOM
                 nodesToTranslate.forEach((node, index) => {
                     if (translatedTexts[index]) {
                         node.textContent = translatedTexts[index];
@@ -2719,7 +2712,7 @@
                 });
 
             } catch (error) {
-                console.log('Translation failed:', error);
+                void error;
             }
         })();
 
