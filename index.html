@@ -215,6 +215,19 @@
             box-shadow: none;
         }
 
+        /* Google Translate Styles */
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+        
+        .goog-te-gadget {
+            display: none !important;
+        }
+        
+        body {
+            top: 0 !important;
+        }
+
         #app {
 
             width: 100%;
@@ -1819,7 +1832,7 @@
 
         <header class="top-navbar" aria-label="Main navigation">
             <div class="top-navbar-inner">
-                <div class="top-navbar-brand">WAHYUNA</div>
+                <div class="top-navbar-brand notranslate">WAHYUNA</div>
                 <button id="th" class="theme-toggle-btn" type="button" aria-label="Toggle dark mode">
                     <i class="fa-solid fa-moon" aria-hidden="true"></i>
                 </button>
@@ -1930,6 +1943,9 @@
                 <p>© 2026 Wahyuna</p>
             </div>
         </footer>
+
+        <!-- Google Translate Element Container -->
+        <div id="google_translate_element" style="display:none;"></div>
 
         <div class="image-modal" id="imageModal">
             <div class="image-modal-backdrop" id="modalBackdrop"></div>
@@ -2654,6 +2670,47 @@
 
             resetFloatingForm();
         });
+
+        // Auto-translate feature based on user's browser language
+        (function initAutoTranslate() {
+            const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
+            const supportedLangs = ['id', 'en'];
+            
+            // Only translate if user's language is not Indonesian or English
+            if (supportedLangs.includes(userLang)) {
+                return;
+            }
+
+            // Load Google Translate API
+            const script = document.createElement('script');
+            script.src = 'https://translate.googleapis.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.head.appendChild(script);
+            
+            window.googleTranslateElementInit = function() {
+                try {
+                    new google.translate.TranslateElement(
+                        {
+                            pageLanguage: 'en',
+                            includedLanguages: 'id,en,es,fr,de,it,ja,ko,pt,ru,zh-CN,zh-TW,ar,th,vi',
+                            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                            autoDisplay: false
+                        },
+                        'google_translate_element'
+                    );
+                    
+                    // Auto-trigger translation to user's language
+                    setTimeout(() => {
+                        const select = document.querySelector('.goog-te-combo');
+                        if (select) {
+                            select.value = userLang;
+                            select.dispatchEvent(new Event('change'));
+                        }
+                    }, 200);
+                } catch (e) {
+                    console.log('Translation service unavailable');
+                }
+            };
+        })();
 
         document.querySelectorAll(".link-card").forEach(card => {
 
