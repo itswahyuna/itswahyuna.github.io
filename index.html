@@ -2681,7 +2681,10 @@
                 
                 while (node = walker.nextNode()) {
                     const text = node.textContent.trim();
-                    if (text && text.length > 0 && !node.parentElement?.classList.contains('notranslate')) {
+                    if (text && text.length > 0 && 
+                        !node.parentElement?.classList.contains('notranslate') &&
+                        !node.closest('script') &&
+                        !node.closest('style')) {
                         nodesToTranslate.push(node);
                     }
                 }
