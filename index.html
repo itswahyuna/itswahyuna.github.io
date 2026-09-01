@@ -118,28 +118,109 @@
         body {
 
             min-height: 100vh;
-
-            display: flex;
-            justify-content: center;
+            margin: 0;
+            padding: 0;
+            display: block;
 
             background: #010203;
 
             color: white;
-            padding-top: 8px;
 
             transition: color .4s ease, background .4s ease;
         }
 
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+            opacity: 1;
+            visibility: visible;
+            background: #010203;
+            color: white;
+            border-bottom: 1px solid transparent;
+            transition: opacity .24s ease, visibility .24s ease, background .24s ease, color .24s ease, border-color .25s ease;
+        }
 
+        .top-navbar-inner {
+            width: min(100%, 700px);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 24px;
+            border-radius: 0;
+            background: inherit;
+            color: inherit;
+            transition: border-color .25s ease, box-shadow .25s ease;
+            pointer-events: auto;
+            font-family: "Poppins", sans-serif;
+        }
 
+        .top-navbar + .biodata {
+            margin-top: 64px;
+        }
+
+        .top-navbar-brand {
+            display: inline-flex;
+            align-items: center;
+            font-size: 1.14rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: inherit;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body.scrolled .top-navbar {
+            background: #010203;
+            border-bottom-color: rgba(142, 149, 158, 0.7);
+        }
+
+        body.scrolled .top-navbar-inner {
+            width: min(100%, 700px);
+            margin: 0 auto;
+            background: inherit;
+            box-shadow: none;
+        }
+
+        body.bright .top-navbar {
+            background: #ffffff;
+            color: #111111;
+        }
+
+        body.bright.scrolled .top-navbar {
+            border-bottom-color: rgba(148, 163, 184, 0.42);
+        }
+
+        body.bright.scrolled .top-navbar-inner {
+            background: inherit;
+            box-shadow: none;
+        }
+
+        body:not(.scrolled) .top-navbar {
+            top: 0;
+            margin-top: 0;
+            padding-top: 0;
+            border-bottom-color: transparent;
+        }
+
+        body:not(.scrolled) .top-navbar-inner {
+            box-shadow: none;
+        }
 
         #app {
 
             width: 100%;
-
-            max-width: 760px;
-
-            padding: 18px 16px 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 16px 20px;
 
         }
 
@@ -147,15 +228,23 @@
         .biodata {
             width: 100%;
             display: flex;
-            align-items: center;
-            gap: 18px;
-            padding: 22px 20px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 20px 20px 16px;
             border-radius: 25px;
             background: transparent;
             background-size: cover;
             background-position: center;
             border: 1px solid rgba(125, 131, 153, 0.35);
             box-shadow: none;
+        }
+
+        .profile-main {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
         .profile-img {
@@ -165,14 +254,36 @@
             object-fit: cover;
             border: 0.7px solid rgba(37, 99, 235, 0.2);
             box-shadow: 0 0 6px rgba(37, 99, 235, 0.08);
+            flex-shrink: 0;
         }
 
         .text {
             flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-self: center;
+        }
+
+        .profile-actions {
+            margin-top: 6px;
+            display: flex;
+            justify-content: flex-start;
+            width: 100%;
+            flex-basis: 100%;
+        }
+
+        .profile-action-row {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 12px;
         }
 
         h1 {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 700 !important;
             margin: 0;
             line-height: 1.1;
@@ -190,9 +301,25 @@
         }
 
         .bio {
-            margin-top: 0.5px;
+            width: 100%;
+            margin: 0;
             color: #ddd;
-            line-height: 1.4;
+            font-size: 17px;
+            line-height: 1.5;
+        }
+
+        @media (min-width: 601px) {
+            .bio {
+                font-size: 16px;
+            }
+
+            .username {
+                font-size: 15px;
+            }
+
+            .link-text p {
+                font-size: 13px;
+            }
         }
 
         .minat {
@@ -213,6 +340,7 @@
 
         .connect {
             margin-top: 25px;
+            margin-bottom: 28px;
         }
 
         .connect-title {
@@ -240,6 +368,10 @@
             gap: 16px;
         }
 
+        .links + .theme-toggle-footer {
+            margin-top: 28px;
+        }
+
         .link-card {
             display: flex;
             align-items: center;
@@ -249,7 +381,7 @@
                 linear-gradient(120deg,
                     rgba(255, 255, 255, .07),
                     rgba(255, 255, 255, .02));
-            border: 1px solid rgba(80, 120, 255, .18);
+            border: 1px solid rgba(148, 163, 184, 0.28);
             transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
@@ -262,25 +394,26 @@
 
         @media (hover: hover) {
             .link-card:hover {
-                transform: translateY(-1px) scale(0.99);
-                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-                border-color: rgba(255, 255, 255, 0.28);
-                background: linear-gradient(120deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
+                transform: translateY(-4px) scale(1.02);
+                box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+                border-color: rgba(148, 163, 184, 0.6);
+                background: linear-gradient(120deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.1));
             }
 
             .link-card:active {
-                transform: translateY(-1px) scale(0.99);
-                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-                border-color: rgba(255, 255, 255, 0.28);
+                transform: translateY(-1px) scale(1.01);
+                box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+                border-color: rgba(148, 163, 184, 0.48);
+                background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
             }
         }
 
         @media (hover: none) {
             .link-card:active {
-                transform: translateY(-4px);
-                box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
-                border-color: rgba(255, 255, 255, 0.35);
-                background: linear-gradient(120deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
+                transform: translateY(-2px) scale(0.98);
+                box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+                border-color: rgba(148, 163, 184, 0.55);
+                background: linear-gradient(120deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
             }
         }
 
@@ -317,7 +450,7 @@
         .link-text p {
 
             color: #aaa;
-
+            font-size: 14px;
             margin-top: 4px;
 
         }
@@ -345,56 +478,144 @@
 
 
 
-        .switch-d {
-            margin-top: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: nowrap;
-        }
-
-        .switch-d button {
-            padding: 12px 25px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            background: rgba(255, 255, 255, 0.04);
-            color: inherit;
-            font-weight: 600;
+        .profile-action-row button {
+            flex: 1;
+            min-width: 0;
+            padding: 12px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
             transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
             white-space: nowrap;
-        }
-
-        @media (max-width: 260px) {
-            .switch-d {
-                flex-direction: column;
-                flex-wrap: wrap;
-            }
-
-            .switch-d button {
-                width: min(220px, 80vw);
-            }
-        }
-
-
-        .switch-d button:hover {
-            transform: translateY(-3px);
-        }
-
-        .link-card,
-        .switch-d button {
+            cursor: pointer;
             user-select: none;
-        }
-
-        .link-card,
-        .switch-d button {
             -webkit-tap-highlight-color: transparent;
         }
 
-        .switch-d button:active {
-            transform: scale(0.98);
-            box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.3);
+        .floating-trigger-button {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.98), rgba(37, 99, 235, 0.96));
+            color: #ffffff;
+            border: 1px solid rgba(59, 130, 246, 0.9);
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.18);
+        }
+
+        .copy-link-button {
+            background: rgba(255, 255, 255, 0.16);
+            color: inherit;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+        }
+
+        body.bright .copy-link-button {
+            background: #edf3ff;
+            border: 1px solid rgba(37, 99, 235, 0.14);
+            color: #0f172a;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+        }
+
+        @media (hover: hover) {
+            .profile-action-row button:hover,
+            .floating-trigger-button:hover,
+            .copy-link-button:hover {
+                transform: translateY(-2px) scale(1.02);
+                box-shadow: 0 10px 18px rgba(37, 99, 235, 0.16);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .top-navbar-inner {
+                min-height: 52px;
+                padding: 6px 18px;
+            }
+
+            .top-navbar + .biodata {
+                margin-top: 52px;
+            }
+
+            .copy-link-button:active,
+            .floating-trigger-button:active,
+            .profile-action-row button:active {
+                transform: scale(0.96);
+                box-shadow: 0 4px 10px rgba(37, 99, 235, 0.12);
+            }
+        }
+
+        .theme-toggle-footer {
+            display: none;
+        }
+
+        .theme-toggle-btn {
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.04);
+            color: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .theme-toggle-btn i {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        body.bright .theme-toggle-btn {
+            border-color: rgba(15, 23, 42, 0.12);
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        @media (max-width: 300px) {
+            .profile-action-row {
+                flex-direction: column;
+            }
+
+            .profile-action-row button {
+                width: min(220px, 80vw);
+                font-size: 12px;
+            }
+
+            .theme-toggle-btn {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                min-height: 42px;
+                border-radius: 999px;
+                flex-shrink: 0;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .profile-action-row button {
+                font-size: 12.5px;
+                padding: 11px 12px;
+            }
+        }
+
+        @media (max-width: 270px) {
+            #floatingTriggerButton {
+                font-size: 11.5px;
+                padding: 10px 8px;
+            }
         }
 
 
@@ -526,9 +747,25 @@
             transform: scale(.9);
         }
 
-        body.bright .switch-d button {
+        body.bright .profile-action-row button,
+        body.bright .theme-toggle-btn {
             border-color: rgba(0, 0, 0, 0.14);
             background: rgba(37, 99, 235, 0.08);
+            box-shadow: none;
+        }
+
+        body.bright .floating-trigger-button {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(37, 99, 235, 0.8) !important;
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.12) !important;
+        }
+
+        body.bright .copy-link-button {
+            background: #e7efff;
+            border: 1px solid rgba(37, 99, 235, 0.18);
+            color: #0f172a;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
         }
 
         body.bright {
@@ -633,7 +870,8 @@
         }
 
         @media (min-width: 601px) {
-            .switch-d button {
+            .profile-action-row button,
+            .theme-toggle-btn {
                 cursor: pointer;
             }
         }
@@ -648,11 +886,15 @@
 
             }
 
+            .bio {
+                font-size: 14px;
+            }
+
             .biodata {
 
                 padding: 15px;
 
-                gap: 15px;
+                gap: 10px;
 
             }
 
@@ -662,6 +904,21 @@
 
                 height: 90px;
 
+            }
+
+            .profile-actions {
+                margin-top: 2px;
+            }
+
+            .profile-action-row button,
+            .theme-toggle-btn {
+                min-height: 42px;
+                height: 42px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
 
             h1 {
@@ -674,6 +931,14 @@
 
                 padding: 12px;
 
+            }
+
+            .link-text p {
+                font-size: 13px;
+            }
+
+            .username {
+                font-size: 14px;
             }
 
             .link-icon {
@@ -694,7 +959,7 @@
 
             .link-text p {
 
-                font-size: 11px;
+                font-size: 12px;
 
             }
 
@@ -716,8 +981,39 @@
             }
         }
 
+        @media (max-width: 600px) {
+            .connect-title h2 {
+                font-size: 12px;
+                letter-spacing: 3px;
+            }
+        }
+
         @media (max-width: 303px) {
             .profile-img {
+                display: none;
+            }
+        }
+
+        @media (max-width: 200px) {
+            #typ::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 230px) {
+            .link-card {
+                justify-content: space-between;
+                padding: 10px 12px;
+                width: 100%;
+            }
+
+            .link-icon {
+                display: none;
+            }
+        }
+
+        @media (max-width: 100px) {
+            .link-text {
                 display: none;
             }
         }
@@ -732,7 +1028,7 @@
             gap: 4px;
             margin-top: 2px;
             color: rgba(219, 219, 219, 0.85);
-            font-size: 13px;
+            font-size: 15px;
             line-height: 1.2;
             font-weight: 500;
             letter-spacing: 0.01em;
@@ -1048,7 +1344,7 @@
         }
 
         body:not(.bright) .floating-comment-widget {
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.155);
             box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 18px 34px rgba(0, 0, 0, 0.18);
         }
 
@@ -1433,8 +1729,8 @@
                 border-left: none;
                 border-right: none;
                 border-bottom: none;
-                border-top: 1px solid rgba(255, 255, 255, 0.08);
-                box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.04), 0 -10px 22px rgba(0, 0, 0, 0.18);
+                border-top: 1px solid rgba(255, 255, 255, 0.144);
+                box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.066), 0 -10px 22px rgba(0, 0, 0, 0.18);
             }
 
             .floating-comment-widget.hidden {
@@ -1513,31 +1809,49 @@
 
     <div id="app">
 
+        <header class="top-navbar" aria-label="Main navigation">
+            <div class="top-navbar-inner">
+                <div class="top-navbar-brand">WAHYUNA</div>
+                <button id="th" class="theme-toggle-btn" type="button" aria-label="Toggle dark mode">
+                    <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                </button>
+            </div>
+        </header>
+
         <div class="biodata">
 
-            <img class="profile-img" src="wahyuna.jpeg">
+            <div class="profile-main">
+                <img class="profile-img" src="wahyuna.jpeg">
 
-            <div class="text">
+                <div class="text">
 
-                <h1 id="typ">Wahyuna</h1>
-                <div class="username" aria-label="Username and verified">
-                    <span class="handle">its.wahyuna</span>
-                    <span class="verified" aria-hidden="true"><i class="fa-solid fa-check"
-                            aria-hidden="true"></i></span>
+                    <h1 id="typ">Wahyuna</h1>
+                    <div class="username" aria-label="Username and verified">
+                        <span class="handle">its.wahyuna</span>
+                        <span class="verified" aria-hidden="true"><i class="fa-solid fa-check"
+                                aria-hidden="true"></i></span>
+                    </div>
+
+                    <div class="minat">
+
+                        <p class="minat-item">Radiology</p>
+
+                        <p class="minat-item">Investor</p>
+
+                    </div>
+
                 </div>
+            </div>
 
-                <p class="bio">
-                    I want to explore the universe.
-                </p>
+            <p class="bio">
+                I want to explore the universe.
+            </p>
 
-                <div class="minat">
-
-                    <p class="minat-item">Radiology</p>
-
-                    <p class="minat-item">Investor</p>
-
+            <div class="profile-actions">
+                <div class="profile-action-row">
+                    <button type="button" id="floatingTriggerButton" class="floating-trigger-button">Message</button>
+                    <button type="button" id="copyLinkButton" class="copy-link-button">Copy Link</button>
                 </div>
-
             </div>
 
         </div>
@@ -1603,13 +1917,6 @@
 
         </div>
 
-
-
-        <div class="switch-d">
-            <button id="th">Dark mode</button>
-            <button type="button" id="floatingTriggerButton" class="floating-trigger-button">Message</button>
-        </div>
-
         <footer class="site-footer" aria-label="Site hak-cipta">
             <div class="footer-inner">
                 <p>© 2026 Wahyuna</p>
@@ -1669,6 +1976,7 @@
     <script>
         const themeBtn = document.getElementById("th");
         const floatingTriggerButton = document.getElementById("floatingTriggerButton");
+        const copyLinkButton = document.getElementById("copyLinkButton");
         const typing = document.getElementById("typ");
         const text = "Hi, I'm Wahyuna.";
 
@@ -1682,20 +1990,28 @@
         }
 
         function updateThemeButton() {
+            const icon = themeBtn.querySelector('i');
+            if (!icon) return;
+
             if (document.body.classList.contains("bright")) {
-                themeBtn.textContent = "Dark mode";
+                icon.className = 'fa-solid fa-moon';
+                themeBtn.setAttribute('aria-label', 'Switch to dark mode');
             } else {
-                themeBtn.textContent = "Light mode";
+                icon.className = 'fa-solid fa-sun';
+                themeBtn.setAttribute('aria-label', 'Switch to light mode');
             }
             updateThemeColor();
         }
 
         function saveThemePreference() {
-            localStorage.setItem('wahyuna-theme', document.body.classList.contains('bright') ? 'bright' : 'dark');
+            const nextMode = document.body.classList.contains('bright') ? 'bright' : 'dark';
+            localStorage.setItem('modea', nextMode);
+            localStorage.removeItem('mode');
+            localStorage.removeItem('wahyuna-theme');
         }
 
         function loadThemePreference() {
-            const savedTheme = localStorage.getItem('wahyuna-theme');
+            const savedTheme = localStorage.getItem('modea') ?? localStorage.getItem('mode') ?? localStorage.getItem('wahyuna-theme');
 
             if (savedTheme === 'dark') {
                 document.body.classList.remove('bright');
@@ -1728,8 +2044,30 @@
             updateThemeColor();
         });
 
+        let lastScrollY = window.scrollY;
+        let scrollHideTimer;
+
+        function updateNavbarState() {
+            document.body.classList.toggle('scrolled', window.scrollY > 12);
+        }
+
+        window.addEventListener('scroll', () => {
+            updateNavbarState();
+        }, { passive: true });
+
+        copyLinkButton?.addEventListener('click', async () => {
+            const url = window.location.href;
+            try {
+                await navigator.clipboard.writeText(url);
+                showToast('Profile link copied');
+            } catch {
+                showToast('Failed to copy');
+            }
+        });
+
         applyInitialTheme();
         updateThemeColor();
+        updateNavbarState();
 
         const profileImg = document.querySelector('.profile-img');
         const imageModal = document.getElementById('imageModal');
@@ -1764,30 +2102,64 @@
 
         let i = 0;
         let deleting = false;
+        let typeTimer = null;
+
+        function stopTypingLoop() {
+            if (typeTimer) {
+                clearTimeout(typeTimer);
+                typeTimer = null;
+            }
+        }
+
+        function startTypingLoop() {
+            stopTypingLoop();
+            i = 0;
+            deleting = false;
+            type();
+        }
 
         function type() {
+            if (!typing) return;
+
+            if (window.innerWidth <= 200) {
+                stopTypingLoop();
+                typing.textContent = text;
+                return;
+            }
+
             if (!deleting) {
                 typing.textContent = text.substring(0, i + 1);
                 i++;
                 if (i <= text.length) {
-                    setTimeout(type, 120);
+                    typeTimer = setTimeout(type, 120);
                 } else {
                     deleting = true;
-                    setTimeout(type, 2000);
+                    typeTimer = setTimeout(type, 2000);
                 }
             } else {
                 typing.textContent = text.substring(0, i - 1);
                 i--;
                 if (i > 0) {
-                    setTimeout(type, 70);
+                    typeTimer = setTimeout(type, 70);
                 } else {
                     deleting = false;
-                    setTimeout(type, 300);
+                    typeTimer = setTimeout(type, 300);
                 }
             }
         }
 
-        type();
+        function syncTypingState() {
+            if (window.innerWidth <= 200) {
+                stopTypingLoop();
+                typing.textContent = text;
+                return;
+            }
+
+            startTypingLoop();
+        }
+
+        window.addEventListener('resize', syncTypingState);
+        syncTypingState();
 
 
         (function () {
@@ -1846,7 +2218,9 @@
         function updateFloatingLabelText() {
             const compactLabel = window.innerWidth <= 160 ? 'Msg' : 'Message';
             if (floatingCommentTitleText) floatingCommentTitleText.textContent = compactLabel;
-            if (floatingTriggerButton) floatingTriggerButton.textContent = 'Message';
+            if (floatingTriggerButton) {
+                floatingTriggerButton.textContent = window.innerWidth < 380 ? 'Message' : 'Anonymous Message';
+            }
             if (floatingSubmitText) floatingSubmitText.textContent = 'Send';
         }
 
