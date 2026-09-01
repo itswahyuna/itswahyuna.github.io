@@ -2658,18 +2658,17 @@
         // Auto-translate feature based on user's browser language
         (async function initAutoTranslate() {
             const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-            const supportedLangs = ['id', 'en'];
             const langMap = {
-                'es': 'es', 'fr': 'fr', 'de': 'de', 'it': 'it', 'ja': 'ja', 'ko': 'ko',
+                'id': 'id', 'en': 'en', 'es': 'es', 'fr': 'fr', 'de': 'de', 'it': 'it', 'ja': 'ja', 'ko': 'ko',
                 'pt': 'pt', 'ru': 'ru', 'zh': 'zh', 'ar': 'ar', 'th': 'th', 'vi': 'vi'
             };
             
-            // Only translate if user's language is not Indonesian or English
-            if (supportedLangs.includes(userLang)) {
+            const targetLang = langMap[userLang] || 'en';
+            
+            // Skip translation if target is English (page is already in English)
+            if (targetLang === 'en') {
                 return;
             }
-
-            const targetLang = langMap[userLang] || userLang;
             
             try {
                 // Get all text nodes except WAHYUNA brand
