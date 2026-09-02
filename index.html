@@ -1901,10 +1901,34 @@
             cursor: pointer;
             padding: 2px 4px;
             transition: color 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            user-select: none;
+            outline: none;
         }
 
-        .footer-link-btn:hover {
-            color: rgba(255, 255, 255, 0.9);
+        @media (hover: hover) and (pointer: fine) {
+            .footer-link-btn:hover {
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            body.bright .footer-link-btn:hover {
+                color: rgba(17, 17, 17, 0.9);
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .footer-link-btn:active {
+                color: rgba(255, 255, 255, 0.75);
+                opacity: 0.65;
+                transform: scale(0.96);
+            }
+
+            body.bright .footer-link-btn:active {
+                color: rgba(17, 17, 17, 0.75);
+                opacity: 0.65;
+                transform: scale(0.96);
+            }
         }
 
         .footer-divider {
@@ -1916,9 +1940,7 @@
             color: rgba(17, 17, 17, 0.55);
         }
 
-        body.bright .footer-link-btn:hover {
-            color: rgba(17, 17, 17, 0.9);
-        }
+
 
         body.bright .footer-divider {
             color: rgba(17, 17, 17, 0.25);
@@ -1992,12 +2014,13 @@
             line-height: 1.55;
             color: rgba(255, 255, 255, 0.8);
             -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
             scrollbar-width: thin;
             scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
         }
 
         .modal-body::-webkit-scrollbar {
-            width: 5px;
+            width: 3px;
         }
 
         .modal-body::-webkit-scrollbar-track {
@@ -2006,7 +2029,12 @@
 
         .modal-body::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            border-radius: 999px;
+            min-height: 30px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.35);
         }
 
         .modal-footer {
@@ -2064,11 +2092,15 @@
 
         body.bright .modal-body {
             color: rgba(0, 0, 0, 0.75);
-            scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+            scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
         }
 
         body.bright .modal-body::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.18);
+        }
+
+        body.bright .modal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.28);
         }
 
         body.bright .modal-close-btn {
@@ -2081,6 +2113,30 @@
         body.bright .modal-close-btn:active {
             background-color: rgba(0, 0, 0, 0.05) !important;
             opacity: 0.7;
+        }
+
+        @media (max-width: 600px) {
+            .modal-body {
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+
+            .modal-body::-webkit-scrollbar {
+                width: 3px;
+            }
+
+            .modal-body::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .modal-body::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 999px;
+            }
+
+            body.bright .modal-body::-webkit-scrollbar-thumb {
+                background: rgba(0, 0, 0, 0.18);
+            }
         }
     </style>
 
