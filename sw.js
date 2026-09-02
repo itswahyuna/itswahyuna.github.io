@@ -3,6 +3,8 @@ console.log("versi cache=" + CACHE_NAME);
 const CACHE_FILES = [ 
     "./", 
     "./index.html", 
+    "./main.js",
+    "./main.css",
     "./wahyuna.jpeg", 
     "./instagram.webp", 
     "./github.webp", 
