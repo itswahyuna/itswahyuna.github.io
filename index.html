@@ -205,7 +205,7 @@
             font-family: "Poppins", sans-serif;
         }
 
-        .top-navbar + .biodata {
+        .top-navbar+.biodata {
             margin-top: 64px;
         }
 
@@ -363,21 +363,41 @@
             }
         }
 
+
         .minat {
             display: flex;
-            gap: 8px;
+            gap: 8px 10px;
             flex-wrap: wrap;
-            margin-top: 7px;
+            margin-top: 10px;
         }
 
         .minat-item {
-            padding: 6px 14px;
-            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px 4px 9px;
+            margin: 0;
             font-size: 12px;
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid rgba(255, 255, 255, .25);
-            color: #ddd;
+            font-weight: 500;
+            line-height: 1.2;
+            letter-spacing: 0.03em;
+            color: rgba(220, 225, 235, 0.82);
+            background: rgba(255, 255, 255, 0.045);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-left: 2px solid rgba(59, 131, 246, 0.56);
+            border-radius: 4px;
+            cursor: default;
+            pointer-events: none;
         }
+
+        body.bright .minat-item {
+            background: #f5f7fa;
+            color: #374151;
+            border: 1px solid rgba(17, 24, 39, 0.10);
+            border-left: 2px solid rgba(37, 99, 235, 0.55);
+            border-radius: 4px;
+        }
+
+
 
         .connect {
             margin-top: 25px;
@@ -409,7 +429,7 @@
             gap: 16px;
         }
 
-        .links + .theme-toggle-footer {
+        .links+.theme-toggle-footer {
             margin-top: 28px;
         }
 
@@ -556,6 +576,7 @@
         }
 
         @media (hover: hover) {
+
             .profile-action-row button:hover,
             .floating-trigger-button:hover,
             .copy-link-button:hover {
@@ -578,7 +599,7 @@
                 border-bottom-color: rgba(42, 44, 49, 0.16);
             }
 
-            .top-navbar + .biodata {
+            .top-navbar+.biodata {
                 margin-top: 52px;
             }
 
@@ -919,6 +940,7 @@
         }
 
         @media (min-width: 601px) {
+
             .profile-action-row button,
             .theme-toggle-btn {
                 cursor: pointer;
@@ -1130,7 +1152,7 @@
             border: none;
             border-radius: 50%;
         }
-     
+
 
         .arrow i {
             font-size: 20px;
@@ -1146,8 +1168,9 @@
         }
 
         .site-footer {
-            margin-top: 28px;
+            margin-top: 1px;
             padding: 12px 0;
+            margin-bottom: 10px;
             display: flex;
             justify-content: center;
             background: transparent;
@@ -1859,6 +1882,206 @@
                 margin-right: 0 !important;
             }
         }
+
+        /* modal */
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .footer-link-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 2px 4px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link-btn:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .footer-divider {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        body.bright .footer-link-btn {
+            color: rgba(17, 17, 17, 0.55);
+        }
+
+        body.bright .footer-link-btn:hover {
+            color: rgba(17, 17, 17, 0.9);
+        }
+
+        body.bright .footer-divider {
+            color: rgba(17, 17, 17, 0.25);
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            z-index: 99998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1), visibility 0.3s ease;
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -45%) scale(0.92);
+            width: min(90vw, 420px);
+            max-height: 80vh;
+            background: rgba(25, 25, 30, 0.78);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease, visibility 0.35s ease;
+        }
+
+        .modal-card.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-header {
+            padding: 18px 20px 14px;
+            text-align: center;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 55vh;
+            overflow-y: auto;
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.8);
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .modal-footer {
+            padding: 0;
+            margin: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.18) !important;
+            display: flex;
+            justify-content: center;
+            flex-shrink: 0;
+            background: transparent !important;
+        }
+
+        .modal-close-btn {
+            width: 100%;
+            padding: 14px 16px;
+            background: transparent !important;
+            border: none;
+            border-radius: 0 0 24px 24px;
+            color: #0a84ff;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            cursor: default;
+            outline: none;
+            -webkit-tap-highlight-color: transparent !important;
+            user-select: none;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+        }
+
+        .modal-close-btn:focus,
+        .modal-close-btn:active {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            opacity: 0.7;
+        }
+
+        body.bright .modal-card {
+            background: rgba(245, 245, 247, 0.82);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        body.bright .modal-header {
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body.bright .modal-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.15) !important;
+            background: transparent !important;
+        }
+
+        body.bright .modal-title {
+            color: #000000;
+        }
+
+        body.bright .modal-body {
+            color: rgba(0, 0, 0, 0.75);
+            scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        }
+
+        body.bright .modal-body::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        body.bright .modal-close-btn {
+            background: transparent !important;
+            color: #007aff;
+            border: none;
+        }
+
+        body.bright .modal-close-btn:focus,
+        body.bright .modal-close-btn:active {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+            opacity: 0.7;
+        }
     </style>
 
 
@@ -1988,11 +2211,6 @@
 
         </div>
 
-        <footer class="site-footer" aria-label="Site hak-cipta">
-            <div class="footer-inner">
-                <p>© 2026 Wahyuna</p>
-            </div>
-        </footer>
 
         <div class="image-modal" id="imageModal">
             <div class="image-modal-backdrop" id="modalBackdrop"></div>
@@ -2044,7 +2262,161 @@
 
     <div id="toast" class="toast"></div>
 
+    <footer class="site-footer">
+        <div class="footer-inner" style="flex-direction: column;">
+            <div class="footer-links">
+                <button class="footer-link-btn" onclick="openPolicyModal('Privacy Policy')">Privacy Policy</button>
+                <span class="footer-divider">•</span>
+                <button class="footer-link-btn" onclick="openPolicyModal('Terms of Service')">Terms of Service</button>
+            </div>
+            <p>© 2026 Wahyuna</p>
+        </div>
+    </footer>
+
+    <div class="modal-backdrop" id="policyBackdrop" onclick="closePolicyModal()"></div>
+
+    <div class="modal-card" id="policyModal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="policyModalTitle">Privacy Policy</h3>
+        </div>
+
+        <div class="modal-body" id="privacyPolicyBody">
+            <p>This Privacy Policy explains how we collect, use, and protect your information when you use the anonymous
+                messaging feature on this profile page.</p>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">1. Information We Collect</h4>
+            <p>We collect the following information for the operation of the service:</p>
+            <ul style="padding-left: 18px; margin-bottom: 12px;">
+                <li><b>Message Content:</b> The text or anonymous message you submit through the form.</li>
+                <li><b>Nickname / Anonymous Name:</b> The sender name you optionally or mandatorily provide in the form.
+                </li>
+                <li><b>IP Address & Network Metadata:</b> Your IP address and network information automatically recorded
+                    when a message is submitted.</li>
+            </ul>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">2. How We Use Your Information</h4>
+            <p>The information collected is used solely for the following purposes:</p>
+            <ul style="padding-left: 18px; margin-bottom: 12px;">
+                <li>Receiving and reading anonymous messages sent to the profile owner.</li>
+                <li>Detecting, preventing, and blocking spam, hate speech, or harassment through IP address monitoring.
+                </li>
+            </ul>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">3. Data Storage & Third Parties</h4>
+            <p>This service uses third-party infrastructure for hosting performance and security:</p>
+            <ul style="padding-left: 18px; margin-bottom: 12px;">
+                <li><b>GitHub Pages:</b> Used as the web hosting platform.</li>
+                <li><b>Cloudflare:</b> Used for network security, traffic management, and IP-level bot/spam filtering.
+                </li>
+            </ul>
+            <p>We do not sell or share your personal information with third parties beyond what is necessary for the
+                infrastructure and security purposes described above.</p>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">4. Age Requirement</h4>
+            <p>This service is intended for users who are at least <b>13 years old</b>. If you are under 13, please do
+                not submit messages through this website.</p>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">5. Contact Us</h4>
+            <p>If you have any questions or would like to request the deletion of a specific message or data, you may
+                contact the profile owner via email at: <b>wahyunapub@gmail.com</b>.</p>
+        </div>
+
+
+        <div class="modal-body" id="tosBody" style="display: none;">
+            <p>Using this website and its anonymous messaging feature means you agree to the following Terms of Service.
+            </p>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">1. Use of the Anonymous Messaging
+                Feature</h4>
+            <p>You may send messages anonymously as long as you follow these requirements:</p>
+            <ul style="padding-left: 18px; margin-bottom: 12px;">
+                <li>Do not send content containing hate speech, threats, harassment, discrimination, or
+                    <i>cyberbullying</i>.
+                </li>
+                <li>Do not spread defamation, false information, scams, or unwanted promotional/<i>spam</i> messages.
+                </li>
+                <li>Do not attempt to damage, hack, disrupt, or interfere with the website or its systems.</li>
+            </ul>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">2. Moderation & Enforcement</h4>
+            <p>The profile owner reserves the right to:</p>
+            <ul style="padding-left: 18px; margin-bottom: 12px;">
+                <li>Delete or ignore messages that violate these terms or basic standards of conduct without prior
+                    notice.</li>
+                <li>Block the sender's IP address if repeated spam or abuse of the messaging feature is detected.</li>
+                <li>Report messages containing potentially criminal content to the appropriate authorities, along with
+                    the available IP metadata.</li>
+            </ul>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">3. Disclaimer</h4>
+            <p>This service is provided free of charge and on an "as is" basis. The website owner is not responsible for
+                the content of messages submitted by anonymous third-party users.</p>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">4. Copyright & Intellectual Property
+            </h4>
+            <p>All designs, code, text, and visual elements on this profile page are owned by the website owner
+                (Wahyuna), except for open-source components and third-party icons used in accordance with their
+                respective licenses.</p>
+
+            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">5. Contact Us</h4>
+            <p>Questions or reports regarding violations of these terms can be sent via email to:
+                <b>wahyunapub@gmail.com</b>.
+            </p>
+        </div>
+
+
+
+        <div class="modal-footer">
+            <button class="modal-close-btn" onclick="closePolicyModal()">Close</button>
+        </div>
+    </div>
+
+
+
     <script>
+        function openPolicyModal(title) {
+            const titleElement = document.getElementById('policyModalTitle');
+            const privacy = document.getElementById('privacyPolicyBody');
+            const tos = document.getElementById('tosBody');
+            const backdrop = document.getElementById('policyBackdrop');
+            const modal = document.getElementById('policyModal');
+
+            if (!titleElement || !privacy || !tos || !backdrop || !modal) return;
+
+            titleElement.innerText = title;
+
+            if (title === 'Terms of Service') {
+                privacy.style.display = 'none';
+                tos.style.display = 'block';
+            } else {
+                privacy.style.display = 'block';
+                tos.style.display = 'none';
+            }
+
+            backdrop.classList.add('open');
+            modal.classList.add('open');
+
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePolicyModal() {
+            const backdrop = document.getElementById('policyBackdrop');
+            const modal = document.getElementById('policyModal');
+
+            if (!backdrop || !modal) return;
+
+            backdrop.classList.remove('open');
+            modal.classList.remove('open');
+
+            document.body.style.overflow = '';
+        }
+    </script>
+
+
+
+    <script>
+
+
         const themeBtn = document.getElementById("th");
         const floatingTriggerButton = document.getElementById("floatingTriggerButton");
         const copyLinkButton = document.getElementById("copyLinkButton");
