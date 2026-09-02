@@ -20,10 +20,22 @@ async function nos() {
         ) {
             const total = result.total;
 
+            let frmtd;
+
+            if (total >= 1000000) {
+                frmtd = `${(total / 1000000).toFixed(1)}M`;
+            } else if (total >= 10000) {
+                frmtd = `${Math.round(total / 1000)}K`;
+            } else if (total >= 1000) {
+                frmtd = `${(total / 1000).toFixed(1)}K`;
+            } else {
+                frmtd = total.toString();
+            }
+
             const text =
                 total === 1
-                    ? "1 anonymous message to Wahyuna"
-                    : `${total} anonymous messages to Wahyuna`;
+                    ? `${frmtd} anonymous message to Wahyuna`
+                    : `${frmtd} anonymous messages to Wahyuna`;
 
             sender(text);
 
