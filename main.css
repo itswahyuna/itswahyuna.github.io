@@ -2065,8 +2065,8 @@
         position: fixed;
         top: 13px;
         left: 50%;
-        width: calc(100% - 24px);
-        max-width: 390px;
+        width: max-content;
+        max-width: min(390px, calc(100% - 24px));
         padding: 11px 14px;
         display: flex;
         align-items: center;
@@ -2117,6 +2117,7 @@
         font-weight: 500;
         letter-spacing: -0.01em;
         color: rgba(255, 255, 255, 0.94);
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
