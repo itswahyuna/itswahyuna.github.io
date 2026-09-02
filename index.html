@@ -2064,11 +2064,33 @@
             transition: background-color 0.2s ease, opacity 0.2s ease;
         }
 
-        .modal-close-btn:focus,
-        .modal-close-btn:active {
+        .modal-close-btn {
+            -webkit-tap-highlight-color: transparent;
             outline: none;
-            background-color: rgba(255, 255, 255, 0.08) !important;
-            opacity: 0.7;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .modal-close-btn:hover {
+                background-color: rgba(255, 255, 255, 0.12) !important;
+                opacity: 0.75;
+            }
+
+            body.bright .modal-close-btn:hover {
+                background-color: rgba(0, 0, 0, 0.10) !important;
+                opacity: 0.7;
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .modal-close-btn:active {
+                background-color: rgba(255, 255, 255, 0.08) !important;
+                opacity: 0.7;
+            }
+
+            body.bright .modal-close-btn:active {
+                background-color: rgba(0, 0, 0, 0.12) !important;
+                opacity: 0.65;
+            }
         }
 
         body.bright .modal-card {
@@ -2109,11 +2131,7 @@
             border: none;
         }
 
-        body.bright .modal-close-btn:focus,
-        body.bright .modal-close-btn:active {
-            background-color: rgba(0, 0, 0, 0.05) !important;
-            opacity: 0.7;
-        }
+
 
         @media (max-width: 600px) {
             .modal-body {
@@ -2325,7 +2343,7 @@
                 <span class="footer-divider">•</span>
                 <button class="footer-link-btn" onclick="openPolicyModal('Terms of Service')">Terms of Service</button>
             </div>
-            <p>© 2026 Wahyuna</p>
+            <p style="margin-top: 7px;">© 2026 Wahyuna</p>
         </div>
     </footer>
 
@@ -2343,9 +2361,11 @@
             <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">1. Information We Collect</h4>
             <p>We collect the following information for the operation of the service:</p>
             <ul style="padding-left: 18px; margin-bottom: 12px;">
-                <li><b>Message Content</b> <br/>The text or anonymous message you submit through the form.</li>
-<li><b>Nickname / Anonymous Name</b> <br/>The sender name you optionally or mandatorily provide in the form.</li>
-<li><b>IP Address & Network Metadata</b> <br/>Your IP address and network information automatically recorded when a message is submitted.</li>
+                <li><b>Message Content</b> <br />The text or anonymous message you submit through the form.</li>
+                <li><b>Nickname / Anonymous Name</b> <br />The sender name you optionally or mandatorily provide in the
+                    form.</li>
+                <li><b>IP Address & Network Metadata</b> <br />Your IP address and network information automatically
+                    recorded when a message is submitted.</li>
             </ul>
 
             <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">2. How We Use Your Information</h4>
@@ -2359,8 +2379,9 @@
             <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">3. Data Storage & Third Parties</h4>
             <p>This service uses third-party infrastructure for hosting performance and security:</p>
             <ul style="padding-left: 18px; margin-bottom: 12px;">
-                <li><b>GitHub Pages</b> <br/>Used as the web hosting platform.</li>
-                <li><b>Cloudflare</b> <br/>Used for network security, traffic management, and IP-level bot/spam filtering.
+                <li><b>GitHub Pages</b> <br />Used as the web hosting platform.</li>
+                <li><b>Cloudflare</b> <br />Used for network security, traffic management, and IP-level bot/spam
+                    filtering.
                 </li>
             </ul>
             <p>We do not sell or share your personal information with third parties beyond what is necessary for the
