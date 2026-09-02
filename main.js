@@ -221,7 +221,7 @@ function toastt(text) {
 
     toast.timer = setTimeout(() => {
         toast.classList.remove("show");
-    }, 2000);
+    }, 2600);
 }
 
 
