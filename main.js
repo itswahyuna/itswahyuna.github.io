@@ -645,7 +645,7 @@ floatingCommentForm.addEventListener('submit', async (event) => {
             return;
         }
 
-        const isSpam = error.message === 'terdeteksi spam';
+        const isSpam = error.message === 'spam detected';
         const isDailyLimit = error.message === 'You have already sent 3 messages today';
 
         if (isSpam || isDailyLimit) {
