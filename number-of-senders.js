@@ -22,8 +22,8 @@ async function nos() {
 
             const text =
                 total === 1
-                    ? "1 person sent an anonymous message to Wahyuna"
-                    : `${total} people sent anonymous messages to Wahyuna`;
+                    ? "1 anonymous message to Wahyuna"
+                    : `${total} anonymous messages to Wahyuna`;
 
             sender(text);
 
