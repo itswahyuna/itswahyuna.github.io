@@ -19,7 +19,7 @@
                     !cts
                 ) {
                     cts = true;
-                    showToast("using offline mode");
+                    toastt("using offline mode");
                 }
             });
         }
@@ -142,7 +142,7 @@
             </div>
 
             <p class="bio">
-                
+
                 I want to explore the universe.
             </p>
 
@@ -351,7 +351,8 @@
                 <li>Delete or ignore messages that violate these terms or basic standards of conduct without prior
                     notice.</li>
                 <li>Block the sender's IP address if repeated spam or abuse of the messaging feature is detected.</li>
-                <li>Report messages containing potentially criminal content to the appropriate authorities, along with the available IP data.</li>
+                <li>Report messages containing potentially criminal content to the appropriate authorities, along with
+                    the available IP data.</li>
             </ul>
 
             <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">3. Disclaimer</h4>
@@ -375,6 +376,12 @@
         </div>
     </div>
 
+    <div id="senderToast" class="sender-toast">
+        <div class="sender-icon">
+            <i class="fa-solid fa-comment"></i>
+        </div>
+        <div class="sender-text"></div>
+    </div>
 
 
     <script>
@@ -419,6 +426,7 @@
 
 
     <script src="main.js"></script>
+    <script src="number-of-senders.js"></script>
 
 </body>
 
