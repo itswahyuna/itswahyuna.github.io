@@ -1,10 +1,10 @@
-const themeBtn = document.getElementById("th");
+const mode_button = document.getElementById("th");
 const floatingTriggerButton = document.getElementById("floatingTriggerButton");
 const copyLinkButton = document.getElementById("copyLinkButton");
 const typing = document.getElementById("typ");
 const text = "Hi, I'm Wahyuna.";
 
-function updateThemeColor() {
+function change_mode() {
     const metaThemes = document.querySelectorAll('meta[name="theme-color"]');
     if (!metaThemes.length) return;
     const color = document.body.classList.contains('bright') ? '#ffffff' : '#010203';
@@ -13,28 +13,28 @@ function updateThemeColor() {
     });
 }
 
-function updateThemeButton() {
-    const icon = themeBtn.querySelector('i');
+function change_modee() {
+    const icon = mode_button.querySelector('i');
     if (!icon) return;
 
     if (document.body.classList.contains("bright")) {
         icon.className = 'fa-solid fa-moon';
-        themeBtn.setAttribute('aria-label', 'Switch to dark mode');
+        mode_button.setAttribute('aria-label', 'Switch to dark mode');
     } else {
         icon.className = 'fa-solid fa-sun';
-        themeBtn.setAttribute('aria-label', 'Switch to light mode');
+        mode_button.setAttribute('aria-label', 'Switch to light mode');
     }
-    updateThemeColor();
+    change_mode();
 }
 
-function saveThemePreference() {
+function save_mode() {
     const nextMode = document.body.classList.contains('bright') ? 'bright' : 'dark';
     localStorage.setItem('modea', nextMode);
     localStorage.removeItem('mode');
     localStorage.removeItem('wahyuna-theme');
 }
 
-function loadThemePreference() {
+function load_mode() {
     const savedTheme = localStorage.getItem('modea') ?? localStorage.getItem('mode') ?? localStorage.getItem('wahyuna-theme');
 
     if (savedTheme === 'dark') {
@@ -56,16 +56,16 @@ function loadThemePreference() {
     document.body.classList.add('bright');
 }
 
-function applyInitialTheme() {
-    loadThemePreference();
-    updateThemeButton();
+function _apply_() {
+    load_mode();
+    change_modee();
 }
 
-themeBtn.addEventListener("click", () => {
+mode_button.addEventListener("click", () => {
     document.body.classList.toggle("bright");
-    saveThemePreference();
-    updateThemeButton();
-    updateThemeColor();
+    save_mode();
+    change_modee();
+    change_mode();
 });
 
 let lastScrollY = window.scrollY;
@@ -89,8 +89,8 @@ copyLinkButton?.addEventListener('click', async () => {
     }
 });
 
-applyInitialTheme();
-updateThemeColor();
+_apply_();
+change_mode();
 updateNavbarState();
 
 const profileImg = document.querySelector('.profile-img');

@@ -37,7 +37,9 @@ async function nos() {
                     ? `${frmtd} anonymous message to Wahyuna`
                     : `${frmtd} anonymous messages to Wahyuna`;
 
-            sender(text);
+            setTimeout(() => {
+                sender(text);
+            }, 1500);
 
             sessionStorage.setItem("number_of_senders", "true");
         }
