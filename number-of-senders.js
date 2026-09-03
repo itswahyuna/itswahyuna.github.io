@@ -1,5 +1,9 @@
+let visitor_count_text = "";
+
 async function nos() {
-    if (sessionStorage.getItem("number_of_senders") === "true") {
+    if (sessionStorage.getItem("visitors") !== null) {
+        visitor_count_text = sessionStorage.getItem("visitors");
+        document.getElementById("visitors").innerText = vstrs(Number(visitor_count_text));
         return;
     }
 
@@ -7,7 +11,10 @@ async function nos() {
         const response = await fetch(
             "https://wahyunaserver.wahyunadragon.workers.dev/number-of-senders",
             {
-                method: "GET"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
             }
         );
 
@@ -16,9 +23,18 @@ async function nos() {
         if (
             response.ok &&
             result.success === true &&
-            typeof result.total === "number"
+            typeof result.visitors === "number" &&
+            typeof result.totalMessages === "number"
         ) {
-            const total = result.total;
+            const visitors = result.visitors;
+            const total = result.totalMessages;
+
+            sessionStorage.setItem("visitors", visitors.toString());
+
+            visitor_count_text = visitors.toString();
+
+            document.getElementById("visitors").innerText =
+                vstrs(visitors);
 
             let frmtd;
 
@@ -40,12 +56,22 @@ async function nos() {
             setTimeout(() => {
                 sender(text);
             }, 1500);
-
-            sessionStorage.setItem("number_of_senders", "true");
         }
 
     } catch (error) {
         console.error(error);
+    }
+}
+
+function vstrs(number) {
+    if (number >= 1000000) {
+        return `${(number / 1000000).toFixed(1)}M visitors`;
+    } else if (number >= 10000) {
+        return `${Math.round(number / 1000)}K visitors`;
+    } else if (number >= 1000) {
+        return `${(number / 1000).toFixed(1)}K visitors`;
+    } else {
+        return `${number} visitors`;
     }
 }
 

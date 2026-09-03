@@ -2140,3 +2140,18 @@
     body.bright .sender-text {
         color: #1c1c1e;
     }
+
+    /* visitors */
+ .visitors {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 400;
+    user-select: none;
+    transition: color 0.3s ease;
+    color: rgba(194, 192, 192, 0.85);
+}
+
+body.bright .visitors {
+    color: rgba(84, 83, 83, 0.8);
+}
