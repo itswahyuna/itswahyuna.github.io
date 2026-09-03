@@ -81,11 +81,21 @@ window.addEventListener('scroll', () => {
 
 copyLinkButton?.addEventListener('click', async () => {
     const url = window.location.href;
-    try {
-        await navigator.clipboard.writeText(url);
-        toastt('Profile link copied');
-    } catch {
-        toastt('Failed to copy');
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: document.title,
+                url: url
+            });
+        } catch (error) {
+            // User membatalkan share
+            if (error.name !== 'AbortError') {
+                toastt('Failed to share');
+            }
+        }
+    } else {
+        toastt('Sharing is not supported');
     }
 });
 
