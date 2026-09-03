@@ -13,33 +13,68 @@ document.addEventListener('DOMContentLoaded', () => {
             el.style.margin = '0';
             el.style.zIndex = '9999';
 
-            let y = rect.top;
-            let velocity = 0;
-            const gravity = 0.8;
-            const bounce = 0.45;
-            const floor = window.innerHeight - rect.height;
+            el.dataset.x = rect.left;
+            el.dataset.y = rect.top;
+            el.dataset.vx = 0;
+            el.dataset.vy = 0;
+        });
 
-            setTimeout(() => {
-                function fall() {
-                    velocity += gravity;
-                    y += velocity;
+        let gravityX = 0;
+        let gravityY = 1;
 
-                    if (y >= floor) {
-                        y = floor;
-                        velocity *= -bounce;
+        window.addEventListener('deviceorientation', event => {
+            gravityX = Math.max(-1, Math.min(1, event.gamma / 45));
+            gravityY = Math.max(-1, Math.min(1, event.beta / 45));
+        });
 
-                        if (Math.abs(velocity) < 1) {
-                            velocity = 0;
-                            return;
-                        }
-                    }
+        function animate() {
+            elements.forEach(el => {
+                let x = parseFloat(el.dataset.x);
+                let y = parseFloat(el.dataset.y);
+                let vx = parseFloat(el.dataset.vx);
+                let vy = parseFloat(el.dataset.vy);
 
-                    el.style.top = `${y}px`;
-                    requestAnimationFrame(fall);
+                vx += gravityX * 0.8;
+                vy += gravityY * 0.8;
+
+                x += vx;
+                y += vy;
+
+                const width = el.offsetWidth;
+                const height = el.offsetHeight;
+
+                if (x < 0) {
+                    x = 0;
+                    vx *= -0.45;
                 }
 
-                fall();
-            }, index * 20);
-        });
+                if (x + width > window.innerWidth) {
+                    x = window.innerWidth - width;
+                    vx *= -0.45;
+                }
+
+                if (y < 0) {
+                    y = 0;
+                    vy *= -0.45;
+                }
+
+                if (y + height > window.innerHeight) {
+                    y = window.innerHeight - height;
+                    vy *= -0.45;
+                }
+
+                el.dataset.x = x;
+                el.dataset.y = y;
+                el.dataset.vx = vx;
+                el.dataset.vy = vy;
+
+                el.style.left = `${x}px`;
+                el.style.top = `${y}px`;
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
     }, 300000);
 });
