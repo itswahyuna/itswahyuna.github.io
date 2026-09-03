@@ -11,6 +11,8 @@ const CACHE_FILES = [
     "./roblox.webp", 
     "./gmail.webp", 
     "./verif.png",
+    "./favicon.ico",
+    "./wahyunaa.jpeg",
 ]; 
 
 const FONT_AWESOME = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"; 
