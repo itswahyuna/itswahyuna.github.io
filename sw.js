@@ -2,7 +2,8 @@ const CACHE_NAME = "itswahyuna-v1.1.2";
 console.log("versi cache=" + CACHE_NAME);
 const CACHE_FILES = [ 
     "./", 
-    "./index.html", 
+    "./index.html",
+    "./manifest.json",
     "./main.js",
     "./main.css",
     "./wahyuna.jpeg", 
