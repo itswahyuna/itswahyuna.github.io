@@ -15,17 +15,20 @@ function change_mode() {
 
 function change_modee() {
     const icon = mode_button.querySelector('i');
-    if (!icon) return;
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+
+    if (!icon || !themeColor) return;
 
     if (document.body.classList.contains("bright")) {
         icon.className = 'fa-solid fa-moon';
         mode_button.setAttribute('aria-label', 'switch to dark mode');
-        document.getElementById("themeColor").setAttribute("content", "#f5f7ff") 
+        themeColor.setAttribute('content', '#f5f7ff');
     } else {
         icon.className = 'fa-solid fa-sun';
         mode_button.setAttribute('aria-label', 'switch to light mode');
-        document.getElementById("themeColor").setAttribute("content", "#03050D ")  
+        themeColor.setAttribute('content', '#03050D');
     }
+
     change_mode();
 }
 
