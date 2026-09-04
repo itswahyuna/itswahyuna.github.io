@@ -30,7 +30,7 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#03050D">
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f7ff">
-    <meta name="description" content="Wahyuna — Connect with Wahyuna's profile and social links.">
+    <meta name="description" content="Wahyuna's personal profile — discover social links, projects, and ways to connect.">
     <meta name="keywords" content="Wahyuna, portfolio, profile, social links, personal website">
     <meta name="author" content="Wahyuna">
     <link rel="canonical" href="https://itswahyuna.github.io/">
@@ -51,6 +51,7 @@
     <meta name="twitter:image" content="https://itswahyuna.github.io/wahyuna.jpeg">
     <title>Wahyuna</title>
     <link rel="favicon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" href="wahyunaa.jpeg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    
@@ -62,14 +63,6 @@
         "url": "https://itswahyuna.github.io/",
         "description": "Connect with Wahyuna's profile and social links.",
         "inLanguage": "en-US",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": {
-                "@type": "EntryPoint",
-                "urlTemplate": "https://itswahyuna.github.io/?q={search_term_string}"
-            },
-            "query-input": "required name=search_term_string"
-        }
     }
     </script>
     <link rel="stylesheet" href="main.css">
@@ -81,7 +74,7 @@
     <div id="pageLoader" class="page-loader" role="status" aria-live="polite">
         <div class="loader-inner">
             <div class="splash-brand">
-                <div class="splash-title" aria-hidden="true">Wahyuna</div>
+                <div class="splash-title" aria-hidden="true" data-nosnippet>Wahyuna</div>
             </div>
 
             <div class="loader-dots" aria-hidden="true">
@@ -96,7 +89,7 @@
 
         <header class="top-navbar" aria-label="Main navigation">
             <div class="top-navbar-inner">
-                <div class="top-navbar-brand" translate="no">WAHYUNA</div>
+                <div class="top-navbar-brand" translate="no" data-nosnippet>WAHYUNA</div>
                 <button id="th" class="theme-toggle-btn" type="button" aria-label="Toggle dark mode">
                     <i class="fa-solid fa-moon" aria-hidden="true"></i>
                 </button>
@@ -113,9 +106,9 @@
                     <h1 id="typ" translate="no">Wahyuna</h1>
                     <div class="username" aria-label="Username and verified">
                         <span class="handle" translate="no">its.wahyuna</span>
-                        <span class="verified" aria-hidden="true"><img src="./verif.png" alt="verified" /></span>
+                        <span class="verified" aria-hidden="true" data-nosnippet><img src="./verif.png" alt="verified" /></span>
                     </div>
-                    <span class="visitors" id="visitors" translate="no"></span>
+                    <span class="visitors" id="visitors" translate="no" data-nosnippet></span>
 
                     <div class="minat">
 
@@ -135,8 +128,8 @@
 
             <div class="profile-actions">
                 <div class="profile-action-row">
-                    <button type="button" id="floatingTriggerButton" class="floating-trigger-button">Message</button>
-                    <button type="button" id="copyLinkButton" class="copy-link-button">Copy Link</button>
+                    <button type="button" id="floatingTriggerButton" class="floating-trigger-button" data-nosnippet>Message</button>
+                    <button type="button" id="copyLinkButton" class="copy-link-button" data-nosnippet>Copy Link</button>
                 </div>
             </div>
 
@@ -148,7 +141,7 @@
 
                 <span></span>
 
-                <h2 class="cwm" style="user-select: none;">CONNECT WITH ME</h2>
+                <h2 class="cwm" style="user-select: none;" data-nosnippet>CONNECT WITH ME</h2>
 
                 <span></span>
 
@@ -204,7 +197,7 @@
         </div>
 
 
-        <div class="image-modal" id="imageModal">
+        <div class="image-modal" id="imageModal" data-nosnippet>
             <div class="image-modal-backdrop" id="modalBackdrop"></div>
             <div class="image-modal-content">
                 <div id="modalLoader" class="modal-loader hidden" aria-hidden="true">
@@ -221,7 +214,7 @@
 
     <div class="floating-comment-overlay hidden" id="floatingCommentOverlay"></div>
 
-    <div class="floating-comment-widget hidden" id="floatingCommentWidget">
+    <div class="floating-comment-widget hidden" id="floatingCommentWidget" data-nosnippet>
         <div class="floating-comment-header" id="floatingCommentHeader">
             <div class="floating-comment-title">
                 <span id="floatingCommentTitleText">Message</span>
@@ -232,29 +225,29 @@
             </button>
         </div>
 
-        <form class="floating-comment-form" id="floatingCommentForm">
+        <form class="floating-comment-form" id="floatingCommentForm" data-nosnippet>
             <input type="hidden" name="device" id="deviceInput" value="">
 
-            <label class="floating-field">
+            <label class="floating-field" data-nosnippet>
                 <span>Name</span>
                 <input type="text" id="floatingNameInput" maxlength="100" placeholder="Enter your anonymous name">
             </label>
 
-            <label class="floating-field">
+            <label class="floating-field" data-nosnippet>
                 <span>Message</span>
                 <textarea name="message" rows="3" maxlength="1000"
                     placeholder="Enter your anonymous message"></textarea>
             </label>
 
-            <div class="floating-actions">
+            <div class="floating-actions" data-nosnippet>
                 <button type="submit" class="floating-primary" id="floatingSubmitText">Send</button>
             </div>
         </form>
     </div>
 
-    <div id="toast" class="toast"></div>
+    <div id="toast" class="toast" data-nosnippet></div>
 
-    <footer class="site-footer">
+    <footer class="site-footer" data-nosnippet>
         <div class="footer-inner" style="flex-direction: column;">
             <div class="footer-links">
                 <button class="footer-link-btn" onclick="openPolicyModal('Privacy Policy')">Privacy Policy</button>
@@ -267,12 +260,12 @@
 
     <div class="modal-backdrop" id="policyBackdrop" onclick="closePolicyModal()"></div>
 
-    <div class="modal-card" id="policyModal">
+    <div class="modal-card" id="policyModal" data-nosnippet>
         <div class="modal-header">
             <h3 class="modal-title" id="policyModalTitle">Privacy Policy</h3>
         </div>
 
-        <div class="modal-body" id="privacyPolicyBody">
+        <div class="modal-body" id="privacyPolicyBody" data-nosnippet>
             <p>This Privacy Policy explains how we collect, use, and protect your information when you use the anonymous
                 messaging feature on this profile page.</p>
 
@@ -316,7 +309,7 @@
         </div>
 
 
-        <div class="modal-body" id="tosBody" style="display: none;">
+        <div class="modal-body" id="tosBody" style="display: none;" data-nosnippet>
             <p>Using this website and its anonymous messaging feature means you agree to the following Terms of Service.
             </p>
 
