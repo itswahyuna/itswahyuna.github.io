@@ -19,10 +19,12 @@ function change_modee() {
 
     if (document.body.classList.contains("bright")) {
         icon.className = 'fa-solid fa-moon';
-        mode_button.setAttribute('aria-label', 'Switch to dark mode');
+        mode_button.setAttribute('aria-label', 'switch to dark mode');
+        document.getElementById("themeColor").setAttribute("content", "#f5f7ff") 
     } else {
         icon.className = 'fa-solid fa-sun';
-        mode_button.setAttribute('aria-label', 'Switch to light mode');
+        mode_button.setAttribute('aria-label', 'switch to light mode');
+        document.getElementById("themeColor").setAttribute("content", "#03050D ")  
     }
     change_mode();
 }
