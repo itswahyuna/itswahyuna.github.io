@@ -409,9 +409,13 @@ function setSentHistoryOpen(isOpen) {
     if (isOpen) {
         sentHistoryBaseHeight = currentHeight;
         requestAnimationFrame(() => {
+            if (!floatingCommentWidget.classList.contains('show-sent-history')) return;
+
             const isMobile = window.innerWidth <= 600;
             const maxHeight = window.innerHeight * (isMobile ? 0.88 : 0.92);
-            const desiredHeight = isMobile ? window.innerHeight : Math.min(maxHeight, 720);
+            const desiredHeight = isMobile
+                ? Math.max(0, window.innerHeight - 12)
+                : Math.min(maxHeight, 720);
             floatingCommentWidget.style.height = `${desiredHeight}px`;
         });
     } else {

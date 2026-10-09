@@ -2086,10 +2086,8 @@
         }
 
         .floating-comment-widget.show-sent-history {
-            height: 100vh;
-            height: 100dvh;
-            max-height: 100vh;
-            max-height: 100dvh;
+            max-height: calc(100vh - 12px);
+            max-height: calc(100dvh - 12px);
             overflow: hidden;
         }
 
