@@ -2529,6 +2529,7 @@
     display: inline-flex;
     align-items: center;
     font-size: 12px;
+    line-height: 1.1;
     font-weight: 400;
     user-select: none;
     transition: color 0.3s ease;
