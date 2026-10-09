@@ -411,7 +411,7 @@ function setSentHistoryOpen(isOpen) {
         requestAnimationFrame(() => {
             const isMobile = window.innerWidth <= 600;
             const maxHeight = window.innerHeight * (isMobile ? 0.88 : 0.92);
-            const desiredHeight = Math.min(maxHeight, 720);
+            const desiredHeight = isMobile ? window.innerHeight : Math.min(maxHeight, 720);
             floatingCommentWidget.style.height = `${desiredHeight}px`;
         });
     } else {
