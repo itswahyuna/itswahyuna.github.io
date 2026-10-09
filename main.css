@@ -1363,10 +1363,6 @@
             flex: 0 0 auto;
         }
 
-        .floating-comment-widget.show-sent-history .sent-history {
-            flex: 1 1 auto;
-            max-height: min(58vh, 420px, calc(92vh - 300px));
-        }
     }
 
     @keyframes sheetOpenAnimation {
@@ -1601,9 +1597,13 @@
         pointer-events: none;
     }
 
+    .floating-comment-widget.show-sent-history {
+        overflow: hidden;
+    }
+
     .floating-comment-widget.show-sent-history .sent-history {
         position: absolute;
-        inset: -1px;
+        inset: 0;
         max-height: none;
         margin: 0;
         border-radius: inherit;
@@ -1659,17 +1659,28 @@
         flex: 0 0 auto;
         position: relative;
         min-height: 40px;
-        margin: 0 -16px;
         padding: 0 38px 14px;
         color: rgba(255, 255, 255, 0.94);
         font-size: 17px;
         font-weight: 650;
         letter-spacing: -0.02em;
+        border-bottom: 0;
+    }
+
+    .sent-history-header::after {
+        content: "";
+        position: absolute;
+        right: -16px;
+        bottom: 0;
+        left: -16px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     body.bright .sent-history-header {
         color: #17191f;
+    }
+
+    body.bright .sent-history-header::after {
         border-bottom-color: rgba(15, 23, 42, 0.08);
     }
 
