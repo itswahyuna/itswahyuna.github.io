@@ -227,6 +227,11 @@ syncTypingState();
 function toastt(text) {
     const toast = document.getElementById("toast");
 
+    if (!toast) {
+        console.error("Toast element is missing");
+        return;
+    }
+
     toast.textContent = text;
     toast.classList.add("show");
 
@@ -235,6 +240,11 @@ function toastt(text) {
     toast.timer = setTimeout(() => {
         toast.classList.remove("show");
     }, 2600);
+}
+
+if (window.__pendingOfflineCacheToast) {
+    window.__pendingOfflineCacheToast = false;
+    window.notifyOfflineCacheUsed?.();
 }
 
 

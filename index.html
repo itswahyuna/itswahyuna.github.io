@@ -5,6 +5,17 @@
     <script>
         if ("serviceWorker" in navigator) {
             let cts = false;
+            window.notifyOfflineCacheUsed = function () {
+                if (cts) return;
+                if (typeof window.toastt !== "function") {
+                    window.__pendingOfflineCacheToast = true;
+                    return;
+                }
+
+                cts = true;
+                window.toastt("using offline mode");
+            };
+
             navigator.serviceWorker.register("./sw.js")
                 .catch(error => {
                     console.error(error);
@@ -15,8 +26,7 @@
                     event.data?.type === "CACHE_USED" &&
                     !cts
                 ) {
-                    cts = true;
-                    toastt("using offline mode");
+                    window.notifyOfflineCacheUsed();
                 }
             });
         }
