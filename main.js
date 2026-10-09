@@ -34,13 +34,13 @@ function change_modee() {
 
 function save_mode() {
     const nextMode = document.body.classList.contains('bright') ? 'bright' : 'dark';
-    localStorage.setItem('modea', nextMode);
-    localStorage.removeItem('mode');
+    localStorage.setItem('mode', nextMode);
+    localStorage.removeItem('modea');
     localStorage.removeItem('wahyuna-theme');
 }
 
 function load_mode() {
-    const savedTheme = localStorage.getItem('modea') ?? localStorage.getItem('mode') ?? localStorage.getItem('wahyuna-theme');
+    const savedTheme = localStorage.getItem('mode') ?? localStorage.getItem('modea') ?? localStorage.getItem('wahyuna-theme');
 
     if (savedTheme === 'dark') {
         document.body.classList.remove('bright');
