@@ -22,11 +22,11 @@ function change_modee() {
     if (document.body.classList.contains("bright")) {
         icon.className = 'fa-solid fa-moon';
         mode_button.setAttribute('aria-label', 'switch to dark mode');
-        themeColor.setAttribute('content', '#f5f7ff');
+        themeColor.setAttribute('content', '#ffffff');
     } else {
         icon.className = 'fa-solid fa-sun';
         mode_button.setAttribute('aria-label', 'switch to light mode');
-        themeColor.setAttribute('content', '#03050D');
+        themeColor.setAttribute('content', '#010203');
     }
 
     change_mode();
@@ -240,9 +240,207 @@ const floatingSubmitText = document.getElementById('floatingSubmitText');
 const floatingTextarea = floatingCommentForm?.querySelector('textarea');
 const floatingNameInput = document.getElementById('floatingNameInput');
 const floatingSubmitButton = document.getElementById('floatingSubmitText');
+const sentHistoryToggle = document.getElementById('sentHistoryToggle');
+const sentHistory = document.getElementById('sentHistory');
+const sentHistoryList = document.getElementById('sentHistoryList');
+const sentHistoryClose = document.getElementById('sentHistoryClose');
+const historyDeleteBackdrop = document.getElementById('historyDeleteBackdrop');
+const historyDeleteCancel = document.getElementById('historyDeleteCancel');
+const historyDeleteConfirm = document.getElementById('historyDeleteConfirm');
 let floatingCommentOpenTimer = null;
 let floatingCommentCloseTimer = null;
 let floatingCommentIsOpen = false;
+let sentHistoryBaseHeight = null;
+let sentHistoryResizeTimer = null;
+let historyDeleteTargetIndex = null;
+let historyDeleteTrigger = null;
+
+function escapeHTML(value) {
+    const element = document.createElement('span');
+    element.textContent = String(value ?? '');
+    return element.innerHTML;
+}
+
+function formatSentMessageTime(timestamp) {
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime())) return 'Unknown time';
+
+    const elapsedSeconds = Math.max(0, (Date.now() - date.getTime()) / 1000);
+    if (elapsedSeconds < 60) return 'Just now';
+
+    const relativeTime = new Intl.RelativeTimeFormat('en', { numeric: 'always' });
+    if (elapsedSeconds < 60 * 60) {
+        return relativeTime.format(-Math.floor(elapsedSeconds / 60), 'minute');
+    }
+    if (elapsedSeconds < 24 * 60 * 60) {
+        return relativeTime.format(-Math.floor(elapsedSeconds / (60 * 60)), 'hour');
+    }
+    if (elapsedSeconds < 30 * 24 * 60 * 60) {
+        return relativeTime.format(-Math.floor(elapsedSeconds / (24 * 60 * 60)), 'day');
+    }
+    if (elapsedSeconds < 60 * 24 * 60 * 60) {
+        return relativeTime.format(-1, 'month');
+    }
+
+    return new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(date);
+}
+
+function renderSentMessageHistory() {
+    if (!sentHistoryList) return;
+
+    let messages;
+    try {
+        messages = JSON.parse(localStorage.getItem('anonymous-messages') || '[]');
+    } catch (error) {
+        console.error('Failed to read sent message history:', error);
+        sentHistoryList.innerHTML = '<p class="sent-history-empty">Unable to load sent messages.</p>';
+        return;
+    }
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+        sentHistoryList.innerHTML = '<p class="sent-history-empty">You haven’t sent any messages from this device yet.</p>';
+        return;
+    }
+
+    sentHistoryList.innerHTML = messages.map((item, index) => `
+        <div class="sent-history-item" data-message-index="${index}">
+            <article class="sent-history-card">
+                <div class="sent-history-card-top">
+                    <strong>${escapeHTML(item?.name || 'Anonymous')}</strong>
+                    <time>${escapeHTML(formatSentMessageTime(item?.timestamp))}</time>
+                    <button type="button" class="sent-history-delete" aria-label="Delete this message">
+                        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <p>${escapeHTML(item?.message || '')}</p>
+                <span class="sent-history-device">${escapeHTML(item?.device || 'Unknown device')}</span>
+            </article>
+        </div>
+    `).reverse().join('');
+}
+
+function openHistoryDeleteDialog(index, trigger) {
+    if (!historyDeleteBackdrop || !Number.isInteger(index)) return;
+
+    historyDeleteTargetIndex = index;
+    historyDeleteTrigger = trigger;
+    historyDeleteBackdrop.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    historyDeleteCancel?.focus();
+}
+
+function closeHistoryDeleteDialog() {
+    if (!historyDeleteBackdrop) return;
+
+    historyDeleteBackdrop.classList.add('hidden');
+    document.body.style.overflow = floatingCommentIsOpen ? 'hidden' : '';
+    historyDeleteTargetIndex = null;
+    historyDeleteTrigger?.focus();
+    historyDeleteTrigger = null;
+}
+
+function deleteHistoryMessage() {
+    if (historyDeleteTargetIndex === null) return;
+
+    try {
+        const messages = JSON.parse(localStorage.getItem('anonymous-messages') || '[]');
+        if (
+            !Array.isArray(messages) ||
+            historyDeleteTargetIndex < 0 ||
+            historyDeleteTargetIndex >= messages.length
+        ) {
+            throw new Error('The selected message is no longer available.');
+        }
+
+        messages.splice(historyDeleteTargetIndex, 1);
+        localStorage.setItem('anonymous-messages', JSON.stringify(messages));
+    } catch (error) {
+        console.error('Failed to delete sent message from local history:', error);
+        toastt('Could not delete this message');
+        closeHistoryDeleteDialog();
+        return;
+    }
+
+    closeHistoryDeleteDialog();
+    renderSentMessageHistory();
+    toastt('Message deleted from your history');
+}
+
+sentHistoryList?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const deleteButton = target.closest('.sent-history-delete');
+    if (!deleteButton) return;
+
+    const item = deleteButton.closest('.sent-history-item');
+    const index = Number(item?.dataset.messageIndex);
+    openHistoryDeleteDialog(index, deleteButton);
+});
+
+historyDeleteCancel?.addEventListener('click', closeHistoryDeleteDialog);
+historyDeleteConfirm?.addEventListener('click', deleteHistoryMessage);
+historyDeleteBackdrop?.addEventListener('click', (event) => {
+    if (event.target === historyDeleteBackdrop) closeHistoryDeleteDialog();
+});
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && historyDeleteBackdrop && !historyDeleteBackdrop.classList.contains('hidden')) {
+        closeHistoryDeleteDialog();
+    }
+});
+
+function setSentHistoryOpen(isOpen) {
+    if (!floatingCommentWidget || !sentHistory || !floatingCommentForm || !sentHistoryToggle) return;
+
+    const isCurrentlyOpen = floatingCommentWidget.classList.contains('show-sent-history');
+    if (isOpen === isCurrentlyOpen) return;
+
+    clearTimeout(sentHistoryResizeTimer);
+    const currentHeight = floatingCommentWidget.getBoundingClientRect().height;
+    floatingCommentWidget.style.height = `${currentHeight}px`;
+
+    if (isOpen) renderSentMessageHistory();
+    floatingCommentWidget.classList.toggle('show-sent-history', isOpen);
+    sentHistory.classList.toggle('hidden', !isOpen);
+    sentHistory.setAttribute('aria-hidden', String(!isOpen));
+    sentHistoryToggle.setAttribute('aria-expanded', String(isOpen));
+    sentHistoryToggle.setAttribute('aria-label', isOpen ? 'Hide sent messages' : 'Show sent messages');
+
+    if (isOpen) {
+        sentHistoryBaseHeight = currentHeight;
+        requestAnimationFrame(() => {
+            const isMobile = window.innerWidth <= 600;
+            const maxHeight = window.innerHeight * (isMobile ? 0.88 : 0.92);
+            const desiredHeight = Math.min(maxHeight, 720);
+            floatingCommentWidget.style.height = `${desiredHeight}px`;
+        });
+    } else {
+        const targetHeight = sentHistoryBaseHeight ?? currentHeight;
+        requestAnimationFrame(() => {
+            floatingCommentWidget.style.height = `${targetHeight}px`;
+        });
+        sentHistoryResizeTimer = window.setTimeout(() => {
+            if (floatingCommentWidget.classList.contains('closing')) return;
+            floatingCommentWidget.style.height = '';
+            sentHistoryBaseHeight = null;
+        }, 800);
+    }
+}
+
+sentHistoryToggle?.addEventListener('click', () => {
+    setSentHistoryOpen(!floatingCommentWidget?.classList.contains('show-sent-history'));
+});
+sentHistoryClose?.addEventListener('click', () => setSentHistoryOpen(false));
+floatingCommentWidget?.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('#sentHistoryToggle')) return;
+
+    if (
+        floatingCommentWidget.classList.contains('show-sent-history') &&
+        !sentHistory?.contains(event.target)
+    ) {
+        setSentHistoryOpen(false);
+    }
+});
 
 function updateFloatingLabelText() {
     const compactLabel = window.innerWidth <= 160 ? 'Msg' : 'Message';
@@ -269,6 +467,8 @@ function validateFloatingForm() {
 
 function setFloatingCommentOpen(isOpen) {
     if (!floatingCommentWidget) return;
+
+    if (!isOpen) setSentHistoryOpen(false);
 
     const isMobile = window.innerWidth <= 600;
     const transformValues = isMobile ? {
@@ -486,7 +686,14 @@ floatingTriggerButton?.addEventListener('click', () => {
     setFloatingCommentOpen(true);
 });
 floatingCommentClose.addEventListener('click', () => setFloatingCommentOpen(false));
-floatingCommentOverlay.addEventListener('click', () => setFloatingCommentOpen(false));
+floatingCommentOverlay.addEventListener('click', () => {
+    if (floatingCommentWidget?.classList.contains('show-sent-history')) {
+        setSentHistoryOpen(false);
+        return;
+    }
+
+    setFloatingCommentOpen(false);
+});
 floatingNameInput?.addEventListener('input', validateFloatingForm);
 floatingTextarea?.addEventListener('input', () => {
     autoGrowTextarea();
@@ -559,8 +766,8 @@ function saveSentMessage(name, message, device) {
     messages.push({
         name: name,
         message: message,
-        device: device,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        device: device
     });
 
     localStorage.setItem(storageKey, JSON.stringify(messages));

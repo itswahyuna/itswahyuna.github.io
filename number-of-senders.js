@@ -1,9 +1,62 @@
-let visitor_count_text = "";
+const statsStorageKey = "__x7f3a91c2b6e4d8a__";
+
+function formatCount(number) {
+    if (number >= 1000000) {
+        return `${(number / 1000000).toFixed(1)}M`;
+    } else if (number >= 10000) {
+        return `${Math.round(number / 1000)}K`;
+    } else if (number >= 1000) {
+        return `${(number / 1000).toFixed(1)}K`;
+    }
+
+    return number.toString();
+}
+
+function renderStats(stats) {
+    const visitorsElement = document.getElementById("visitors");
+    const messagesElement = document.getElementById("anonymous-messages");
+
+    if (visitorsElement) {
+        visitorsElement.textContent = `${formatCount(stats.visitors)} visitors`;
+    }
+
+    if (!messagesElement) return;
+    const messageLabel = stats.totalMessages === 1
+        ? "anonymous message"
+        : "anonymous messages";
+
+    messagesElement.textContent = `${formatCount(stats.totalMessages)} ${messageLabel}`;
+}
+
+function getCachedStats() {
+    try {
+        const savedStats = localStorage.getItem(statsStorageKey);
+        if (savedStats === null) return null;
+
+        const stats = JSON.parse(savedStats);
+        if (
+            typeof stats?.visitors === "number" &&
+            Number.isFinite(stats.visitors) &&
+            stats.visitors >= 0 &&
+            typeof stats.totalMessages === "number" &&
+            Number.isFinite(stats.totalMessages) &&
+            stats.totalMessages >= 0
+        ) {
+            return stats;
+        }
+
+        console.warn("Ignoring invalid cached visitor statistics.");
+    } catch (error) {
+        console.error("Failed to read cached visitor statistics:", error);
+    }
+
+    return null;
+}
 
 async function nos() {
-    if (sessionStorage.getItem("visitors") !== null) {
-        visitor_count_text = sessionStorage.getItem("visitors");
-        document.getElementById("visitors").innerText = vstrs(Number(visitor_count_text));
+    if (!navigator.onLine) {
+        const cachedStats = getCachedStats();
+        if (cachedStats) renderStats(cachedStats);
         return;
     }
 
@@ -17,62 +70,48 @@ async function nos() {
                 }
             }
         );
-
         const result = await response.json();
 
         if (
             response.ok &&
             result.success === true &&
             typeof result.visitors === "number" &&
-            typeof result.totalMessages === "number"
+            Number.isFinite(result.visitors) &&
+            result.visitors >= 0 &&
+            typeof result.totalMessages === "number" &&
+            Number.isFinite(result.totalMessages) &&
+            result.totalMessages >= 0
         ) {
-            const visitors = result.visitors;
-            const total = result.totalMessages;
+            const stats = {
+                visitors: result.visitors,
+                totalMessages: result.totalMessages
+            };
 
-            sessionStorage.setItem("visitors", visitors.toString());
+            renderStats(stats);
 
-            visitor_count_text = visitors.toString();
-
-            document.getElementById("visitors").innerText =
-                vstrs(visitors);
-
-            let frmtd;
-
-            if (total >= 1000000) {
-                frmtd = `${(total / 1000000).toFixed(1)}M`;
-            } else if (total >= 10000) {
-                frmtd = `${Math.round(total / 1000)}K`;
-            } else if (total >= 1000) {
-                frmtd = `${(total / 1000).toFixed(1)}K`;
-            } else {
-                frmtd = total.toString();
+            try {
+                localStorage.setItem(statsStorageKey, JSON.stringify(stats));
+            } catch (error) {
+                console.error("Failed to cache visitor statistics:", error);
             }
 
-            const text =
-                total === 1
-                    ? `${frmtd} anonymous message to Wahyuna`
-                    : `${frmtd} anonymous messages to Wahyuna`;
+            const messageLabel = stats.totalMessages === 1
+                ? "anonymous message to Wahyuna"
+                : "anonymous messages to Wahyuna";
 
             setTimeout(() => {
-                sender(text);
+                sender(`${formatCount(stats.totalMessages)} ${messageLabel}`);
             }, 1500);
+            return;
         }
 
+        console.error("The server returned invalid visitor statistics.");
     } catch (error) {
-        console.error(error);
+        console.error("Failed to fetch visitor statistics:", error);
     }
-}
 
-function vstrs(number) {
-    if (number >= 1000000) {
-        return `${(number / 1000000).toFixed(1)}M visitors`;
-    } else if (number >= 10000) {
-        return `${Math.round(number / 1000)}K visitors`;
-    } else if (number >= 1000) {
-        return `${(number / 1000).toFixed(1)}K visitors`;
-    } else {
-        return `${number} visitors`;
-    }
+    const cachedStats = getCachedStats();
+    if (cachedStats) renderStats(cachedStats);
 }
 
 nos();
