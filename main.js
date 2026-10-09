@@ -40,7 +40,15 @@ function save_mode() {
 }
 
 function load_mode() {
-    const savedTheme = localStorage.getItem('mode') ?? localStorage.getItem('modea') ?? localStorage.getItem('wahyuna-theme');
+    const savedTheme = localStorage.getItem('mode') ??
+        localStorage.getItem('modea') ??
+        localStorage.getItem('wahyuna-theme');
+
+    if (savedTheme === 'dark' || savedTheme === 'bright') {
+        localStorage.setItem('mode', savedTheme);
+    }
+    localStorage.removeItem('modea');
+    localStorage.removeItem('wahyuna-theme');
 
     if (savedTheme === 'dark') {
         document.body.classList.remove('bright');

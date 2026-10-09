@@ -1,4 +1,6 @@
 const statsStorageKey = "__x7f3a91c2b6e4d8a__";
+const statsSessionKey = `${statsStorageKey}-fetched`;
+let statsFetchAttempted = false;
 
 function formatCount(number) {
     if (number >= 1000000) {
@@ -54,10 +56,25 @@ function getCachedStats() {
 }
 
 async function nos() {
-    if (!navigator.onLine) {
-        const cachedStats = getCachedStats();
-        if (cachedStats) renderStats(cachedStats);
+    const cachedStats = getCachedStats();
+    if (cachedStats) renderStats(cachedStats);
+
+    let fetchedThisSession = false;
+    try {
+        fetchedThisSession = sessionStorage.getItem(statsSessionKey) === "true";
+    } catch (error) {
+        console.error(error);
+    }
+
+    if (fetchedThisSession || statsFetchAttempted || !navigator.onLine) {
         return;
+    }
+
+    statsFetchAttempted = true;
+    try {
+        sessionStorage.setItem(statsSessionKey, "true");
+    } catch (error) {
+        console.error(error);
     }
 
     try {
@@ -108,9 +125,6 @@ async function nos() {
     } catch (error) {
         console.error(error);
     }
-
-    const cachedStats = getCachedStats();
-    if (cachedStats) renderStats(cachedStats);
 }
 
 nos();
