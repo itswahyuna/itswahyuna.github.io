@@ -1,4 +1,4 @@
-const CACHE_NAME = "itswahyuna-v1.1.7";
+const CACHE_NAME = "itswahyuna-v1.1.8";
 console.log("versi cache=" + CACHE_NAME);
 const CACHE_FILES = [ 
     "./", 
@@ -9,7 +9,6 @@ const CACHE_FILES = [
     "./assets/wahyuna-i.png",
     "./main.js",
     "./number-of-senders.js",
-    "./grav.js",
     "./main.css",
     "./assets/wahyuna.jpeg",
     "./assets/instagram.webp",
