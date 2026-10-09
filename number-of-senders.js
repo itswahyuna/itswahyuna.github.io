@@ -45,9 +45,9 @@ function getCachedStats() {
             return stats;
         }
 
-        console.warn("Ignoring invalid cached visitor statistics.");
+
     } catch (error) {
-        console.error("Failed to read cached visitor statistics:", error);
+        console.error(error);
     }
 
     return null;
@@ -92,7 +92,7 @@ async function nos() {
             try {
                 localStorage.setItem(statsStorageKey, JSON.stringify(stats));
             } catch (error) {
-                console.error("Failed to cache visitor statistics:", error);
+                console.error(error);
             }
 
             const messageLabel = stats.totalMessages === 1
@@ -105,9 +105,8 @@ async function nos() {
             return;
         }
 
-        console.error("The server returned invalid visitor statistics.");
     } catch (error) {
-        console.error("Failed to fetch visitor statistics:", error);
+        console.error(error);
     }
 
     const cachedStats = getCachedStats();

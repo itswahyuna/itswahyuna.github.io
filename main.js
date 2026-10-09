@@ -292,7 +292,7 @@ function renderSentMessageHistory() {
     try {
         messages = JSON.parse(localStorage.getItem('anonymous-messages') || '[]');
     } catch (error) {
-        console.error('Failed to read sent message history:', error);
+        console.error(error);
         sentHistoryList.innerHTML = '<p class="sent-history-empty">Unable to load sent messages.</p>';
         return;
     }
@@ -355,7 +355,7 @@ function deleteHistoryMessage() {
         messages.splice(historyDeleteTargetIndex, 1);
         localStorage.setItem('anonymous-messages', JSON.stringify(messages));
     } catch (error) {
-        console.error('Failed to delete sent message from local history:', error);
+        console.error(error);
         toastt('Could not delete this message');
         closeHistoryDeleteDialog();
         return;

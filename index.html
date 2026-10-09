@@ -7,7 +7,7 @@
             let cts = false;
             navigator.serviceWorker.register("./sw.js")
                 .catch(error => {
-                    console.error("Service worker registration failed:", error);
+                    console.error(error);
                 });
 
             navigator.serviceWorker.addEventListener("message", event => {
@@ -275,9 +275,9 @@
     <footer class="site-footer" data-nosnippet>
         <div class="footer-inner" style="flex-direction: column;">
             <div class="footer-links">
-                <button class="footer-link-btn" onclick="openPolicyModal('Privacy Policy')">Privacy Policy</button>
+                <button class="footer-link-btn" onclick="openPolicyModal('privacy')">Privacy Policy</button>
                 <span class="footer-divider">•</span>
-                <button class="footer-link-btn" onclick="openPolicyModal('Terms of Service')">Terms of Service</button>
+                <button class="footer-link-btn" onclick="openPolicyModal('tos')">Terms of Service</button>
             </div>
             <p style="margin-top: 7px;">© 2026 Wahyuna</p>
         </div>
@@ -287,93 +287,10 @@
 
     <div class="modal-card" id="policyModal" data-nosnippet>
         <div class="modal-header">
-            <h3 class="modal-title" id="policyModalTitle">Privacy Policy</h3>
+            <h3 class="modal-title" id="policyModalTitle"></h3>
         </div>
 
-        <div class="modal-body" id="privacyPolicyBody" data-nosnippet>
-            <p>This Privacy Policy explains how we collect, use, and protect your information when you use the anonymous
-                messaging feature on this profile page.</p>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">1. Information We Collect</h4>
-            <p>We collect the following information for the operation of the service:</p>
-            <ul style="padding-left: 18px; margin-bottom: 12px;">
-                <li>Message Content</li>
-                <li>Nickname / Anonymous Name</li>
-                <li>IP Address</li>
-            </ul>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">2. How We Use Your Information</h4>
-            <p>The information collected is used solely for the following purposes:</p>
-            <ul style="padding-left: 18px; margin-bottom: 12px;">
-                <li>Receiving and reading anonymous messages sent to the profile owner.</li>
-                <li>Detecting, preventing, and blocking spam, hate speech, or harassment.</li>
-            </ul>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">3. Data Storage & Third Parties</h4>
-            <p>This service uses third-party infrastructure for backend processing:</p>
-            <ul style="padding-left: 18px; margin-bottom: 12px;">
-                <li>Cloudflare</li>
-            </ul>
-            <p>We do not sell or share your personal information with third parties beyond what is necessary for the
-                operation and security of the service.</p>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">4. Data Retention</h4>
-            <p>Personal data is retained only for as long as necessary to provide and protect the service.</p>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">5. Your Rights</h4>
-            <p>You may contact the profile owner to request access to or deletion of your personal data, where
-                applicable.</p>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">6. Age Requirement</h4>
-            <p>This service is intended for users who are at least 13 years old. If you are under 13, please do
-                not submit messages through this website.</p>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">7. Contact Us</h4>
-            <p>If you have any questions or would like to request the deletion of a specific message or data, you may
-                contact the profile owner via email at: wahyunapub@gmail.com.</p>
-        </div>
-
-
-        <div class="modal-body" id="tosBody" style="display: none;" data-nosnippet>
-            <p>Using this website and its anonymous messaging feature means you agree to the following Terms of Service.
-            </p>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">1. Use of the Anonymous Messaging
-                Feature</h4>
-            <p>You may send messages anonymously as long as you follow these requirements:</p>
-            <ul style="padding-left: 18px; margin-bottom: 12px;">
-                <li>Do not send content containing hate speech, threats, harassment, discrimination, or
-                    <i>cyberbullying</i>.
-                </li>
-                <li>Do not spread defamation, false information, scams, or unwanted promotional/<i>spam</i> messages.
-                </li>
-                <li>Do not attempt to damage, hack, disrupt, or interfere with the website or its systems.</li>
-            </ul>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">2. Moderation & Enforcement</h4>
-            <p>The profile owner reserves the right to:</p>
-            <ul style="padding-left: 18px; margin-bottom: 12px;">
-                <li>Delete or ignore messages that violate these terms or basic standards of conduct without prior
-                    notice.</li>
-                <li>Block the sender's IP address if repeated spam or abuse of the messaging feature is detected.</li>
-                <li>Report messages containing potentially criminal content to the appropriate authorities, along with
-                    the available IP data.</li>
-            </ul>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">3. Disclaimer</h4>
-            <p>This service is provided free of charge and on an "as is" basis. The website owner is not responsible for
-                the content of messages submitted by anonymous third-party users.</p>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">4. Copyright & Intellectual Property
-            </h4>
-            <p>All designs, code, text, and visual elements on this profile page are owned by the website owner
-                (Wahyuna), except for open-source components and third-party icons used in accordance with their
-                respective licenses.</p>
-
-            <h4 style="margin-top: 16px; margin-bottom: 6px; font-weight: 600;">5. Contact Us</h4>
-            <p>Questions or reports regarding violations of these terms can be sent via email to:
-                wahyunapub@gmail.com.
-            </p>
+        <div class="modal-body" id="policyBody" data-nosnippet aria-live="polite">
         </div>
 
         <div class="modal-footer">
@@ -390,37 +307,165 @@
 
 
     <script>
-        function openPolicyModal(title) {
-            const titleElement = document.getElementById('policyModalTitle');
-            const privacy = document.getElementById('privacyPolicyBody');
-            const tos = document.getElementById('tosBody');
-            const backdrop = document.getElementById('policyBackdrop');
-            const modal = document.getElementById('policyModal');
+        let policyRequestId = 0;
 
-            if (!titleElement || !privacy || !tos || !backdrop || !modal) return;
-
-            titleElement.innerText = title;
-
-            if (title === 'Terms of Service') {
-                privacy.style.display = 'none';
-                tos.style.display = 'block';
-            } else {
-                privacy.style.display = 'block';
-                tos.style.display = 'none';
+        function renderPolicyContent(container, policy) {
+            if (!policy || typeof policy.title !== 'string' || !Array.isArray(policy.blocks)) {
+                throw new Error('error');
             }
 
+            const content = document.createDocumentFragment();
+
+            policy.blocks.forEach(block => {
+                if (block.type === 'heading' && typeof block.text === 'string') {
+                    const heading = document.createElement('h4');
+                    heading.textContent = block.text;
+                    heading.style.margin = '16px 0 6px';
+                    heading.style.fontWeight = '600';
+                    content.appendChild(heading);
+                    return;
+                }
+
+                if (block.type === 'paragraph' && typeof block.text === 'string') {
+                    const paragraph = document.createElement('p');
+                    paragraph.textContent = block.text;
+                    content.appendChild(paragraph);
+                    return;
+                }
+
+                if (block.type === 'list' && Array.isArray(block.items) &&
+                    block.items.every(item => typeof item === 'string')) {
+                    const list = document.createElement('ul');
+                    list.style.paddingLeft = '18px';
+                    list.style.marginBottom = '12px';
+
+                    block.items.forEach(item => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = item;
+                        list.appendChild(listItem);
+                    });
+
+                    content.appendChild(list);
+                    return;
+                }
+
+                throw new Error('error');
+            });
+
+            container.replaceChildren(content);
+        }
+
+        function showPolicyLoading(container) {
+            const loading = document.createElement('div');
+            loading.className = 'policy-skeleton';
+            loading.setAttribute('role', 'status');
+            loading.setAttribute('aria-label', 'Loading policy document');
+            loading.setAttribute('aria-busy', 'true');
+
+            const preview = document.createElement('div');
+            preview.className = 'policy-skeleton-preview';
+            preview.setAttribute('aria-hidden', 'true');
+
+            const skeletonLines = [
+                'title',
+                'line line-long',
+                'line line-medium',
+                'line line-short'
+            ];
+            for (let section = 0; section < 4; section++) {
+                skeletonLines.push(
+                    'heading',
+                    'line line-long',
+                    'line line-medium',
+                    'line line-long',
+                    'line line-short'
+                );
+            }
+
+            skeletonLines.forEach(className => {
+                const line = document.createElement('span');
+                line.className = `policy-skeleton-bar ${className}`;
+                preview.appendChild(line);
+            });
+
+            loading.appendChild(preview);
+            container.replaceChildren(loading);
+        }
+
+        async function openPolicyModal(policyType) {
+            const titleElement = document.getElementById('policyModalTitle');
+            const body = document.getElementById('policyBody');
+            const backdrop = document.getElementById('policyBackdrop');
+            const modal = document.getElementById('policyModal');
+            const policies = {
+                privacy: { title: 'Privacy Policy', path: './assets/pp.json' },
+                tos: { title: 'Terms of Service', path: './assets/tos.json' }
+            };
+            const selectedPolicy = policies[policyType];
+
+            if (!titleElement || !body || !backdrop || !modal) {
+                console.error('error');
+                return;
+            }
+
+            if (!selectedPolicy) {
+                console.error(policyType);
+                return;
+            }
+
+            const requestId = ++policyRequestId;
+            const loadingStartedAt = performance.now();
+            titleElement.textContent = selectedPolicy.title;
+            showPolicyLoading(body);
             backdrop.classList.add('open');
             modal.classList.add('open');
-
             document.body.style.overflow = 'hidden';
+
+            let policy;
+            let loadError;
+
+            try {
+                const response = await fetch(selectedPolicy.path, { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`error`);
+                }
+
+                policy = await response.json();
+            } catch (error) {
+                loadError = error;
+            }
+
+            const loadingDuration = performance.now() - loadingStartedAt;
+            if (loadingDuration < 500) {
+                await new Promise(resolve => setTimeout(resolve, 500 - loadingDuration));
+            }
+
+            if (requestId !== policyRequestId) return;
+            if (loadError) {
+                console.error(loadError);
+                body.textContent = 'error';
+                return;
+            }
+
+            try {
+                renderPolicyContent(body, policy);
+            } catch (error) {
+                console.error(error);
+                body.textContent = 'error';
+            }
         }
 
         function closePolicyModal() {
             const backdrop = document.getElementById('policyBackdrop');
             const modal = document.getElementById('policyModal');
+            const body = document.getElementById('policyBody');
+            const titleElement = document.getElementById('policyModalTitle');
 
             if (!backdrop || !modal) return;
 
+            policyRequestId++;
+            body?.replaceChildren();
+            titleElement?.replaceChildren();
             backdrop.classList.remove('open');
             modal.classList.remove('open');
 

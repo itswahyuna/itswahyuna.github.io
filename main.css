@@ -1587,7 +1587,6 @@
     .floating-comment-content {
         position: relative;
         z-index: 1;
-        transition: opacity 0.18s ease;
     }
 
     .floating-comment-widget.show-sent-history .floating-comment-content {
@@ -1597,6 +1596,9 @@
 
     .floating-comment-widget.show-sent-history {
         overflow: hidden;
+        transition-property: transform, opacity, box-shadow, height;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
     }
 
     .sent-history {
@@ -1619,7 +1621,6 @@
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
         transform: none;
         opacity: 1;
-        transition: opacity 0.18s ease, visibility 0.18s ease;
     }
 
     body.bright .sent-history {
@@ -2306,6 +2307,75 @@
         overscroll-behavior: contain;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+
+    .policy-skeleton {
+        --skeleton-base: rgba(255, 255, 255, 0.09);
+        --skeleton-highlight: rgba(255, 255, 255, 0.2);
+    }
+
+    .policy-skeleton-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 9px;
+    }
+
+    .policy-skeleton-bar {
+        display: block;
+        height: 0.72em;
+        margin: 0;
+        border-radius: 5px;
+        background: linear-gradient(90deg,
+                var(--skeleton-base) 25%,
+                var(--skeleton-highlight) 50%,
+                var(--skeleton-base) 75%);
+        background-size: 200% 100%;
+        animation: policySkeletonShimmer 1.25s ease-in-out infinite;
+    }
+
+    .policy-skeleton-bar.title {
+        width: 48%;
+        margin-bottom: 7px;
+    }
+
+    .policy-skeleton-bar.heading {
+        width: 56%;
+        margin-top: 7px;
+    }
+
+    .policy-skeleton-bar.line-long {
+        width: 100%;
+    }
+
+    .policy-skeleton-bar.line-medium {
+        width: 78%;
+    }
+
+    .policy-skeleton-bar.line-short {
+        width: 52%;
+    }
+
+    @keyframes policySkeletonShimmer {
+        from {
+            background-position: 100% 0;
+        }
+
+        to {
+            background-position: -100% 0;
+        }
+    }
+
+    body.bright .policy-skeleton {
+        --skeleton-base: rgba(0, 0, 0, 0.08);
+        --skeleton-highlight: rgba(0, 0, 0, 0.16);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .policy-skeleton-bar {
+            animation: none;
+            background: var(--skeleton-base);
+        }
     }
 
     .modal-body::-webkit-scrollbar {

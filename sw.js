@@ -17,6 +17,8 @@ const CACHE_FILES = [
     "./assets/gmail.webp",
     "./assets/verif.png",
     "./assets/favicon.ico",
+    "./assets/tos.json",
+    "./assets/pp.json",
 ];
 
 const FA = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
