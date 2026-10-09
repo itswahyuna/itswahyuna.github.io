@@ -1603,7 +1603,7 @@
 
     .floating-comment-widget.show-sent-history .sent-history {
         position: absolute;
-        inset: 0;
+        inset: -1px;
         max-height: none;
         margin: 0;
         border-radius: inherit;
@@ -1659,6 +1659,7 @@
         flex: 0 0 auto;
         position: relative;
         min-height: 40px;
+        margin: 0 -16px;
         padding: 0 38px 14px;
         color: rgba(255, 255, 255, 0.94);
         font-size: 17px;
