@@ -308,6 +308,18 @@
 
     <script>
         let policyRequestId = 0;
+        let policyCloseTimer = null;
+        let policyCloseHandler = null;
+
+        function clearPolicyCloseCleanup(modal) {
+            clearTimeout(policyCloseTimer);
+            policyCloseTimer = null;
+
+            if (policyCloseHandler && modal) {
+                modal.removeEventListener('transitionend', policyCloseHandler);
+                policyCloseHandler = null;
+            }
+        }
 
         function renderPolicyContent(container, policy) {
             if (!policy || typeof policy.title !== 'string' || !Array.isArray(policy.blocks)) {
@@ -414,6 +426,7 @@
             }
 
             const requestId = ++policyRequestId;
+            clearPolicyCloseCleanup(modal);
             const loadingStartedAt = performance.now();
             titleElement.textContent = selectedPolicy.title;
             showPolicyLoading(body);
@@ -464,12 +477,23 @@
             if (!backdrop || !modal) return;
 
             policyRequestId++;
-            body?.replaceChildren();
-            titleElement?.replaceChildren();
             backdrop.classList.remove('open');
             modal.classList.remove('open');
-
             document.body.style.overflow = '';
+
+            clearPolicyCloseCleanup(modal);
+            const resetPolicyContent = event => {
+                if (event && (event.target !== modal || event.propertyName !== 'transform')) return;
+                if (modal.classList.contains('open')) return;
+
+                clearPolicyCloseCleanup(modal);
+                body?.replaceChildren();
+                titleElement?.replaceChildren();
+            };
+
+            policyCloseHandler = resetPolicyContent;
+            modal.addEventListener('transitionend', policyCloseHandler);
+            policyCloseTimer = window.setTimeout(resetPolicyContent, 400);
         }
     </script>
 
