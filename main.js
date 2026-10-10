@@ -303,6 +303,7 @@ const floatingNameInput = document.getElementById('floatingNameInput');
 const floatingSubmitButton = document.getElementById('floatingSubmitText');
 const sentHistoryToggle = document.getElementById('sentHistoryToggle');
 const sentHistory = document.getElementById('sentHistory');
+const sentHistoryHeader = sentHistory?.querySelector('.sent-history-header');
 const sentHistoryList = document.getElementById('sentHistoryList');
 const sentHistoryClose = document.getElementById('sentHistoryClose');
 const historyDeleteBackdrop = document.getElementById('historyDeleteBackdrop');
@@ -315,6 +316,7 @@ let floatingCommentIsOpen = false;
 let ignoreMessageOverlayPopstate = false;
 let sentHistoryBaseHeight = null;
 let sentHistoryResizeTimer = null;
+let sentHistoryDragStartY = null;
 let historyDeleteTargetIndex = null;
 let historyDeleteTrigger = null;
 
@@ -451,7 +453,7 @@ function deleteHistoryMessage() {
 
     closeHistoryDeleteDialog();
     renderSentMessageHistory();
-    toastt('Message deleted from your history');
+    toastt('Message history has been deleted');
 }
 
 sentHistoryList?.addEventListener('click', (event) => {
@@ -495,6 +497,8 @@ function setSentHistoryOpen(isOpen, updateHistory = true) {
     floatingCommentWidget.style.height = `${currentHeight}px`;
 
     if (isOpen) renderSentMessageHistory();
+    sentHistory.classList.remove('is-dragging');
+    sentHistory.style.transform = '';
     floatingCommentWidget.classList.toggle('show-sent-history', isOpen);
     sentHistory.classList.toggle('hidden', !isOpen);
     sentHistory.setAttribute('aria-hidden', String(!isOpen));
@@ -509,7 +513,7 @@ function setSentHistoryOpen(isOpen, updateHistory = true) {
             const isMobile = window.innerWidth <= 600;
             const maxHeight = window.innerHeight * (isMobile ? 0.88 : 0.92);
             const desiredHeight = isMobile
-                ? Math.max(0, window.innerHeight - 12)
+                ? Math.max(0, window.innerHeight - 96)
                 : Math.min(maxHeight, 720);
             floatingCommentWidget.style.height = `${desiredHeight}px`;
         });
@@ -526,10 +530,63 @@ function setSentHistoryOpen(isOpen, updateHistory = true) {
     }
 }
 
+function handleSentHistoryPointerDown(event) {
+    if (!floatingCommentWidget?.classList.contains('show-sent-history')) return;
+    if (event.target instanceof Element && event.target.closest('#sentHistoryClose')) return;
+
+    sentHistoryDragStartY = event.clientY;
+    floatingCommentWidget?.classList.add('history-dragging');
+    sentHistory?.classList.add('is-dragging');
+    event.currentTarget?.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+}
+
+function handleSentHistoryPointerMove(event) {
+    if (sentHistoryDragStartY === null || !sentHistory || !floatingCommentWidget) return;
+
+    const dragDistance = Math.max(0, event.clientY - sentHistoryDragStartY);
+    if (dragDistance === 0) return;
+
+    event.preventDefault();
+    const boundedDragDistance = Math.min(
+        dragDistance,
+        floatingCommentWidget.getBoundingClientRect().height
+    );
+    const horizontalTransform = window.innerWidth <= 600 ? 'translate(0,' : 'translate(-50%,';
+    floatingCommentWidget.style.transform = `${horizontalTransform} ${boundedDragDistance}px)`;
+}
+
+function handleSentHistoryPointerUp(event) {
+    if (sentHistoryDragStartY === null) return;
+
+    const dragDistance = event.clientY - sentHistoryDragStartY;
+    sentHistoryDragStartY = null;
+    floatingCommentWidget?.classList.remove('history-dragging');
+    sentHistory?.classList.remove('is-dragging');
+
+    if (dragDistance > 56) {
+        setSentHistoryOpen(false);
+        if (floatingCommentWidget) floatingCommentWidget.style.transform = '';
+    } else if (floatingCommentWidget) {
+        floatingCommentWidget.style.transform = '';
+    }
+}
+
+function cancelSentHistoryPointer() {
+    sentHistoryDragStartY = null;
+    floatingCommentWidget?.classList.remove('history-dragging');
+    sentHistory?.classList.remove('is-dragging');
+    if (floatingCommentWidget) floatingCommentWidget.style.transform = '';
+}
+
 sentHistoryToggle?.addEventListener('click', () => {
     setSentHistoryOpen(!floatingCommentWidget?.classList.contains('show-sent-history'));
 });
 sentHistoryClose?.addEventListener('click', () => setSentHistoryOpen(false));
+sentHistoryHeader?.addEventListener('pointerdown', handleSentHistoryPointerDown);
+sentHistoryHeader?.addEventListener('pointermove', handleSentHistoryPointerMove);
+sentHistoryHeader?.addEventListener('pointerup', handleSentHistoryPointerUp);
+sentHistoryHeader?.addEventListener('pointercancel', cancelSentHistoryPointer);
 floatingCommentWidget?.addEventListener('click', (event) => {
     if (event.target instanceof Element && event.target.closest('#sentHistoryToggle')) return;
 
