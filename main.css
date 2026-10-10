@@ -1532,8 +1532,8 @@
         width: 100%;
         margin-top: 10px;
         font-size: 15px;
-        font-weight: 700;
-        letter-spacing: 0.02em;
+        font-weight: 600;
+        letter-spacing: -0.02em;
         color: rgba(255, 255, 255, 0.9);
         text-align: center;
     }
@@ -1597,7 +1597,7 @@
     .floating-comment-content {
         position: relative;
         z-index: 1;
-        transition: opacity 0.24s ease;
+        transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .floating-comment-widget.show-sent-history .floating-comment-content {
@@ -1636,12 +1636,15 @@
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
         transform: none;
         opacity: 1;
-        transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.22s ease;
+        transition:
+            transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+            visibility 0s;
     }
 
     body.bright .sent-history {
         border-color: rgba(15, 23, 42, 0.1);
-        background: rgba(245, 247, 255, 0.96);
+        background: rgba(255, 255, 255, 0.97);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
     }
 
@@ -1650,6 +1653,10 @@
         opacity: 0;
         pointer-events: none;
         transform: translateY(18px);
+        transition:
+            transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+            visibility 0s linear 0.32s;
     }
 
     .sent-history.is-dragging {
@@ -1662,66 +1669,60 @@
         justify-content: center;
         flex: 0 0 auto;
         position: relative;
-        min-height: 48px;
-        padding: 8px 38px 10px;
+        padding: 14px 18px 10px;
         color: rgba(255, 255, 255, 0.94);
-        font-size: 17px;
-        font-weight: 500;
-        letter-spacing: -0.025em;
-        border-bottom: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.11);
         cursor: grab;
         touch-action: none;
         -webkit-tap-highlight-color: transparent;
     }
 
     .sent-history-header > span {
-        transform: translateY(5px);
+        margin-top: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
     }
 
     .sent-history-header::before {
         content: "";
         position: absolute;
-        top: 5px;
+        top: 8px;
         left: 50%;
-        width: 36px;
+        width: 46px;
         height: 5px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.24);
+        background: rgba(255, 255, 255, 0.32);
         transform: translateX(-50%);
     }
 
     body.bright .sent-history-header::before {
-        background: rgba(60, 60, 67, 0.22);
+        background: rgba(15, 23, 42, 0.12);
     }
 
     .sent-history-header:active {
         cursor: grabbing;
     }
 
-    .sent-history-header::after {
-        content: "";
-        position: absolute;
-        right: -16px;
-        bottom: 0;
-        left: -16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
     body.bright .sent-history-header {
         color: #17191f;
+        border-bottom-color: rgba(15, 23, 42, 0.1);
     }
 
-    body.bright .sent-history-header::after {
-        border-bottom-color: rgba(15, 23, 42, 0.08);
+    @media (min-width: 601px) {
+        body:not(.bright) .sent-history-header {
+            border-bottom-color: rgba(255, 255, 255, 0.18);
+            padding-bottom: 11px;
+        }
     }
 
     .sent-history-header button {
         display: grid;
         position: absolute;
-        top: 8px;
-        right: 0;
-        width: 32px;
-        height: 32px;
+        top: 50%;
+        right: 14px;
+        width: 30px;
+        height: 30px;
         place-items: center;
         padding: 0;
         border: 0;
@@ -1732,6 +1733,7 @@
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
         transition: background 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
+        transform: translateY(-50%);
     }
 
     body.bright .sent-history-header button {
@@ -1788,9 +1790,9 @@
     .sent-history-card {
         flex: 0 0 auto;
         padding: 14px 15px;
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 18px;
-        background: rgba(120, 120, 128, 0.16);
+        background: rgba(120, 120, 128, 0.24);
         color: rgba(255, 255, 255, 0.88);
         text-align: left;
     }
@@ -2188,6 +2190,10 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .sent-history-header {
+            padding: 14px 16px 10px;
+        }
+
         .floating-comment-header::before {
             background: rgba(255, 255, 255, 0.18);
         }
@@ -2197,6 +2203,11 @@
             letter-spacing: 0.01em;
             margin-top: 10px;
             color: rgba(255, 255, 255, 0.9);
+        }
+
+        .sent-history-header > span {
+            font-size: 14px;
+            letter-spacing: 0.01em;
         }
     }
 
