@@ -1,8 +1,61 @@
 const mode_button = document.getElementById("th");
 const floatingTriggerButton = document.getElementById("floatingTriggerButton");
 const copyLinkButton = document.getElementById("copyLinkButton");
+const copyLinkConfirmBackdrop = document.getElementById('copyLinkConfirmBackdrop');
+const copyLinkConfirmCancel = document.getElementById('copyLinkConfirmCancel');
+const copyLinkConfirm = document.getElementById('copyLinkConfirm');
 const typing = document.getElementById("typ");
 const text = "Hi, I'm Wahyuna.";
+let copyLinkConfirmTrigger = null;
+
+function openCopyLinkConfirmDialog(trigger) {
+    if (!copyLinkConfirmBackdrop) return;
+
+    copyLinkConfirmTrigger = trigger;
+    copyLinkConfirmBackdrop.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    copyLinkConfirmCancel?.focus();
+}
+
+function closeCopyLinkConfirmDialog() {
+    if (!copyLinkConfirmBackdrop) return;
+
+    copyLinkConfirmBackdrop.classList.add('hidden');
+    document.body.style.overflow = floatingCommentIsOpen ? 'hidden' : '';
+    copyLinkConfirmTrigger?.focus();
+    copyLinkConfirmTrigger = null;
+}
+
+async function copyProfileLink() {
+    try {
+        await navigator.clipboard.writeText(window.location.href);
+        toastt('Profile link copied');
+    } catch {
+        toastt('Failed to copy');
+    }
+}
+
+copyLinkButton?.addEventListener('click', () => {
+    openCopyLinkConfirmDialog(copyLinkButton);
+});
+
+copyLinkConfirmCancel?.addEventListener('click', closeCopyLinkConfirmDialog);
+copyLinkConfirm?.addEventListener('click', async () => {
+    closeCopyLinkConfirmDialog();
+    await copyProfileLink();
+});
+copyLinkConfirmBackdrop?.addEventListener('click', (event) => {
+    if (event.target === copyLinkConfirmBackdrop) closeCopyLinkConfirmDialog();
+});
+document.addEventListener('keydown', (event) => {
+    if (
+        event.key === 'Escape' &&
+        copyLinkConfirmBackdrop &&
+        !copyLinkConfirmBackdrop.classList.contains('hidden')
+    ) {
+        closeCopyLinkConfirmDialog();
+    }
+});
 
 function change_mode() {
     const metaThemes = document.querySelectorAll('meta[name="theme-color"]');
@@ -91,16 +144,6 @@ function updateNavbarState() {
 window.addEventListener('scroll', () => {
     updateNavbarState();
 }, { passive: true });
-
-copyLinkButton?.addEventListener('click', async () => {
-    const url = window.location.href;
-    try {
-        await navigator.clipboard.writeText(url);
-        toastt('Profile link copied');
-    } catch {
-        toastt('Failed to copy');
-    }
-});
 
 _apply_();
 change_mode();
@@ -265,13 +308,40 @@ const sentHistoryClose = document.getElementById('sentHistoryClose');
 const historyDeleteBackdrop = document.getElementById('historyDeleteBackdrop');
 const historyDeleteCancel = document.getElementById('historyDeleteCancel');
 const historyDeleteConfirm = document.getElementById('historyDeleteConfirm');
+const messageOverlayHistoryKey = '__messageOverlay';
 let floatingCommentOpenTimer = null;
 let floatingCommentCloseTimer = null;
 let floatingCommentIsOpen = false;
+let ignoreMessageOverlayPopstate = false;
 let sentHistoryBaseHeight = null;
 let sentHistoryResizeTimer = null;
 let historyDeleteTargetIndex = null;
 let historyDeleteTrigger = null;
+
+function getMessageOverlayHistoryLayer() {
+    const state = window.history.state;
+    return state && typeof state === 'object'
+        ? state[messageOverlayHistoryKey]
+        : null;
+}
+
+function pushMessageOverlayHistoryLayer(layer) {
+    const currentState = window.history.state;
+    const state = currentState && typeof currentState === 'object'
+        ? { ...currentState }
+        : {};
+    state[messageOverlayHistoryKey] = layer;
+    window.history.pushState(state, '', window.location.href);
+}
+
+function goBackThroughMessageOverlayHistory() {
+    const layer = getMessageOverlayHistoryLayer();
+    const steps = layer === 'history' ? 2 : layer === 'message' ? 1 : 0;
+    if (!steps) return;
+
+    ignoreMessageOverlayPopstate = true;
+    window.history.go(-steps);
+}
 
 function escapeHTML(value) {
     const element = document.createElement('span');
@@ -407,11 +477,18 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-function setSentHistoryOpen(isOpen) {
+function setSentHistoryOpen(isOpen, updateHistory = true) {
     if (!floatingCommentWidget || !sentHistory || !floatingCommentForm || !sentHistoryToggle) return;
 
     const isCurrentlyOpen = floatingCommentWidget.classList.contains('show-sent-history');
     if (isOpen === isCurrentlyOpen) return;
+
+    if (isOpen) {
+        pushMessageOverlayHistoryLayer('history');
+    } else if (updateHistory && getMessageOverlayHistoryLayer() === 'history') {
+        ignoreMessageOverlayPopstate = true;
+        window.history.back();
+    }
 
     clearTimeout(sentHistoryResizeTimer);
     const currentHeight = floatingCommentWidget.getBoundingClientRect().height;
@@ -490,7 +567,19 @@ function validateFloatingForm() {
 function setFloatingCommentOpen(isOpen) {
     if (!floatingCommentWidget) return;
 
-    if (!isOpen) setSentHistoryOpen(false);
+    if (isOpen) {
+        if (floatingCommentIsOpen && !floatingCommentWidget.classList.contains('hidden')) return;
+        if (!['message', 'history'].includes(getMessageOverlayHistoryLayer())) {
+            pushMessageOverlayHistoryLayer('message');
+        }
+    } else {
+        const widgetWasOpen = floatingCommentIsOpen || !floatingCommentWidget.classList.contains('hidden');
+        if (widgetWasOpen) {
+            const historyIsOpen = floatingCommentWidget.classList.contains('show-sent-history');
+            if (historyIsOpen) setSentHistoryOpen(false, false);
+            goBackThroughMessageOverlayHistory();
+        }
+    }
 
     const isMobile = window.innerWidth <= 600;
     const transformValues = isMobile ? {
@@ -509,8 +598,6 @@ function setFloatingCommentOpen(isOpen) {
     clearTimeout(floatingCommentCloseTimer);
 
     if (isOpen) {
-        if (floatingCommentIsOpen && !floatingCommentWidget.classList.contains('hidden')) return;
-
         floatingCommentWidget.classList.remove('hidden', 'closing');
         floatingCommentWidget.classList.remove('is-opening');
         floatingCommentWidget.style.height = '';
@@ -577,6 +664,22 @@ function setFloatingCommentOpen(isOpen) {
         floatingCommentWidget.style.removeProperty('--sheet-close-height');
     }, closeDuration);
 }
+
+window.addEventListener('popstate', () => {
+    if (ignoreMessageOverlayPopstate) {
+        ignoreMessageOverlayPopstate = false;
+        return;
+    }
+
+    if (floatingCommentWidget?.classList.contains('show-sent-history')) {
+        setSentHistoryOpen(false);
+        return;
+    }
+
+    if (floatingCommentWidget && !floatingCommentWidget.classList.contains('hidden')) {
+        setFloatingCommentOpen(false);
+    }
+});
 
 function autoGrowTextarea() {
     if (!floatingTextarea) return;
@@ -733,9 +836,9 @@ function detectDevice() {
     const ua = navigator.userAgent;
 
     if (/android/i.test(ua)) return 'Android';
-    if (/iphone|ipad|ipod/i.test(ua)) return 'iPhone/iPad/iPod';
+    if (/iphone|ipad|ipod/i.test(ua)) return 'iOS';
     if (/windows/i.test(ua)) return 'Windows';
-    if (/macintosh|mac os x/i.test(ua)) return 'Mac';
+    if (/macintosh|mac os x/i.test(ua)) return 'MacOS';
     if (/linux/i.test(ua)) return 'Linux';
 
     return 'Unknown';
@@ -857,6 +960,7 @@ floatingCommentForm.addEventListener('submit', async (event) => {
 
         markSentToday();
         saveSentMessage(name, message, device);
+        incrementAnonymousMessages();
 
         toastt('The message has been sent.');
 

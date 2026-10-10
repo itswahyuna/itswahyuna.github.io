@@ -55,6 +55,20 @@ function getCachedStats() {
     return null;
 }
 
+function incrementAnonymousMessages() {
+    const stats = getCachedStats();
+    if (!stats) return;
+
+    stats.totalMessages += 1;
+    renderStats(stats);
+
+    try {
+        localStorage.setItem(statsStorageKey, JSON.stringify(stats));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function nos() {
     const cachedStats = getCachedStats();
     if (cachedStats) renderStats(cachedStats);
@@ -99,9 +113,13 @@ async function nos() {
             Number.isFinite(result.totalMessages) &&
             result.totalMessages >= 0
         ) {
+            const latestCachedStats = getCachedStats();
             const stats = {
                 visitors: result.visitors,
-                totalMessages: result.totalMessages
+                totalMessages: Math.max(
+                    result.totalMessages,
+                    latestCachedStats?.totalMessages ?? 0
+                )
             };
 
             renderStats(stats);
