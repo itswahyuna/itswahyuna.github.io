@@ -499,7 +499,7 @@ function setSentHistoryOpen(isOpen, updateHistory = true) {
     sentHistory.classList.toggle('hidden', !isOpen);
     sentHistory.setAttribute('aria-hidden', String(!isOpen));
     sentHistoryToggle.setAttribute('aria-expanded', String(isOpen));
-    sentHistoryToggle.setAttribute('aria-label', isOpen ? 'Hide sent messages' : 'Show sent messages');
+    sentHistoryToggle.setAttribute('aria-label', isOpen ? 'Hide my messages' : 'Show my messages');
 
     if (isOpen) {
         sentHistoryBaseHeight = currentHeight;
