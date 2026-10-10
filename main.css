@@ -1671,7 +1671,6 @@
         position: relative;
         padding: 14px 18px 10px;
         color: rgba(255, 255, 255, 0.94);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.11);
         cursor: grab;
         touch-action: none;
         -webkit-tap-highlight-color: transparent;
@@ -1704,14 +1703,25 @@
         cursor: grabbing;
     }
 
+    .sent-history-header::after {
+        content: "";
+        position: absolute;
+        right: -16px;
+        bottom: 0;
+        left: -16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+    }
+
     body.bright .sent-history-header {
         color: #17191f;
+    }
+
+    body.bright .sent-history-header::after {
         border-bottom-color: rgba(15, 23, 42, 0.1);
     }
 
     @media (min-width: 601px) {
         body:not(.bright) .sent-history-header {
-            border-bottom-color: rgba(255, 255, 255, 0.18);
             padding-bottom: 11px;
         }
     }
