@@ -124,10 +124,10 @@
         display: inline-flex;
         align-items: center;
         font-size: 1.14rem;
-        font-weight: 700;
-        letter-spacing: 0.01em;
+        font-weight: 600;
+        letter-spacing: 0.02em;
         color: inherit;
-        font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive;
+        font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
     }
 
     body.scrolled .top-navbar {
@@ -1885,7 +1885,7 @@
     .history-delete-actions {
         display: flex;
         margin: 0 -22px;
-        border-top: 1px solid rgba(255, 255, 255, 0.18);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .history-delete-actions button {
@@ -1902,12 +1902,12 @@
     }
 
     .history-delete-cancel {
-        border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: #0a84ff;
     }
 
     body.bright .history-delete-actions {
-        border-top-color: rgba(0, 0, 0, 0.15);
+        border-top-color: rgba(0, 0, 0, 0.08);
     }
 
     .history-delete-confirm {
@@ -1919,7 +1919,7 @@
     }
 
     body.bright .history-delete-cancel {
-        border-right-color: rgba(0, 0, 0, 0.15) !important;
+        border-right-color: rgba(0, 0, 0, 0.08) !important;
     }
 
     .history-delete-actions button:active {
