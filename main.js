@@ -1,4 +1,5 @@
 const mode_button = document.getElementById("th");
+const sidebarModeButton = document.getElementById('sidebarThemeToggle');
 const floatingTriggerButton = document.getElementById("floatingTriggerButton");
 const copyLinkButton = document.getElementById("copyLinkButton");
 const copyLinkConfirmBackdrop = document.getElementById('copyLinkConfirmBackdrop');
@@ -67,20 +68,26 @@ function change_mode() {
 }
 
 function change_modee() {
-    const icon = mode_button.querySelector('i');
     const themeColor = document.querySelector('meta[name="theme-color"]');
+    const isBright = document.body.classList.contains('bright');
 
-    if (!icon || !themeColor) return;
+    if (!themeColor) return;
 
-    if (document.body.classList.contains("bright")) {
-        icon.className = 'fa-solid fa-moon';
-        mode_button.setAttribute('aria-label', 'switch to dark mode');
-        themeColor.setAttribute('content', '#ffffff');
-    } else {
-        icon.className = 'fa-solid fa-sun';
-        mode_button.setAttribute('aria-label', 'switch to light mode');
-        themeColor.setAttribute('content', '#010203');
-    }
+    const nextModeIcon = isBright ? 'fa-moon' : 'fa-sun';
+    const nextModeLabel = isBright ? 'Switch to dark mode' : 'Switch to light mode';
+    const themeColorValue = isBright ? '#ffffff' : '#010203';
+    [mode_button, sidebarModeButton].forEach(button => {
+        if (!button) return;
+        const icon = button.querySelector('i');
+        if (icon) {
+            icon.classList.remove('fa-moon', 'fa-sun');
+            icon.classList.add('fa-solid', nextModeIcon);
+        }
+        button.setAttribute('aria-label', nextModeLabel);
+    });
+    const sidebarModeText = sidebarModeButton?.querySelector('span');
+    if (sidebarModeText) sidebarModeText.textContent = isBright ? 'Dark Mode' : 'Light Mode';
+    themeColor.setAttribute('content', themeColorValue);
 
     change_mode();
 }
@@ -127,11 +134,17 @@ function _apply_() {
     change_modee();
 }
 
-mode_button.addEventListener("click", () => {
+function toggleColorMode() {
     document.body.classList.toggle("bright");
     save_mode();
     change_modee();
     change_mode();
+}
+
+mode_button?.addEventListener("click", toggleColorMode);
+sidebarModeButton?.addEventListener('click', () => {
+    toggleColorMode();
+    closeSiteSidebar();
 });
 
 let lastScrollY = window.scrollY;
@@ -722,7 +735,22 @@ function setFloatingCommentOpen(isOpen) {
     }, closeDuration);
 }
 
-window.addEventListener('popstate', () => {
+window.addEventListener('popstate', event => {
+    if (linkSearchIsOpen) {
+        if (
+            linkSearchClosePending ||
+            !event.state ||
+            typeof event.state !== 'object' ||
+            event.state[linkSearchHistoryKey] !== true
+        ) {
+            linkSearchClosePending = false;
+            closeLinkSearch(false);
+        }
+        return;
+    }
+
+    if (linkSearchBackdrop?.classList.contains('open')) return;
+
     if (ignoreMessageOverlayPopstate) {
         ignoreMessageOverlayPopstate = false;
         return;
@@ -1066,71 +1094,574 @@ floatingCommentForm.addEventListener('submit', async (event) => {
     resetFloatingForm();
 });
 
-document.querySelectorAll(".link-card").forEach(card => {
+const linkCards = document.getElementById('linkCards');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const siteSidebar = document.getElementById('siteSidebar');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+const sidebarClose = document.getElementById('sidebarClose');
+const searchToggle = document.getElementById('searchToggle');
+const linkSearchBackdrop = document.getElementById('linkSearchBackdrop');
+const linkSearchInput = document.getElementById('linkSearchInput');
+const linkSearchClose = document.getElementById('linkSearchClose');
+const linkSearchResults = document.getElementById('linkSearchResults');
+const linkActionBackdrop = document.getElementById('linkActionBackdrop');
+const linkActionImageContainer = document.getElementById('linkActionImageContainer');
+const linkActionTitle = document.getElementById('linkActionTitle');
+const linkActionDescription = document.getElementById('linkActionDescription');
+const linkActionCopy = document.getElementById('linkActionCopy');
+const linkActionOpen = document.getElementById('linkActionOpen');
+const linkActionCancel = document.getElementById('linkActionCancel');
+let linkActionCard = null;
+let linkActionTrigger = null;
+let linkActionPreviousOverflow = '';
+const linkSearchHistoryKey = '__linkSearch';
+let linkSearchIsOpen = false;
+let linkSearchClosePending = false;
+let linkCardPressTimer = null;
+let linkCardPressTarget = null;
+let linkCardPressStart = null;
+let linkCardPointerIsDown = false;
+let suppressLinkCardClick = null;
+let suppressLinkCardClickTimer = null;
+let loadedLinkData = [];
+let linkSearchPreviousOverflow = '';
+let sidebarPreviousOverflow = '';
 
-    card.addEventListener("click", function (event) {
-        const href = this.getAttribute("href");
-        if (!href) return;
-        if (event.defaultPrevented) return;
-        if (event.button !== 0) return;
-        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+function openSiteSidebar() {
+    if (!siteSidebar || !sidebarBackdrop || siteSidebar.classList.contains('open')) return;
+
+    sidebarPreviousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    siteSidebar.classList.add('open');
+    siteSidebar.setAttribute('aria-hidden', 'false');
+    sidebarBackdrop.classList.add('open');
+    sidebarBackdrop.setAttribute('aria-hidden', 'false');
+    sidebarToggle?.setAttribute('aria-expanded', 'true');
+    sidebarToggle?.setAttribute('aria-label', 'Close navigation menu');
+    siteSidebar.querySelector('button')?.focus({ preventScroll: true });
+}
+
+function closeSiteSidebar(restoreFocus = true) {
+    if (!siteSidebar || !sidebarBackdrop || !siteSidebar.classList.contains('open')) return;
+
+    siteSidebar.classList.remove('open');
+    siteSidebar.setAttribute('aria-hidden', 'true');
+    sidebarBackdrop.classList.remove('open');
+    sidebarBackdrop.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = sidebarPreviousOverflow;
+    sidebarToggle?.setAttribute('aria-expanded', 'false');
+    sidebarToggle?.setAttribute('aria-label', 'Open navigation menu');
+    if (restoreFocus) sidebarToggle?.focus({ preventScroll: true });
+}
+
+sidebarToggle?.addEventListener('click', () => {
+    if (siteSidebar?.classList.contains('open')) {
+        closeSiteSidebar();
+    } else {
+        openSiteSidebar();
+    }
+});
+sidebarBackdrop?.addEventListener('click', () => closeSiteSidebar());
+sidebarClose?.addEventListener('click', () => closeSiteSidebar());
+siteSidebar?.addEventListener('click', event => {
+    const policyButton = event.target.closest('[data-policy-type]');
+    if (!policyButton) return;
+
+    const policyType = policyButton.dataset.policyType;
+    closeSiteSidebar(false);
+    if (policyType) window.openPolicyModal(policyType);
+});
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && siteSidebar?.classList.contains('open')) {
+        closeSiteSidebar();
+    }
+});
+
+function createLinkCard(link, index) {
+    const card = document.createElement('div');
+    const mainLink = document.createElement('a');
+    const image = document.createElement('img');
+    const icon = document.createElement('div');
+    const text = document.createElement('div');
+    const title = document.createElement('h3');
+    const description = document.createElement('p');
+    const menu = document.createElement('button');
+    const arrowIcon = document.createElement('i');
+
+    card.className = `link-card${link.contact ? ' contact' : ''}`;
+    card.style.setProperty('--link-card-index', String(index));
+    mainLink.className = 'link-card-main';
+    mainLink.href = link.url;
+    if (link.target === '_blank') {
+        mainLink.target = '_blank';
+        mainLink.rel = 'noopener noreferrer';
+    }
+
+    icon.className = 'link-icon';
+    image.src = link.image;
+    image.alt = `${link.name} icon`;
+    icon.appendChild(image);
+
+    text.className = 'link-text';
+    title.textContent = link.name;
+    description.textContent = link.description;
+    text.append(title, description);
+
+    menu.className = 'link-card-menu';
+    menu.type = 'button';
+    menu.setAttribute('aria-label', `More options for ${link.name}`);
+    arrowIcon.className = 'fa-solid fa-ellipsis-vertical';
+    arrowIcon.setAttribute('aria-hidden', 'true');
+    menu.appendChild(arrowIcon);
+
+    mainLink.append(icon, text);
+    card.append(mainLink, menu);
+    return card;
+}
+
+function validateLinkData(links) {
+    if (!Array.isArray(links) || links.length === 0) {
+        throw new Error('Link data must be a non empty array');
+    }
+
+    return links.map(link => {
+        if (
+            !link ||
+            typeof link.name !== 'string' ||
+            typeof link.description !== 'string' ||
+            typeof link.url !== 'string' ||
+            typeof link.image !== 'string'
+        ) {
+            throw new Error('Link data contains an invalid entry');
+        }
+
+        const url = new URL(link.url, window.location.href);
+        if (!['http:', 'https:', 'mailto:'].includes(url.protocol)) {
+            throw new Error(`Unsupported link protocol for ${link.name}.`);
+        }
+
+        const imageUrl = new URL(link.image, window.location.href);
+        if (!['http:', 'https:'].includes(imageUrl.protocol)) {
+            throw new Error(`error`);
+        }
+
+        if (link.target !== undefined && link.target !== '_blank' && link.target !== '_self') {
+            throw new Error(`error`);
+        }
+
+        return {
+            name: link.name,
+            description: link.description,
+            url: url.href,
+            image: imageUrl.href,
+            target: link.target,
+            contact: link.contact === true
+        };
+    });
+}
+
+async function loadLinkCards() {
+    if (!linkCards) return;
+
+    linkCards.setAttribute('aria-busy', 'true');
+    linkCards.replaceChildren(...Array.from({ length: 4 }, () => {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'link-card-skeleton';
+        skeleton.setAttribute('aria-hidden', 'true');
+
+        const icon = document.createElement('span');
+        icon.className = 'link-skeleton-icon';
+        const text = document.createElement('span');
+        text.className = 'link-skeleton-text';
+        const title = document.createElement('span');
+        title.className = 'link-skeleton-bar title';
+        const description = document.createElement('span');
+        description.className = 'link-skeleton-bar description';
+        text.append(title, description);
+        const arrow = document.createElement('span');
+        arrow.className = 'link-skeleton-arrow';
+        skeleton.append(icon, text, arrow);
+        return skeleton;
+    }));
+
+    try {
+        const response = await fetch('./data/links.json', { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`error`);
+        }
+
+        loadedLinkData = validateLinkData(await response.json());
+        linkCards.replaceChildren(...loadedLinkData.map(createLinkCard));
+        renderLinkSearchResults();
+    } catch (error) {
+        console.error(error);
+        const message = document.createElement('p');
+        message.className = 'links-load-error';
+        message.append('Unable to load links.');
+        const retry = document.createElement('button');
+        retry.className = 'links-load-retry';
+        retry.type = 'button';
+        retry.textContent = 'Retry';
+        message.appendChild(retry);
+        linkCards.replaceChildren(message);
+    } finally {
+        linkCards.setAttribute('aria-busy', 'false');
+    }
+}
+
+function handleLinkCardClick(event, container) {
+    const retryButton = event.target instanceof Element
+        ? event.target.closest('.links-load-retry')
+        : null;
+    if (retryButton) {
+        loadLinkCards();
+        return;
+    }
+
+    const card = event.target instanceof Element ? event.target.closest('.link-card') : null;
+    if (!card || !container.contains(card)) return;
+
+    const menuButton = event.target instanceof Element
+        ? event.target.closest('.link-card-menu')
+        : null;
+    if (menuButton) {
+        event.preventDefault();
+        showLinkActionDialog(card, menuButton);
+        return;
+    }
+
+    if (suppressLinkCardClick === card) {
+        event.preventDefault();
+        suppressLinkCardClick = null;
+        clearTimeout(suppressLinkCardClickTimer);
+        return;
+    }
+
+    const mainLink = card.querySelector('.link-card-main');
+    const href = mainLink?.getAttribute('href');
+    if (!href || event.defaultPrevented || event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    event.preventDefault();
+    const target = mainLink.getAttribute('target') || '_self';
+    if (container === linkSearchResults) closeLinkSearch();
+    setTimeout(() => {
+        if (target.toLowerCase() === '_blank') {
+            window.open(href, '_blank', 'noopener,noreferrer');
+        } else {
+            window.location.href = href;
+        }
+    }, 170);
+}
+
+[linkCards, linkSearchResults].filter(Boolean).forEach(container => {
+    container.addEventListener('click', event => handleLinkCardClick(event, container));
+});
+
+function showLinkActionDialog(card, trigger = card) {
+    if (!linkActionBackdrop || !linkActionImageContainer || !linkActionTitle || !linkActionDescription) return;
+
+    const isAlreadyOpen = linkActionBackdrop.classList.contains('open');
+    linkActionImageContainer.replaceChildren();
+    linkActionCard = card;
+    linkActionTrigger = trigger;
+    const image = card.querySelector('.link-icon img');
+    if (image) {
+        const renderImagePreview = () => {
+            if (
+                linkActionCard !== card ||
+                !image.naturalWidth ||
+                !image.naturalHeight
+            ) {
+                return;
+            }
+
+            const previewCanvas = document.createElement('canvas');
+            previewCanvas.className = 'link-action-image';
+            previewCanvas.width = image.naturalWidth;
+            previewCanvas.height = image.naturalHeight;
+            const context = previewCanvas.getContext('2d');
+            if (!context) {
+                console.error('Unable to create link image preview.');
+                return;
+            }
+
+            context.drawImage(image, 0, 0);
+            linkActionImageContainer.replaceChildren(previewCanvas);
+        };
+
+        if (image.complete) {
+            renderImagePreview();
+        } else {
+            image.addEventListener('load', renderImagePreview, { once: true });
+        }
+    }
+    linkActionTitle.textContent = card.querySelector('h3')?.textContent ?? '';
+    linkActionDescription.textContent = card.querySelector('.link-text p')?.textContent ?? '';
+    if (isAlreadyOpen) return;
+
+    linkActionBackdrop.classList.add('open');
+    linkActionBackdrop.setAttribute('aria-hidden', 'false');
+    linkActionPreviousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    linkActionCancel?.focus();
+}
+
+function restoreLinkActionImage() {
+    linkActionImageContainer?.replaceChildren();
+}
+
+function closeLinkActionDialog() {
+    if (!linkActionBackdrop) return;
+
+    linkActionBackdrop.classList.remove('open');
+    linkActionBackdrop.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = linkActionPreviousOverflow;
+    restoreLinkActionImage();
+    clearTimeout(suppressLinkCardClickTimer);
+    suppressLinkCardClick = null;
+    linkActionCard = null;
+    linkActionTrigger?.focus();
+    linkActionTrigger = null;
+}
+
+function markLinkCardClickSuppressed(card) {
+    suppressLinkCardClick = card;
+    clearTimeout(suppressLinkCardClickTimer);
+    suppressLinkCardClickTimer = window.setTimeout(() => {
+        suppressLinkCardClick = null;
+    }, 1000);
+}
+
+function clearLinkCardPress() {
+    clearTimeout(linkCardPressTimer);
+    linkCardPointerIsDown = false;
+    linkCardPressTarget = null;
+    linkCardPressStart = null;
+}
+
+function handleLinkCardPointerMove(event) {
+    if (!linkCardPointerIsDown || !linkCardPressStart) return;
+    if (
+        Math.abs(event.clientX - linkCardPressStart.x) > 10 ||
+        Math.abs(event.clientY - linkCardPressStart.y) > 10
+    ) {
+        clearTimeout(linkCardPressTimer);
+        linkCardPointerIsDown = false;
+    }
+}
+
+[linkCards, linkSearchResults].filter(Boolean).forEach(container => {
+    container.addEventListener('pointerdown', event => {
+        if (event.button !== 0 || !(event.target instanceof Element)) return;
+        const card = event.target.closest('.link-card');
+        if (!card || !container.contains(card)) return;
+
+        clearTimeout(linkCardPressTimer);
+        linkCardPressTarget = card;
+        linkCardPressStart = { x: event.clientX, y: event.clientY };
+        linkCardPointerIsDown = true;
+        const pressTrigger = event.target instanceof HTMLElement && event.target.matches('.link-card-menu')
+            ? event.target
+            : card;
+        linkCardPressTimer = window.setTimeout(() => {
+            if (!linkCardPointerIsDown || !linkCardPressTarget) return;
+            markLinkCardClickSuppressed(linkCardPressTarget);
+            showLinkActionDialog(linkCardPressTarget, pressTrigger);
+        }, 150);
+    });
+
+    container.addEventListener('contextmenu', event => {
+        const card = event.target instanceof Element ? event.target.closest('.link-card') : null;
+        if (!card || !container.contains(card)) return;
 
         event.preventDefault();
-
-        const target = this.getAttribute("target") || "_self";
-        const delay = 170;
-
-        setTimeout(() => {
-            if (target && target.toLowerCase() === "_blank") {
-                window.open(href, "_blank", "noopener,noreferrer");
-            } else {
-                window.location.href = href;
-            }
-        }, delay);
+        clearLinkCardPress();
+        markLinkCardClickSuppressed(card);
+        const trigger = event.target instanceof HTMLElement && event.target.matches('.link-card-menu')
+            ? event.target
+            : card;
+        showLinkActionDialog(card, trigger);
     });
-
-    card.addEventListener("contextmenu", async function (e) {
-
-        e.preventDefault();
-
-        const nama = this.querySelector("h3").textContent;
-
-        let url = this.getAttribute("href");
-        let toastText = "";
-
-        if (url.startsWith("mailto:")) {
-
-            url = url.replace(/^mailto:/, "");
-
-            toastText = "Wahyuna's email has been copied.";
-
-        } else {
-
-            const u = new URL(url);
-
-            u.searchParams.set("utm_source", "itswahyuna");
-
-            url = u.toString();
-
-            toastText = `${nama} link copied`;
-        }
-
-
-        try {
-
-            await navigator.clipboard.writeText(url);
-
-            toastt(toastText);
-
-        } catch {
-
-            toastt("Failed to copy");
-
-        }
-
-    });
-
 });
+
+document.addEventListener('pointermove', handleLinkCardPointerMove);
+document.addEventListener('pointerup', clearLinkCardPress);
+document.addEventListener('pointercancel', clearLinkCardPress);
+
+function renderLinkSearchResults(query = linkSearchInput?.value ?? '') {
+    if (!linkSearchResults) return;
+
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    if (!normalizedQuery) {
+        linkSearchResults.replaceChildren();
+        return;
+    }
+
+    const matches = loadedLinkData.filter(link =>
+        `${link.name} ${link.description} ${link.url}`.toLocaleLowerCase().includes(normalizedQuery)
+    );
+    if (matches.length) {
+        linkSearchResults.replaceChildren(...matches.map(createLinkCard));
+        return;
+    }
+
+    const emptyState = document.createElement('p');
+    emptyState.className = 'link-search-empty';
+    emptyState.textContent = 'No links found';
+    linkSearchResults.replaceChildren(emptyState);
+}
+
+function setLinkSearchUrl(query) {
+    const url = new URL(window.location.href);
+    const normalizedQuery = query.trim();
+    if (normalizedQuery) {
+        url.searchParams.set('search', normalizedQuery);
+    } else {
+        url.searchParams.delete('search');
+    }
+
+    window.history.replaceState(window.history.state, '', url);
+}
+
+function openLinkSearch(initialQuery = '') {
+    if (!linkSearchBackdrop || !linkSearchInput || linkSearchIsOpen) return;
+
+    linkSearchClosePending = false;
+    const baseUrl = new URL(window.location.href);
+    baseUrl.searchParams.delete('search');
+    window.history.replaceState(window.history.state, '', baseUrl);
+
+    const currentState = window.history.state;
+    const state = currentState && typeof currentState === 'object'
+        ? { ...currentState }
+        : {};
+    state[linkSearchHistoryKey] = true;
+    window.history.pushState(state, '', window.location.href);
+    linkSearchIsOpen = true;
+    linkSearchInput.value = initialQuery;
+    searchToggle?.setAttribute('aria-expanded', 'true');
+    linkSearchPreviousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    linkSearchBackdrop.classList.add('open');
+    linkSearchBackdrop.setAttribute('aria-hidden', 'false');
+    setLinkSearchUrl(initialQuery);
+    linkSearchInput.focus({ preventScroll: true });
+    renderLinkSearchResults(initialQuery);
+    requestAnimationFrame(() => {
+        if (linkSearchIsOpen) linkSearchInput.focus({ preventScroll: true });
+    });
+    if (window.matchMedia('(min-width: 601px)').matches) {
+        window.setTimeout(() => {
+            if (linkSearchIsOpen) linkSearchInput.focus({ preventScroll: true });
+        }, 0);
+    }
+}
+
+function closeLinkSearch(updateHistory = true) {
+    if (!linkSearchBackdrop || !linkSearchInput) return;
+
+    if (!linkSearchIsOpen) return;
+    const state = window.history.state;
+    if (updateHistory && state && typeof state === 'object' && state[linkSearchHistoryKey] === true) {
+        if (!linkSearchClosePending) {
+            linkSearchClosePending = true;
+            window.history.back();
+        }
+        return;
+    }
+
+    linkSearchIsOpen = false;
+    linkSearchClosePending = false;
+    searchToggle?.setAttribute('aria-expanded', 'false');
+    linkSearchBackdrop.classList.remove('open');
+    linkSearchBackdrop.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = linkSearchPreviousOverflow;
+    linkSearchInput.value = '';
+    renderLinkSearchResults('');
+    searchToggle?.focus();
+
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('search')) {
+        url.searchParams.delete('search');
+        window.history.replaceState(window.history.state, '', url);
+    }
+}
+
+searchToggle?.addEventListener('click', () => openLinkSearch());
+searchToggle?.addEventListener('pointerdown', event => {
+    if (event.isPrimary && event.pointerType === 'touch') {
+        openLinkSearch();
+    }
+});
+linkSearchClose?.addEventListener('click', closeLinkSearch);
+linkSearchBackdrop?.addEventListener('click', event => {
+    if (event.target === linkSearchBackdrop) closeLinkSearch();
+});
+linkSearchInput?.addEventListener('input', () => {
+    setLinkSearchUrl(linkSearchInput.value);
+    renderLinkSearchResults();
+});
+document.addEventListener('keydown', event => {
+    if (
+        event.key === 'Escape' &&
+        linkSearchIsOpen &&
+        !linkActionBackdrop?.classList.contains('open')
+    ) {
+        closeLinkSearch();
+    }
+});
+
+const initialSearchUrl = new URL(window.location.href);
+if (initialSearchUrl.searchParams.has('search')) {
+    const initialSearchQuery = initialSearchUrl.searchParams.get('search') ?? '';
+    initialSearchUrl.searchParams.delete('search');
+    window.history.replaceState(window.history.state, '', initialSearchUrl);
+    openLinkSearch(initialSearchQuery);
+}
+
+linkActionCancel?.addEventListener('click', closeLinkActionDialog);
+linkActionBackdrop?.addEventListener('click', event => {
+    if (event.target === linkActionBackdrop) closeLinkActionDialog();
+});
+linkActionCopy?.addEventListener('click', async () => {
+    const href = linkActionCard?.querySelector('.link-card-main')?.getAttribute('href');
+    if (!href) return;
+
+    try {
+        const copyUrl = new URL(href, window.location.href);
+        copyUrl.searchParams.set('wahyuna-feature', 'copylink');
+        const valueToCopy = copyUrl.href;
+        await navigator.clipboard.writeText(valueToCopy);
+        closeLinkActionDialog();
+        toastt('Link copied to clipboard');
+    } catch (error) {
+        console.error(error);
+        toastt('Failed to copy link');
+    }
+});
+linkActionOpen?.addEventListener('click', () => {
+    if (!linkActionCard) return;
+
+    const mainLink = linkActionCard.querySelector('.link-card-main');
+    const href = mainLink?.getAttribute('href');
+    const target = mainLink?.getAttribute('target') || '_self';
+    closeLinkActionDialog();
+    if (!href) return;
+
+    if (target.toLowerCase() === '_blank') {
+        window.open(href, '_blank', 'noopener,noreferrer');
+    } else {
+        window.location.href = href;
+    }
+});
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && linkActionBackdrop?.classList.contains('open')) {
+        closeLinkActionDialog();
+    }
+});
+
+loadLinkCards();
 
 
 // sender toast

@@ -1,4 +1,4 @@
-const CACHE_NAME = "itswahyuna-v1.1.8";
+const CACHE_NAME = "itswahyuna-v1.2.3";
 console.log("versi cache=" + CACHE_NAME);
 const CACHE_FILES = [ 
     "./", 
@@ -15,10 +15,12 @@ const CACHE_FILES = [
     "./assets/github.webp",
     "./assets/roblox.webp",
     "./assets/gmail.webp",
+    "./assets/threadss.avif",
     "./assets/verif.png",
     "./assets/favicon.ico",
     "./assets/tos.json",
     "./assets/pp.json",
+    "./data/links.json",
 ];
 
 const FA = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";

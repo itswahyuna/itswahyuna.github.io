@@ -104,10 +104,22 @@
 
         <header class="top-navbar" aria-label="Main navigation">
             <div class="top-navbar-inner">
-                <div class="top-navbar-brand" translate="no" data-nosnippet>WAHYUNA</div>
-                <button id="th" class="theme-toggle-btn" type="button" aria-label="Toggle dark mode">
-                    <i class="fa-solid fa-moon" aria-hidden="true"></i>
-                </button>
+                <div class="top-navbar-brand-group">
+                    <button id="sidebarToggle" class="sidebar-toggle-btn" type="button"
+                        aria-label="Open navigation menu" aria-controls="siteSidebar" aria-expanded="false">
+                        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                    </button>
+                    <div class="top-navbar-brand" translate="no" data-nosnippet>WAHYUNA</div>
+                </div>
+                <div class="top-navbar-actions">
+                    <button id="searchToggle" class="theme-toggle-btn search-toggle-btn" type="button"
+                        aria-label="Search links" aria-controls="linkSearchBackdrop" aria-expanded="false">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    </button>
+                    <button id="th" class="theme-toggle-btn" type="button" aria-label="Toggle dark mode">
+                        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -153,51 +165,39 @@
 
             </div>
 
-            <div class="links">
-
-                <a class="link-card" href="https://instagram.com/its.wahyuna" target="_blank" rel="noopener noreferrer">
-                    <div class="link-icon">
-                        <img src="assets/instagram.webp" alt="Instagram icon">
-                    </div>
-                    <div class="link-text">
-                        <h3>Instagram</h3>
-                        <p>Visit my Instagram profile</p>
-                    </div>
-                    <div class="arrow"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></div>
-                </a>
-                <a class="link-card" href="https://github.com/itswahyuna" target="_blank" rel="noopener noreferrer">
-                    <div class="link-icon">
-                        <img src="assets/github.webp" alt="GitHub icon">
-                    </div>
-                    <div class="link-text">
-                        <h3>GitHub</h3>
-                        <p>Visit my GitHub profile</p>
-                    </div>
-                    <div class="arrow"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></div>
-                </a>
-                <a class="link-card"
-                    href="https://www.roblox.com/share?code=888d8f8d7834eb4eb600c3bba9605e5a&type=Profile&source=ProfileShare&stamp=1784466825138"
-                    target="_blank" rel="noopener noreferrer">
-                    <div class="link-icon">
-                        <img src="assets/roblox.webp" alt="Roblox icon">
-                    </div>
-                    <div class="link-text">
-                        <h3>Roblox</h3>
-                        <p>Play with me on Roblox.</p>
-                    </div>
-                    <div class="arrow"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></div>
-                </a>
-                <a class="link-card contact" href="mailto:wahyunapub@gmail.com">
-                    <div class="link-icon">
-                        <img src="assets/gmail.webp" alt="Gmail icon">
-                    </div>
-                    <div class="link-text">
-                        <h3>Contact me</h3>
-                        <p>Email me anytime</p>
-                    </div>
-                    <div class="arrow"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></div>
-                </a>
-
+            <div class="links" id="linkCards" aria-busy="true" aria-label="Social links">
+                <div class="link-card-skeleton" aria-hidden="true">
+                    <span class="link-skeleton-icon"></span>
+                    <span class="link-skeleton-text">
+                        <span class="link-skeleton-bar title"></span>
+                        <span class="link-skeleton-bar description"></span>
+                    </span>
+                    <span class="link-skeleton-arrow"></span>
+                </div>
+                <div class="link-card-skeleton" aria-hidden="true">
+                    <span class="link-skeleton-icon"></span>
+                    <span class="link-skeleton-text">
+                        <span class="link-skeleton-bar title"></span>
+                        <span class="link-skeleton-bar description"></span>
+                    </span>
+                    <span class="link-skeleton-arrow"></span>
+                </div>
+                <div class="link-card-skeleton" aria-hidden="true">
+                    <span class="link-skeleton-icon"></span>
+                    <span class="link-skeleton-text">
+                        <span class="link-skeleton-bar title"></span>
+                        <span class="link-skeleton-bar description"></span>
+                    </span>
+                    <span class="link-skeleton-arrow"></span>
+                </div>
+                <div class="link-card-skeleton" aria-hidden="true">
+                    <span class="link-skeleton-icon"></span>
+                    <span class="link-skeleton-text">
+                        <span class="link-skeleton-bar title"></span>
+                        <span class="link-skeleton-bar description"></span>
+                    </span>
+                    <span class="link-skeleton-arrow"></span>
+                </div>
             </div>
 
         </div>
@@ -216,6 +216,20 @@
             </div>
         </div>
 
+    </div>
+
+    <div class="link-search-backdrop" id="linkSearchBackdrop" aria-hidden="true">
+        <section class="link-search-panel" role="dialog" aria-modal="true" aria-label="Search links">
+            <div class="link-search-header">
+                <label class="link-search-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="linkSearchInput" type="search" placeholder="Search"
+                        autocomplete="off" inputmode="search" enterkeyhint="search" aria-label="Search links">
+                </label>
+                <button class="link-search-close" id="linkSearchClose" type="button">Cancel</button>
+            </div>
+            <div class="link-search-results" id="linkSearchResults" aria-live="polite"></div>
+        </section>
     </div>
 
     <div class="floating-comment-overlay hidden" id="floatingCommentOverlay"></div>
@@ -292,18 +306,48 @@
         </section>
     </div>
 
+    <div class="link-action-backdrop" id="linkActionBackdrop" aria-hidden="true">
+        <section class="link-action-dialog" id="linkActionDialog" role="dialog" aria-modal="true"
+            aria-labelledby="linkActionTitle" aria-describedby="linkActionDescription">
+            <div class="link-action-preview">
+                <div class="link-action-image-container" id="linkActionImageContainer"></div>
+                <h2 id="linkActionTitle"></h2>
+                <p id="linkActionDescription"></p>
+            </div>
+            <div class="link-action-buttons">
+                <button type="button" class="link-action-button" id="linkActionOpen">Open</button>
+                <button type="button" class="link-action-button" id="linkActionCopy">Copy Link</button>
+            </div>
+            <button type="button" class="link-action-cancel" id="linkActionCancel">Cancel</button>
+        </section>
+    </div>
+
     <div id="toast" class="toast" data-nosnippet></div>
 
-    <footer class="site-footer" data-nosnippet>
-        <div class="footer-inner" style="flex-direction: column;">
-            <div class="footer-links">
-                <button class="footer-link-btn" onclick="openPolicyModal('privacy')">Privacy Policy</button>
-                <span class="footer-divider">•</span>
-                <button class="footer-link-btn" onclick="openPolicyModal('tos')">Terms of Service</button>
-            </div>
-            <p style="margin-top: 7px;">© 2026 Wahyuna</p>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+    <aside class="site-sidebar" id="siteSidebar" aria-label="Site navigation" aria-hidden="true">
+        <div class="sidebar-header">
+            <div class="top-navbar-brand" translate="no" data-nosnippet>WAHYUNA</div>
+            <button class="sidebar-close-btn" id="sidebarClose" type="button" aria-label="Close navigation menu">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
         </div>
-    </footer>
+        <nav class="sidebar-links" aria-label="Legal information">
+            <button class="sidebar-link-btn" type="button" data-policy-type="privacy">
+                <i class="sidebar-icon sidebar-icon-privacy fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <span>Privacy Policy</span>
+            </button>
+            <button class="sidebar-link-btn" type="button" data-policy-type="tos">
+                <i class="sidebar-icon sidebar-icon-terms fa-solid fa-file-contract" aria-hidden="true"></i>
+                <span>Terms of Service</span>
+            </button>
+            <button class="sidebar-link-btn sidebar-theme-toggle" id="sidebarThemeToggle" type="button">
+                <i class="sidebar-icon sidebar-icon-theme fa-solid fa-moon" aria-hidden="true"></i>
+                <span>Dark Mode</span>
+            </button>
+        </nav>
+        <p class="sidebar-copyright">© 2026 Wahyuna</p>
+    </aside>
 
     <div class="modal-backdrop" id="policyBackdrop" onclick="closePolicyModal()"></div>
 
