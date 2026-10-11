@@ -2603,9 +2603,9 @@
         width: 88px;
         height: 88px;
         margin: 0 auto 14px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 23px;
-        background: rgba(255, 255, 255, 0.08);
+        border: 0;
+        border-radius: 0;
+        background: transparent;
         object-fit: contain;
     }
 
@@ -2680,11 +2680,6 @@
 
     body.bright .link-action-preview p {
         color: rgba(35, 38, 45, 0.66);
-    }
-
-    body.bright .link-action-image {
-        border-color: rgba(15, 23, 42, 0.1);
-        background: rgba(15, 23, 42, 0.05);
     }
 
     body.bright .link-action-buttons,
