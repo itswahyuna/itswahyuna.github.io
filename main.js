@@ -1914,6 +1914,9 @@ function handlePullRefreshEnd() {
     pullRefreshDistance = 0;
 
     if (shouldRefresh) {
+        if (typeof navigator.vibrate === 'function') {
+            navigator.vibrate(8);
+        }
         refreshPageContent(visibleDistance);
         return;
     }
