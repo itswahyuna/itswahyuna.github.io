@@ -92,23 +92,23 @@ function change_modee() {
     change_mode();
 }
 
-function save_mode() {
+async function save_mode() {
     const nextMode = document.body.classList.contains('bright') ? 'bright' : 'dark';
-    localStorage.setItem('mode', nextMode);
-    localStorage.removeItem('modea');
-    localStorage.removeItem('wahyuna-theme');
+    await encryptedStorage.setItem('mode', nextMode);
+    await encryptedStorage.removeItem('modea');
+    await encryptedStorage.removeItem('wahyuna-theme');
 }
 
-function load_mode() {
-    const savedTheme = localStorage.getItem('mode') ??
-        localStorage.getItem('modea') ??
-        localStorage.getItem('wahyuna-theme');
+async function load_mode() {
+    const savedTheme = await encryptedStorage.getItem('mode') ??
+        await encryptedStorage.getItem('modea') ??
+        await encryptedStorage.getItem('wahyuna-theme');
 
     if (savedTheme === 'dark' || savedTheme === 'bright') {
-        localStorage.setItem('mode', savedTheme);
+        await encryptedStorage.setItem('mode', savedTheme);
     }
-    localStorage.removeItem('modea');
-    localStorage.removeItem('wahyuna-theme');
+    await encryptedStorage.removeItem('modea');
+    await encryptedStorage.removeItem('wahyuna-theme');
 
     if (savedTheme === 'dark') {
         document.body.classList.remove('bright');
@@ -129,14 +129,17 @@ function load_mode() {
     document.body.classList.add('bright');
 }
 
-function _apply_() {
-    load_mode();
+async function _apply_() {
+    await load_mode();
     change_modee();
 }
 
 function toggleColorMode() {
     document.body.classList.toggle("bright");
-    save_mode();
+    save_mode().catch(error => {
+        console.error('Unable to save the selected theme.', error);
+        toastt('Unable to save theme preference');
+    });
     change_modee();
     change_mode();
 }
@@ -158,7 +161,9 @@ window.addEventListener('scroll', () => {
     updateNavbarState();
 }, { passive: true });
 
-_apply_();
+_apply_().catch(error => {
+    console.error('Unable to load the saved theme.', error);
+});
 change_mode();
 updateNavbarState();
 
@@ -388,12 +393,13 @@ function formatSentMessageTime(timestamp) {
     return new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(date);
 }
 
-function renderSentMessageHistory() {
+async function renderSentMessageHistory() {
     if (!sentHistoryList) return;
 
     let messages;
     try {
-        messages = JSON.parse(localStorage.getItem('anonymous-messages') || '[]');
+        const savedMessages = await encryptedStorage.getItem('anonymous-messages');
+        messages = JSON.parse(savedMessages || '[]');
     } catch (error) {
         console.error(error);
         sentHistoryList.innerHTML = '<p class="sent-history-empty">Unable to load sent messages.</p>';
@@ -442,11 +448,12 @@ function closeHistoryDeleteDialog() {
     historyDeleteTrigger = null;
 }
 
-function deleteHistoryMessage() {
+async function deleteHistoryMessage() {
     if (historyDeleteTargetIndex === null) return;
 
     try {
-        const messages = JSON.parse(localStorage.getItem('anonymous-messages') || '[]');
+        const savedMessages = await encryptedStorage.getItem('anonymous-messages');
+        const messages = JSON.parse(savedMessages || '[]');
         if (
             !Array.isArray(messages) ||
             historyDeleteTargetIndex < 0 ||
@@ -456,7 +463,7 @@ function deleteHistoryMessage() {
         }
 
         messages.splice(historyDeleteTargetIndex, 1);
-        localStorage.setItem('anonymous-messages', JSON.stringify(messages));
+        await encryptedStorage.setItem('anonymous-messages', JSON.stringify(messages));
     } catch (error) {
         console.error(error);
         toastt('Could not delete this message');
@@ -858,26 +865,19 @@ function syncSheetMode() {
     bindSheetDragHandlers();
 }
 
-function setAnonymousMessageBlocked() {
+async function setAnonymousMessageBlocked() {
     const storageKey = 'anonymous-message-blocked';
     const today = getTodayKey();
-    const blocked = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    const savedBlocked = await encryptedStorage.getItem(storageKey);
+    const blocked = JSON.parse(savedBlocked || '{}');
     blocked[today] = true;
-    localStorage.setItem(storageKey, JSON.stringify(blocked));
-}
-
-function isAnonymousMessageBlockedToday() {
-    const storageKey = 'anonymous-message-blocked';
-    const today = getTodayKey();
-    const blocked = JSON.parse(localStorage.getItem(storageKey) || '{}');
-    return Boolean(blocked[today]);
+    await encryptedStorage.setItem(storageKey, JSON.stringify(blocked));
 }
 
 syncSheetMode();
 
 const urlParams = new URLSearchParams(window.location.search);
 const shouldAutoOpenAnonymousMessage = urlParams.get('message')?.trim().toLowerCase() === 'anonymous';
-const isBlocked = isAnonymousMessageBlockedToday();
 
 if (shouldAutoOpenAnonymousMessage) {
     setFloatingCommentOpen(false);
@@ -938,10 +938,11 @@ function getTodayKey() {
     return `${year}-${month}-${day}`;
 }
 
-function canSendToday() {
+async function canSendToday() {
     const storageKey = 'anonymous-message-daily-count';
     const today = getTodayKey();
-    const savedData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    const storedData = await encryptedStorage.getItem(storageKey);
+    const savedData = JSON.parse(storedData || '{}');
 
     const count = Number(savedData.date === today ? savedData.count : 0);
 
@@ -952,10 +953,11 @@ function canSendToday() {
     return true;
 }
 
-function markSentToday() {
+async function markSentToday() {
     const storageKey = 'anonymous-message-daily-count';
     const today = getTodayKey();
-    const savedData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    const storedData = await encryptedStorage.getItem(storageKey);
+    const savedData = JSON.parse(storedData || '{}');
 
     const currentCount = savedData.date === today
         ? Number(savedData.count || 0)
@@ -963,15 +965,16 @@ function markSentToday() {
 
     const newCount = currentCount + 1;
 
-    localStorage.setItem(storageKey, JSON.stringify({
+    await encryptedStorage.setItem(storageKey, JSON.stringify({
         date: today,
         count: newCount
     }));
 }
 
-function saveSentMessage(name, message, device) {
+async function saveSentMessage(name, message, device) {
     const storageKey = 'anonymous-messages';
-    const messages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    const storedMessages = await encryptedStorage.getItem(storageKey);
+    const messages = JSON.parse(storedMessages || '[]');
 
     messages.push({
         name: name,
@@ -980,7 +983,7 @@ function saveSentMessage(name, message, device) {
         device: device
     });
 
-    localStorage.setItem(storageKey, JSON.stringify(messages));
+    await encryptedStorage.setItem(storageKey, JSON.stringify(messages));
 }
 
 floatingCommentForm.addEventListener('submit', async (event) => {
@@ -1011,7 +1014,16 @@ floatingCommentForm.addEventListener('submit', async (event) => {
         return;
     }
 
-    if (!canSendToday()) {
+    let allowedToSend;
+    try {
+        allowedToSend = await canSendToday();
+    } catch (error) {
+        console.error('Unable to check the daily message limit.', error);
+        toastt('Unable to check message limit');
+        return;
+    }
+
+    if (!allowedToSend) {
         resetFloatingForm();
         setFloatingCommentOpen(false);
         return;
@@ -1043,13 +1055,17 @@ floatingCommentForm.addEventListener('submit', async (event) => {
             throw new Error(result.error || 'error');
         }
 
-        markSentToday();
-        saveSentMessage(name, message, device);
-        incrementAnonymousMessages();
-
         toastt('The message has been sent.');
-
         resetFloatingForm();
+
+        try {
+            await markSentToday();
+            await saveSentMessage(name, message, device);
+            await incrementAnonymousMessages();
+        } catch (storageError) {
+            console.error('The message was sent, but local data could not be saved.', storageError);
+            toastt('Message sent, but unable to save local data');
+        }
 
     } catch (error) {
 
@@ -1074,7 +1090,11 @@ floatingCommentForm.addEventListener('submit', async (event) => {
         if (isSpam || isDailyLimit) {
             resetFloatingForm();
             setFloatingCommentOpen(false);
-            setAnonymousMessageBlocked();
+            try {
+                await setAnonymousMessageBlocked();
+            } catch (storageError) {
+                console.error('Unable to save the anonymous message block.', storageError);
+            }
             toastt('You have already sent 3 messages today');
             return;
         }
@@ -1201,9 +1221,22 @@ function createLinkCard(link, index) {
     }
 
     icon.className = 'link-icon';
-    image.src = link.image;
     image.alt = `${link.name} icon`;
-    icon.appendChild(image);
+    const imageSkeleton = document.createElement('span');
+    imageSkeleton.className = 'link-image-skeleton';
+    imageSkeleton.setAttribute('aria-hidden', 'true');
+    icon.classList.add('is-image-loading');
+    icon.append(imageSkeleton, image);
+    image.addEventListener('load', () => {
+        icon.classList.remove('is-image-loading');
+        imageSkeleton.remove();
+    }, { once: true });
+    image.addEventListener('error', () => {
+        icon.classList.remove('is-image-loading');
+        icon.classList.add('image-error');
+        imageSkeleton.remove();
+    }, { once: true });
+    image.src = link.image;
 
     text.className = 'link-text';
     title.textContent = link.name;
@@ -1310,6 +1343,28 @@ function createLinkCardSkeleton(cardToMatch) {
     return skeleton;
 }
 
+function createLinksLoadError() {
+    const message = document.createElement('div');
+    message.className = 'links-load-error';
+    message.setAttribute('role', 'status');
+
+    const title = document.createElement('strong');
+    title.className = 'links-load-error-title';
+    title.textContent = 'Unable to Load Links';
+
+    const description = document.createElement('span');
+    description.className = 'links-load-error-description';
+    description.textContent = 'Check your connection and try again.';
+
+    const retry = document.createElement('button');
+    retry.className = 'links-load-retry';
+    retry.type = 'button';
+    retry.textContent = 'Retry';
+
+    message.append(title, description, retry);
+    return message;
+}
+
 async function loadLinkCards({ refresh = false } = {}) {
     if (!linkCards) return;
 
@@ -1348,15 +1403,7 @@ async function loadLinkCards({ refresh = false } = {}) {
 
     try {
         if (loadError) {
-            const message = document.createElement('p');
-            message.className = 'links-load-error';
-            message.append('Unable to load links.');
-            const retry = document.createElement('button');
-            retry.className = 'links-load-retry';
-            retry.type = 'button';
-            retry.textContent = 'Retry';
-            message.appendChild(retry);
-            linkCards.replaceChildren(message);
+            linkCards.replaceChildren(createLinksLoadError());
         } else if (refreshedLinks) {
             loadedLinkData = refreshedLinks;
             linkCards.replaceChildren(...loadedLinkData.map(createLinkCard));
@@ -1364,22 +1411,14 @@ async function loadLinkCards({ refresh = false } = {}) {
         }
     } catch (error) {
         console.error(error);
-        const message = document.createElement('p');
-        message.className = 'links-load-error';
-        message.append('Unable to load links.');
-        const retry = document.createElement('button');
-        retry.className = 'links-load-retry';
-        retry.type = 'button';
-        retry.textContent = 'Retry';
-        message.appendChild(retry);
-        linkCards.replaceChildren(message);
+        linkCards.replaceChildren(createLinksLoadError());
     } finally {
         linkCards.setAttribute('aria-busy', 'false');
         if (refresh) linkCards.classList.remove('refreshing-cards');
     }
 }
 
-function handleLinkCardClick(event, container) {
+async function handleLinkCardClick(event, container) {
     const retryButton = event.target instanceof Element
         ? event.target.closest('.links-load-retry')
         : null;
@@ -1415,7 +1454,11 @@ function handleLinkCardClick(event, container) {
     event.preventDefault();
     const target = mainLink.getAttribute('target') || '_self';
     if (container === linkSearchResults) {
-        rememberOpenedSearchLink(href);
+        try {
+            await rememberOpenedSearchLink(href);
+        } catch (error) {
+            console.error('Unable to save opened link history.', error);
+        }
         closeLinkSearch();
     }
     setTimeout(() => {
@@ -1428,7 +1471,11 @@ function handleLinkCardClick(event, container) {
 }
 
 [linkCards, linkSearchResults].filter(Boolean).forEach(container => {
-    container.addEventListener('click', event => handleLinkCardClick(event, container));
+    container.addEventListener('click', event => {
+        handleLinkCardClick(event, container).catch(error => {
+            console.error('Unable to handle link card click.', error);
+        });
+    });
 });
 
 function showLinkActionDialog(card, trigger = card) {
@@ -1565,52 +1612,43 @@ document.addEventListener('pointermove', handleLinkCardPointerMove);
 document.addEventListener('pointerup', clearLinkCardPress);
 document.addEventListener('pointercancel', clearLinkCardPress);
 
-function getOpenedLinkHistory() {
-    try {
-        let storedHistory = localStorage.getItem(openedLinkHistoryStorageKey);
-        if (storedHistory === null) {
-            storedHistory = localStorage.getItem(legacyOpenedLinkHistoryStorageKey);
-            if (storedHistory !== null) {
-                localStorage.setItem(openedLinkHistoryStorageKey, storedHistory);
-                localStorage.removeItem(legacyOpenedLinkHistoryStorageKey);
-            }
+async function getOpenedLinkHistory() {
+    let storedHistory = await encryptedStorage.getItem(openedLinkHistoryStorageKey);
+    if (storedHistory === null) {
+        storedHistory = await encryptedStorage.getItem(legacyOpenedLinkHistoryStorageKey);
+        if (storedHistory !== null) {
+            await encryptedStorage.setItem(openedLinkHistoryStorageKey, storedHistory);
+            await encryptedStorage.removeItem(legacyOpenedLinkHistoryStorageKey);
         }
-        if (storedHistory === null) return [];
-
-        const parsedHistory = JSON.parse(storedHistory);
-        if (!Array.isArray(parsedHistory) || !parsedHistory.every(url => typeof url === 'string')) {
-            throw new Error('Stored link history is invalid');
-        }
-        return parsedHistory;
-    } catch (error) {
-        console.error('Unable to read opened link history.', error);
-        return [];
     }
+    if (storedHistory === null) return [];
+
+    const parsedHistory = JSON.parse(storedHistory);
+    if (!Array.isArray(parsedHistory) || !parsedHistory.every(url => typeof url === 'string')) {
+        throw new Error('Stored link history is invalid');
+    }
+    return parsedHistory;
 }
 
-function rememberOpenedSearchLink(href) {
+async function rememberOpenedSearchLink(href) {
     if (!loadedLinkData.some(link => link.url === href)) return;
 
     const updatedHistory = [
         href,
-        ...getOpenedLinkHistory().filter(savedHref => savedHref !== href)
+        ...(await getOpenedLinkHistory()).filter(savedHref => savedHref !== href)
     ];
 
-    try {
-        localStorage.setItem(openedLinkHistoryStorageKey, JSON.stringify(updatedHistory));
-    } catch (error) {
-        console.error('Unable to save opened link history.', error);
-    }
+    await encryptedStorage.setItem(openedLinkHistoryStorageKey, JSON.stringify(updatedHistory));
 }
 
-function removeOpenedSearchLink(href) {
-    const updatedHistory = getOpenedLinkHistory().filter(savedHref => savedHref !== href);
+async function removeOpenedSearchLink(href) {
+    const updatedHistory = (await getOpenedLinkHistory()).filter(savedHref => savedHref !== href);
 
     try {
         if (updatedHistory.length) {
-            localStorage.setItem(openedLinkHistoryStorageKey, JSON.stringify(updatedHistory));
+            await encryptedStorage.setItem(openedLinkHistoryStorageKey, JSON.stringify(updatedHistory));
         } else {
-            localStorage.removeItem(openedLinkHistoryStorageKey);
+            await encryptedStorage.removeItem(openedLinkHistoryStorageKey);
         }
         return true;
     } catch (error) {
@@ -1620,10 +1658,21 @@ function removeOpenedSearchLink(href) {
     }
 }
 
-function renderOpenedLinkHistory() {
+async function renderOpenedLinkHistory() {
     if (!linkSearchResults) return;
 
-    const savedUrls = getOpenedLinkHistory();
+    let savedUrls;
+    try {
+        savedUrls = await getOpenedLinkHistory();
+    } catch (error) {
+        console.error('Unable to read opened link history.', error);
+        const message = document.createElement('p');
+        message.className = 'link-search-empty';
+        message.textContent = 'Unable to load link history';
+        linkSearchResults.replaceChildren(message);
+        return;
+    }
+
     const historyLinks = savedUrls
         .map(url => loadedLinkData.find(link => link.url === url))
         .filter(link => link !== undefined);
@@ -1646,12 +1695,12 @@ function renderOpenedLinkHistory() {
     );
 }
 
-function renderLinkSearchResults(query = linkSearchInput?.value ?? '') {
+async function renderLinkSearchResults(query = linkSearchInput?.value ?? '') {
     if (!linkSearchResults) return;
 
     const normalizedQuery = query.trim().toLocaleLowerCase();
     if (!normalizedQuery) {
-        renderOpenedLinkHistory();
+        await renderOpenedLinkHistory();
         return;
     }
 
@@ -1797,13 +1846,18 @@ linkActionCopy?.addEventListener('click', async () => {
         toastt('Failed to copy link');
     }
 });
-linkActionRemoveHistory?.addEventListener('click', () => {
-    const href = linkActionCard?.dataset.searchHistoryUrl;
-    if (!href || !removeOpenedSearchLink(href)) return;
+linkActionRemoveHistory?.addEventListener('click', async () => {
+    try {
+        const href = linkActionCard?.dataset.searchHistoryUrl;
+        if (!href || !await removeOpenedSearchLink(href)) return;
 
-    closeLinkActionDialog(false);
-    renderLinkSearchResults();
-    linkSearchInput?.focus({ preventScroll: true });
+        closeLinkActionDialog(false);
+        renderLinkSearchResults();
+        linkSearchInput?.focus({ preventScroll: true });
+    } catch (error) {
+        console.error('Unable to remove link from search history.', error);
+        toastt('Failed to remove link from search history');
+    }
 });
 linkActionOpen?.addEventListener('click', () => {
     if (!linkActionCard) return;

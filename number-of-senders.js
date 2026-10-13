@@ -30,47 +30,36 @@ function renderStats(stats) {
     messagesElement.textContent = `${formatCount(stats.totalMessages)} ${messageLabel}`;
 }
 
-function getCachedStats() {
-    try {
-        const savedStats = localStorage.getItem(statsStorageKey);
-        if (savedStats === null) return null;
+async function getCachedStats() {
+    const savedStats = await encryptedStorage.getItem(statsStorageKey);
+    if (savedStats === null) return null;
 
-        const stats = JSON.parse(savedStats);
-        if (
-            typeof stats?.visitors === "number" &&
-            Number.isFinite(stats.visitors) &&
-            stats.visitors >= 0 &&
-            typeof stats.totalMessages === "number" &&
-            Number.isFinite(stats.totalMessages) &&
-            stats.totalMessages >= 0
-        ) {
-            return stats;
-        }
-
-
-    } catch (error) {
-        console.error(error);
+    const stats = JSON.parse(savedStats);
+    if (
+        typeof stats?.visitors !== "number" ||
+        !Number.isFinite(stats.visitors) ||
+        stats.visitors < 0 ||
+        typeof stats.totalMessages !== "number" ||
+        !Number.isFinite(stats.totalMessages) ||
+        stats.totalMessages < 0
+    ) {
+        throw new Error("Stored profile statistics are invalid.");
     }
 
-    return null;
+    return stats;
 }
 
-function incrementAnonymousMessages() {
-    const stats = getCachedStats();
+async function incrementAnonymousMessages() {
+    const stats = await getCachedStats();
     if (!stats) return;
 
     stats.totalMessages += 1;
     renderStats(stats);
-
-    try {
-        localStorage.setItem(statsStorageKey, JSON.stringify(stats));
-    } catch (error) {
-        console.error(error);
-    }
+    await encryptedStorage.setItem(statsStorageKey, JSON.stringify(stats));
 }
 
 async function nos(forceRefresh = false) {
-    const cachedStats = getCachedStats();
+    const cachedStats = await getCachedStats();
     if (cachedStats) renderStats(cachedStats);
 
     let fetchedThisSession = false;
@@ -113,7 +102,7 @@ async function nos(forceRefresh = false) {
             Number.isFinite(result.totalMessages) &&
             result.totalMessages >= 0
         ) {
-            const latestCachedStats = getCachedStats();
+            const latestCachedStats = await getCachedStats();
             const stats = {
                 visitors: result.visitors,
                 totalMessages: Math.max(
@@ -124,11 +113,7 @@ async function nos(forceRefresh = false) {
 
             renderStats(stats);
 
-            try {
-                localStorage.setItem(statsStorageKey, JSON.stringify(stats));
-            } catch (error) {
-                console.error(error);
-            }
+            await encryptedStorage.setItem(statsStorageKey, JSON.stringify(stats));
 
             const messageLabel = stats.totalMessages === 1
                 ? "anonymous message to Wahyuna"
@@ -147,6 +132,10 @@ async function nos(forceRefresh = false) {
     }
 }
 
-window.refreshProfileStats = () => nos(true);
+window.refreshProfileStats = () => nos(true).catch(error => {
+    console.error("Unable to refresh profile statistics.", error);
+});
 
-nos();
+nos().catch(error => {
+    console.error("Unable to initialize profile statistics.", error);
+});

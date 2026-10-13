@@ -89,12 +89,7 @@
     <div id="pageLoader" class="page-loader" role="status" aria-live="polite">
         <div class="loader-inner">
             <div class="splash-title" data-nosnippet>WAHYUNA</div>
-            <div class="loader-spinner" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="loader-dots" aria-hidden="true">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -216,6 +211,8 @@
                     <span class="link-skeleton-arrow"></span>
                 </div>
             </div>
+
+            <p class="connect-copyright">© 2026 Wahyuna</p>
 
         </div>
         </div>
@@ -352,7 +349,7 @@
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
-        <nav class="sidebar-links" aria-label="Legal information">
+        <nav class="sidebar-links" aria-label="Site information">
             <button class="sidebar-link-btn" type="button" data-policy-type="privacy">
                 <i class="sidebar-icon sidebar-icon-privacy fa-solid fa-shield-halved" aria-hidden="true"></i>
                 <span>Privacy Policy</span>
@@ -360,6 +357,10 @@
             <button class="sidebar-link-btn" type="button" data-policy-type="tos">
                 <i class="sidebar-icon sidebar-icon-terms fa-solid fa-file-contract" aria-hidden="true"></i>
                 <span>Terms of Service</span>
+            </button>
+            <button class="sidebar-link-btn" type="button" data-policy-type="version">
+                <i class="sidebar-icon fa-solid fa-circle-info" aria-hidden="true"></i>
+                <span>Version</span>
             </button>
             <button class="sidebar-link-btn sidebar-theme-toggle" id="sidebarThemeToggle" type="button">
                 <i class="sidebar-icon sidebar-icon-theme fa-solid fa-moon" aria-hidden="true"></i>
@@ -492,6 +493,49 @@
             container.replaceChildren(loading);
         }
 
+        function showVersionLoading(container) {
+            const loading = document.createElement('div');
+            loading.className = 'policy-skeleton version-skeleton';
+            loading.setAttribute('role', 'status');
+            loading.setAttribute('aria-label', 'Loading version information');
+            loading.setAttribute('aria-busy', 'true');
+
+            const label = document.createElement('span');
+            label.className = 'policy-skeleton-bar version-skeleton-label';
+            label.setAttribute('aria-hidden', 'true');
+
+            const value = document.createElement('span');
+            value.className = 'policy-skeleton-bar version-skeleton-value';
+            value.setAttribute('aria-hidden', 'true');
+
+            const description = document.createElement('span');
+            description.className = 'policy-skeleton-bar version-skeleton-description';
+            description.setAttribute('aria-hidden', 'true');
+
+            loading.append(label, value, description);
+            container.replaceChildren(loading);
+        }
+
+        function renderVersionContent(container, version) {
+            const content = document.createElement('div');
+            content.className = 'version-info';
+
+            const label = document.createElement('span');
+            label.className = 'version-info-label';
+            label.textContent = 'Current version';
+
+            const value = document.createElement('strong');
+            value.className = 'version-info-value';
+            value.textContent = version;
+
+            const description = document.createElement('p');
+            description.className = 'version-info-description';
+            description.textContent = 'This version is used for offline caching.';
+
+            content.append(label, value, description);
+            container.replaceChildren(content);
+        }
+
         async function openPolicyModal(policyType) {
             const titleElement = document.getElementById('policyModalTitle');
             const body = document.getElementById('policyBody');
@@ -499,7 +543,8 @@
             const modal = document.getElementById('policyModal');
             const policies = {
                 privacy: { title: 'Privacy Policy', path: './assets/pp.json' },
-                tos: { title: 'Terms of Service', path: './assets/tos.json' }
+                tos: { title: 'Terms of Service', path: './assets/tos.json' },
+                version: { title: 'Version', path: './sw.js' }
             };
             const selectedPolicy = policies[policyType];
 
@@ -517,12 +562,17 @@
             clearPolicyCloseCleanup(modal);
             const loadingStartedAt = performance.now();
             titleElement.textContent = selectedPolicy.title;
-            showPolicyLoading(body);
+            if (policyType === 'version') {
+                showVersionLoading(body);
+            } else {
+                showPolicyLoading(body);
+            }
             backdrop.classList.add('open');
             modal.classList.add('open');
             document.body.style.overflow = 'hidden';
 
             let policy;
+            let version;
             let loadError;
 
             try {
@@ -531,7 +581,16 @@
                     throw new Error(`error`);
                 }
 
-                policy = await response.json();
+                if (policyType === 'version') {
+                    const serviceWorkerSource = await response.text();
+                    const cacheName = serviceWorkerSource.match(/\bconst\s+CACHE_NAME\s*=\s*(["'])(.*?)\1/);
+                    if (!cacheName) {
+                        throw new Error('CACHE_NAME was not found in sw.js');
+                    }
+                    version = cacheName[2];
+                } else {
+                    policy = await response.json();
+                }
             } catch (error) {
                 loadError = error;
             }
@@ -544,7 +603,19 @@
             if (requestId !== policyRequestId) return;
             if (loadError) {
                 console.error(loadError);
-                body.textContent = 'error';
+                body.textContent = policyType === 'version'
+                    ? 'Unable to load version information.'
+                    : 'error';
+                return;
+            }
+
+            if (policyType === 'version') {
+                if (!version) {
+                    console.error('Version information is missing.');
+                    body.textContent = 'Unable to load version information.';
+                    return;
+                }
+                renderVersionContent(body, version);
                 return;
             }
 
@@ -587,6 +658,7 @@
 
 
 
+    <script src="encrypted-storage.js"></script>
     <script src="main.js"></script>
     <script src="number-of-senders.js"></script>
 

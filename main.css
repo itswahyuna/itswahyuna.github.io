@@ -215,9 +215,74 @@
     }
 
     .pull-refresh-indicator .loader-spinner {
+        position: relative;
         width: 22px;
         height: 22px;
         color: rgba(255, 255, 255, 0.88);
+    }
+
+    .pull-refresh-indicator .loader-spinner span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 2px;
+        height: 5px;
+        margin: -2.5px 0 0 -1px;
+        border-radius: 2px;
+        background: currentColor;
+        opacity: 0.2;
+        transform: rotate(var(--spinner-angle)) translateY(-7px);
+        animation: refreshSpinnerPulse 0.96s ease-in-out infinite;
+    }
+
+    .pull-refresh-indicator .loader-spinner span:nth-child(1) {
+        --spinner-angle: 0deg;
+        animation-delay: 0s;
+    }
+
+    .pull-refresh-indicator .loader-spinner span:nth-child(2) {
+        --spinner-angle: 45deg;
+        animation-delay: -0.12s;
+    }
+
+    .pull-refresh-indicator .loader-spinner span:nth-child(3) {
+        --spinner-angle: 90deg;
+        animation-delay: -0.24s;
+    }
+
+    .pull-refresh-indicator .loader-spinner span:nth-child(4) {
+        --spinner-angle: 135deg;
+        animation-delay: -0.36s;
+    }
+
+    .pull-refresh-indicator .loader-spinner span:nth-child(5) {
+        --spinner-angle: 180deg;
+        animation-delay: -0.48s;
+    }
+
+    .pull-refresh-indicator .loader-spinner span:nth-child(6) {
+        --spinner-angle: 225deg;
+        animation-delay: -0.6s;
+    }
+
+    .pull-refresh-indicator .loader-spinner span:nth-child(7) {
+        --spinner-angle: 270deg;
+        animation-delay: -0.72s;
+    }
+
+    .pull-refresh-indicator .loader-spinner span:nth-child(8) {
+        --spinner-angle: 315deg;
+        animation-delay: -0.84s;
+    }
+
+    @keyframes refreshSpinnerPulse {
+        0%,
+        100% {
+            opacity: 0.22;
+        }
+        50% {
+            opacity: 1;
+        }
     }
 
     .top-navbar-brand {
@@ -451,6 +516,19 @@
         gap: 12px;
     }
 
+    .connect-copyright {
+        margin: 22px 0 0;
+        padding-top: 14px;
+        color: rgba(220, 225, 235, 0.48);
+        font-size: 11px;
+        letter-spacing: 0.045em;
+        text-align: center;
+    }
+
+    body.bright .connect-copyright {
+        color: rgba(55, 65, 81, 0.58);
+    }
+
     .link-card-skeleton {
         display: flex;
         align-items: center;
@@ -565,6 +643,7 @@
         .link-skeleton-icon,
         .link-skeleton-bar,
         .link-skeleton-arrow,
+        .link-image-skeleton,
         .link-card-skeleton {
             animation: none;
             background: var(--link-skeleton-base, rgba(255, 255, 255, 0.08));
@@ -576,22 +655,56 @@
     }
 
     .links-load-error {
-        padding: 14px 16px;
-        border: 1px solid rgba(148, 163, 184, 0.16);
-        border-radius: 16px;
-        color: #aaa;
-        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 12px;
+        color: #aeb5c2;
         text-align: center;
     }
 
+    .links-load-error-title {
+        color: #f5f7fb;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .links-load-error-description {
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    body.bright .links-load-error {
+        color: #687386;
+    }
+
+    body.bright .links-load-error-title {
+        color: #172033;
+    }
+
     .links-load-retry {
-        margin-left: 8px;
-        padding: 4px 8px;
+        min-height: 36px;
+        margin-top: 4px;
+        padding: 0 20px;
         border: 0;
-        background: transparent;
-        color: #5795ff;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.14);
+        color: inherit;
         font: inherit;
-        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: default;
+        transition: background 0.18s ease;
+    }
+
+    .links-load-retry:hover {
+        background: rgba(148, 163, 184, 0.22);
+    }
+
+    .links-load-retry:focus-visible {
+        outline: 2px solid rgba(148, 163, 184, 0.7);
+        outline-offset: 3px;
     }
 
     .links+.theme-toggle-footer {
@@ -677,10 +790,33 @@
         overflow: hidden;
     }
 
+    .link-icon.is-image-loading {
+        position: relative;
+    }
+
+    .link-image-skeleton {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg,
+                var(--link-skeleton-base, rgba(255, 255, 255, 0.08)) 25%,
+                var(--link-skeleton-highlight, rgba(255, 255, 255, 0.18)) 50%,
+                var(--link-skeleton-base, rgba(255, 255, 255, 0.08)) 75%);
+        background-size: 200% 100%;
+        animation: linkCardSkeletonShimmer 1.25s ease-in-out infinite;
+    }
+
     .link-icon img {
         width: 32px;
         height: 32px;
         object-fit: contain;
+    }
+
+    .link-icon.is-image-loading img {
+        opacity: 0;
+    }
+
+    .link-icon.image-error img {
+        display: none;
     }
 
     .link-text {
@@ -1470,9 +1606,9 @@
     }
 
     body.bright .link-icon {
-
+        --link-skeleton-base: rgba(15, 23, 42, 0.06);
+        --link-skeleton-highlight: rgba(15, 23, 42, 0.12);
         background: #eef1ff;
-
     }
 
 
@@ -1934,14 +2070,14 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 28px;
+        gap: 24px;
         padding: 24px;
         animation: splashArrive 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
     }
 
     .splash-title {
         color: #f5f7fb;
-        font-size: 22px;
+        font-size: 26px;
         font-weight: 500;
         letter-spacing: 0.24em;
         line-height: 1.1;
@@ -1949,74 +2085,40 @@
         transform: translateX(-0.12em);
     }
 
-    .loader-spinner {
-        position: relative;
-        width: 28px;
-        height: 28px;
-        color: #4aa3ff;
+    .loader-dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 10px;
+        color: #f5f7fb;
     }
 
-    .loader-spinner span {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 2px;
-        height: 5px;
-        margin: -2.5px 0 0 -1px;
-        border-radius: 2px;
+    .loader-dots span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
         background: currentColor;
-        opacity: 0.2;
-        transform: rotate(var(--spinner-angle)) translateY(-9px);
-        animation: spinnerPulse 0.96s ease-in-out infinite;
+        animation: dotPulse 0.9s ease-in-out infinite;
     }
 
-    .loader-spinner span:nth-child(1) {
-        --spinner-angle: 0deg;
-        animation-delay: 0s;
+    .loader-dots span:nth-child(2) {
+        animation-delay: 0.15s;
     }
 
-    .loader-spinner span:nth-child(2) {
-        --spinner-angle: 45deg;
-        animation-delay: -0.12s;
+    .loader-dots span:nth-child(3) {
+        animation-delay: 0.3s;
     }
 
-    .loader-spinner span:nth-child(3) {
-        --spinner-angle: 90deg;
-        animation-delay: -0.24s;
-    }
-
-    .loader-spinner span:nth-child(4) {
-        --spinner-angle: 135deg;
-        animation-delay: -0.36s;
-    }
-
-    .loader-spinner span:nth-child(5) {
-        --spinner-angle: 180deg;
-        animation-delay: -0.48s;
-    }
-
-    .loader-spinner span:nth-child(6) {
-        --spinner-angle: 225deg;
-        animation-delay: -0.6s;
-    }
-
-    .loader-spinner span:nth-child(7) {
-        --spinner-angle: 270deg;
-        animation-delay: -0.72s;
-    }
-
-    .loader-spinner span:nth-child(8) {
-        --spinner-angle: 315deg;
-        animation-delay: -0.84s;
-    }
-
-    @keyframes spinnerPulse {
+    @keyframes dotPulse {
         0%,
         100% {
-            opacity: 0.22;
+            opacity: 0.35;
+            transform: translateY(0);
         }
         50% {
             opacity: 1;
+            transform: translateY(-4px);
         }
     }
 
@@ -2039,8 +2141,8 @@
         color: #172033;
     }
 
-    body.bright .loader-spinner {
-        color: #0a84ff;
+    body.bright .loader-dots {
+        color: #172033;
     }
 
     body.bright .pull-refresh-indicator .loader-spinner {
@@ -2059,7 +2161,7 @@
 
     @media (max-width: 600px) {
         .splash-title {
-            font-size: 20px;
+            font-size: 24px;
         }
     }
 
@@ -2068,7 +2170,12 @@
             animation: none;
         }
 
-        .loader-spinner span {
+        .loader-dots span {
+            animation: none;
+            opacity: 1;
+        }
+
+        .pull-refresh-indicator .loader-spinner span {
             animation-duration: 1.5s;
         }
 
@@ -3477,6 +3584,64 @@
         width: 52%;
     }
 
+    .version-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 120px;
+        text-align: center;
+    }
+
+    .version-info-label {
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 13px;
+    }
+
+    .version-info-value {
+        padding: 7px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+
+    .version-info-description {
+        max-width: 260px;
+        margin: 2px 0 0;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .version-skeleton {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-height: 120px;
+    }
+
+    .version-skeleton-label {
+        width: 100px;
+    }
+
+    .version-skeleton-value {
+        width: 130px;
+        height: 30px;
+        border-radius: 999px;
+    }
+
+    .version-skeleton-description {
+        width: min(240px, 90%);
+        margin-top: 2px;
+    }
+
     @keyframes policySkeletonShimmer {
         from {
             background-position: 100% 0;
@@ -3595,6 +3760,17 @@
     body.bright .modal-body {
         color: rgba(0, 0, 0, 0.75);
         scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+    }
+
+    body.bright .version-info-label,
+    body.bright .version-info-description {
+        color: rgba(0, 0, 0, 0.58);
+    }
+
+    body.bright .version-info-value {
+        border-color: rgba(0, 0, 0, 0.1);
+        background: rgba(0, 0, 0, 0.045);
+        color: #111;
     }
 
     body.bright .modal-body::-webkit-scrollbar-thumb {
