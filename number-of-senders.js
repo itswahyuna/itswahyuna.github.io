@@ -69,7 +69,7 @@ function incrementAnonymousMessages() {
     }
 }
 
-async function nos() {
+async function nos(forceRefresh = false) {
     const cachedStats = getCachedStats();
     if (cachedStats) renderStats(cachedStats);
 
@@ -80,7 +80,7 @@ async function nos() {
         console.error(error);
     }
 
-    if (fetchedThisSession || statsFetchAttempted || !navigator.onLine) {
+    if ((!forceRefresh && (fetchedThisSession || statsFetchAttempted)) || !navigator.onLine) {
         return;
     }
 
@@ -134,9 +134,11 @@ async function nos() {
                 ? "anonymous message to Wahyuna"
                 : "anonymous messages to Wahyuna";
 
-            setTimeout(() => {
-                sender(`${formatCount(stats.totalMessages)} ${messageLabel}`);
-            }, 1500);
+            if (!forceRefresh) {
+                setTimeout(() => {
+                    sender(`${formatCount(stats.totalMessages)} ${messageLabel}`);
+                }, 1500);
+            }
             return;
         }
 
@@ -144,5 +146,7 @@ async function nos() {
         console.error(error);
     }
 }
+
+window.refreshProfileStats = () => nos(true);
 
 nos();

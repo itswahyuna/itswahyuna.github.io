@@ -88,11 +88,13 @@
 <body class="bright">
     <div id="pageLoader" class="page-loader" role="status" aria-live="polite">
         <div class="loader-inner">
-            <div class="splash-brand">
-                <div class="splash-title" aria-hidden="true" data-nosnippet>Wahyuna</div>
-            </div>
-
-            <div class="loader-dots" aria-hidden="true">
+            <div class="splash-title" data-nosnippet>WAHYUNA</div>
+            <div class="loader-spinner" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
@@ -123,6 +125,21 @@
             </div>
         </header>
 
+        <div id="pullRefreshIndicator" class="pull-refresh-indicator" role="status" aria-live="polite"
+            aria-label="Pull to refresh">
+            <div class="loader-spinner" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div id="pullRefreshContent" class="pull-refresh-content">
         <div class="biodata">
 
             <div class="profile-main">
@@ -200,6 +217,7 @@
                 </div>
             </div>
 
+        </div>
         </div>
 
 
@@ -317,6 +335,8 @@
             <div class="link-action-buttons">
                 <button type="button" class="link-action-button" id="linkActionOpen">Open</button>
                 <button type="button" class="link-action-button" id="linkActionCopy">Copy Link</button>
+                <button type="button" class="link-action-button link-action-remove-history" id="linkActionRemoveHistory"
+                    hidden>Remove from Search History</button>
             </div>
             <button type="button" class="link-action-cancel" id="linkActionCancel">Cancel</button>
         </section>
@@ -364,11 +384,13 @@
         </div>
     </div>
 
-    <div id="senderToast" class="sender-toast">
-        <div class="sender-icon">
+    <div id="senderToast" class="sender-toast" role="status" aria-live="polite" aria-atomic="true">
+        <div class="sender-icon" aria-hidden="true">
             <i class="fa-solid fa-comment"></i>
         </div>
-        <div class="sender-text"></div>
+        <div class="sender-content">
+            <div class="sender-text"></div>
+        </div>
     </div>
 
 

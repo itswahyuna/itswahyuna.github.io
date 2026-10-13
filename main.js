@@ -1111,10 +1111,13 @@ const linkActionDescription = document.getElementById('linkActionDescription');
 const linkActionCopy = document.getElementById('linkActionCopy');
 const linkActionOpen = document.getElementById('linkActionOpen');
 const linkActionCancel = document.getElementById('linkActionCancel');
+const linkActionRemoveHistory = document.getElementById('linkActionRemoveHistory');
 let linkActionCard = null;
 let linkActionTrigger = null;
 let linkActionPreviousOverflow = '';
 const linkSearchHistoryKey = '__linkSearch';
+const openedLinkHistoryStorageKey = 'search_history_link';
+const legacyOpenedLinkHistoryStorageKey = '__openedLinkHistory';
 let linkSearchIsOpen = false;
 let linkSearchClosePending = false;
 let linkCardPressTimer = null;
@@ -1260,39 +1263,105 @@ function validateLinkData(links) {
     });
 }
 
-async function loadLinkCards() {
+function createLinkCardSkeleton(cardToMatch) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'link-card-skeleton';
+    skeleton.setAttribute('aria-hidden', 'true');
+
+    const icon = document.createElement('span');
+    icon.className = 'link-skeleton-icon';
+    const text = document.createElement('span');
+    text.className = 'link-skeleton-text';
+    const title = document.createElement('span');
+    title.className = 'link-skeleton-bar title';
+    const description = document.createElement('span');
+    description.className = 'link-skeleton-bar description';
+    text.append(title, description);
+    const arrow = document.createElement('span');
+    arrow.className = 'link-skeleton-arrow';
+    skeleton.append(icon, text, arrow);
+
+    if (cardToMatch) {
+        const cardRect = cardToMatch.getBoundingClientRect();
+        skeleton.style.height = `${cardRect.height}px`;
+        skeleton.style.minHeight = `${cardRect.height}px`;
+        skeleton.style.flexBasis = `${cardRect.height}px`;
+
+        const sourceIcon = cardToMatch.querySelector('.link-icon');
+        if (sourceIcon) {
+            const iconRect = sourceIcon.getBoundingClientRect();
+            const iconStyle = getComputedStyle(sourceIcon);
+            icon.style.display = iconStyle.display;
+            icon.style.width = `${iconRect.width}px`;
+            icon.style.height = `${iconRect.height}px`;
+            icon.style.marginRight = iconStyle.marginRight;
+        }
+
+        const sourceMenu = cardToMatch.querySelector('.link-card-menu');
+        if (sourceMenu) {
+            const menuRect = sourceMenu.getBoundingClientRect();
+            const menuStyle = getComputedStyle(sourceMenu);
+            arrow.style.width = `${menuRect.width}px`;
+            arrow.style.height = `${menuRect.height}px`;
+            arrow.style.marginLeft = menuStyle.marginLeft;
+        }
+    }
+
+    return skeleton;
+}
+
+async function loadLinkCards({ refresh = false } = {}) {
     if (!linkCards) return;
 
+    const skeletonStartedAt = performance.now();
+    const previousCards = refresh
+        ? Array.from(linkCards.querySelectorAll('.link-card'))
+        : [];
+    const skeletonCount = previousCards.length || 4;
+    if (refresh) linkCards.classList.add('refreshing-cards');
     linkCards.setAttribute('aria-busy', 'true');
-    linkCards.replaceChildren(...Array.from({ length: 4 }, () => {
-        const skeleton = document.createElement('div');
-        skeleton.className = 'link-card-skeleton';
-        skeleton.setAttribute('aria-hidden', 'true');
+    linkCards.replaceChildren(...Array.from(
+        { length: skeletonCount },
+        (_, index) => createLinkCardSkeleton(previousCards[index])
+    ));
 
-        const icon = document.createElement('span');
-        icon.className = 'link-skeleton-icon';
-        const text = document.createElement('span');
-        text.className = 'link-skeleton-text';
-        const title = document.createElement('span');
-        title.className = 'link-skeleton-bar title';
-        const description = document.createElement('span');
-        description.className = 'link-skeleton-bar description';
-        text.append(title, description);
-        const arrow = document.createElement('span');
-        arrow.className = 'link-skeleton-arrow';
-        skeleton.append(icon, text, arrow);
-        return skeleton;
-    }));
-
+    let refreshedLinks;
+    let loadError;
     try {
         const response = await fetch('./data/links.json', { cache: 'no-store' });
         if (!response.ok) {
             throw new Error(`error`);
         }
 
-        loadedLinkData = validateLinkData(await response.json());
-        linkCards.replaceChildren(...loadedLinkData.map(createLinkCard));
-        renderLinkSearchResults();
+        refreshedLinks = validateLinkData(await response.json());
+    } catch (error) {
+        console.error(error);
+        loadError = error;
+    }
+
+    if (refresh) {
+        const remainingSkeletonTime = 800 - (performance.now() - skeletonStartedAt);
+        if (remainingSkeletonTime > 0) {
+            await new Promise(resolve => setTimeout(resolve, remainingSkeletonTime));
+        }
+    }
+
+    try {
+        if (loadError) {
+            const message = document.createElement('p');
+            message.className = 'links-load-error';
+            message.append('Unable to load links.');
+            const retry = document.createElement('button');
+            retry.className = 'links-load-retry';
+            retry.type = 'button';
+            retry.textContent = 'Retry';
+            message.appendChild(retry);
+            linkCards.replaceChildren(message);
+        } else if (refreshedLinks) {
+            loadedLinkData = refreshedLinks;
+            linkCards.replaceChildren(...loadedLinkData.map(createLinkCard));
+            renderLinkSearchResults();
+        }
     } catch (error) {
         console.error(error);
         const message = document.createElement('p');
@@ -1306,6 +1375,7 @@ async function loadLinkCards() {
         linkCards.replaceChildren(message);
     } finally {
         linkCards.setAttribute('aria-busy', 'false');
+        if (refresh) linkCards.classList.remove('refreshing-cards');
     }
 }
 
@@ -1344,7 +1414,10 @@ function handleLinkCardClick(event, container) {
 
     event.preventDefault();
     const target = mainLink.getAttribute('target') || '_self';
-    if (container === linkSearchResults) closeLinkSearch();
+    if (container === linkSearchResults) {
+        rememberOpenedSearchLink(href);
+        closeLinkSearch();
+    }
     setTimeout(() => {
         if (target.toLowerCase() === '_blank') {
             window.open(href, '_blank', 'noopener,noreferrer');
@@ -1398,6 +1471,9 @@ function showLinkActionDialog(card, trigger = card) {
     }
     linkActionTitle.textContent = card.querySelector('h3')?.textContent ?? '';
     linkActionDescription.textContent = card.querySelector('.link-text p')?.textContent ?? '';
+    if (linkActionRemoveHistory) {
+        linkActionRemoveHistory.hidden = !card.dataset.searchHistoryUrl;
+    }
     if (isAlreadyOpen) return;
 
     linkActionBackdrop.classList.add('open');
@@ -1411,7 +1487,7 @@ function restoreLinkActionImage() {
     linkActionImageContainer?.replaceChildren();
 }
 
-function closeLinkActionDialog() {
+function closeLinkActionDialog(restoreFocus = true) {
     if (!linkActionBackdrop) return;
 
     linkActionBackdrop.classList.remove('open');
@@ -1421,7 +1497,7 @@ function closeLinkActionDialog() {
     clearTimeout(suppressLinkCardClickTimer);
     suppressLinkCardClick = null;
     linkActionCard = null;
-    linkActionTrigger?.focus();
+    if (restoreFocus) linkActionTrigger?.focus();
     linkActionTrigger = null;
 }
 
@@ -1489,12 +1565,93 @@ document.addEventListener('pointermove', handleLinkCardPointerMove);
 document.addEventListener('pointerup', clearLinkCardPress);
 document.addEventListener('pointercancel', clearLinkCardPress);
 
+function getOpenedLinkHistory() {
+    try {
+        let storedHistory = localStorage.getItem(openedLinkHistoryStorageKey);
+        if (storedHistory === null) {
+            storedHistory = localStorage.getItem(legacyOpenedLinkHistoryStorageKey);
+            if (storedHistory !== null) {
+                localStorage.setItem(openedLinkHistoryStorageKey, storedHistory);
+                localStorage.removeItem(legacyOpenedLinkHistoryStorageKey);
+            }
+        }
+        if (storedHistory === null) return [];
+
+        const parsedHistory = JSON.parse(storedHistory);
+        if (!Array.isArray(parsedHistory) || !parsedHistory.every(url => typeof url === 'string')) {
+            throw new Error('Stored link history is invalid');
+        }
+        return parsedHistory;
+    } catch (error) {
+        console.error('Unable to read opened link history.', error);
+        return [];
+    }
+}
+
+function rememberOpenedSearchLink(href) {
+    if (!loadedLinkData.some(link => link.url === href)) return;
+
+    const updatedHistory = [
+        href,
+        ...getOpenedLinkHistory().filter(savedHref => savedHref !== href)
+    ];
+
+    try {
+        localStorage.setItem(openedLinkHistoryStorageKey, JSON.stringify(updatedHistory));
+    } catch (error) {
+        console.error('Unable to save opened link history.', error);
+    }
+}
+
+function removeOpenedSearchLink(href) {
+    const updatedHistory = getOpenedLinkHistory().filter(savedHref => savedHref !== href);
+
+    try {
+        if (updatedHistory.length) {
+            localStorage.setItem(openedLinkHistoryStorageKey, JSON.stringify(updatedHistory));
+        } else {
+            localStorage.removeItem(openedLinkHistoryStorageKey);
+        }
+        return true;
+    } catch (error) {
+        console.error('Unable to remove link from search history.', error);
+        toastt('Failed to remove link from search history');
+        return false;
+    }
+}
+
+function renderOpenedLinkHistory() {
+    if (!linkSearchResults) return;
+
+    const savedUrls = getOpenedLinkHistory();
+    const historyLinks = savedUrls
+        .map(url => loadedLinkData.find(link => link.url === url))
+        .filter(link => link !== undefined);
+    if (!historyLinks.length) {
+        linkSearchResults.replaceChildren();
+        return;
+    }
+
+    const heading = document.createElement('h2');
+    heading.className = 'link-search-history-title';
+    heading.textContent = 'Recently opened';
+    const historyCards = historyLinks.map(link => {
+        const card = createLinkCard(link);
+        card.dataset.searchHistoryUrl = link.url;
+        return card;
+    });
+    linkSearchResults.replaceChildren(
+        heading,
+        ...historyCards
+    );
+}
+
 function renderLinkSearchResults(query = linkSearchInput?.value ?? '') {
     if (!linkSearchResults) return;
 
     const normalizedQuery = query.trim().toLocaleLowerCase();
     if (!normalizedQuery) {
-        linkSearchResults.replaceChildren();
+        renderOpenedLinkHistory();
         return;
     }
 
@@ -1640,6 +1797,14 @@ linkActionCopy?.addEventListener('click', async () => {
         toastt('Failed to copy link');
     }
 });
+linkActionRemoveHistory?.addEventListener('click', () => {
+    const href = linkActionCard?.dataset.searchHistoryUrl;
+    if (!href || !removeOpenedSearchLink(href)) return;
+
+    closeLinkActionDialog(false);
+    renderLinkSearchResults();
+    linkSearchInput?.focus({ preventScroll: true });
+});
 linkActionOpen?.addEventListener('click', () => {
     if (!linkActionCard) return;
 
@@ -1664,14 +1829,203 @@ document.addEventListener('keydown', event => {
 loadLinkCards();
 
 
+const pullRefreshIndicator = document.getElementById('pullRefreshIndicator');
+const pullRefreshContent = document.getElementById('pullRefreshContent');
+const pullRefreshThreshold = 68;
+const pullRefreshMaxDistance = 92;
+let pullRefreshStartY = null;
+let pullRefreshDistance = 0;
+let pullRefreshInProgress = false;
+
+function isPullRefreshExcludedTarget(target) {
+    return target instanceof Element &&
+        target.closest('.top-navbar, button, a, input, textarea, select, [contenteditable="true"]') !== null;
+}
+
+function handlePullRefreshStart(event) {
+    if (
+        event.touches.length !== 1 ||
+        window.scrollY > 0 ||
+        pullRefreshInProgress ||
+        !(event.target instanceof Element) ||
+        !pullRefreshContent?.contains(event.target) ||
+        isPullRefreshExcludedTarget(event.target)
+    ) {
+        pullRefreshStartY = null;
+        return;
+    }
+
+    pullRefreshStartY = event.touches[0].clientY;
+    pullRefreshDistance = 0;
+}
+
+function handlePullRefreshMove(event) {
+    if (pullRefreshStartY === null || pullRefreshInProgress || event.touches.length !== 1) return;
+
+    const distance = event.touches[0].clientY - pullRefreshStartY;
+    if (distance < 0) {
+        handlePullRefreshCancel();
+        return;
+    }
+    if (distance === 0) return;
+
+    event.preventDefault();
+    pullRefreshDistance = Math.min(distance * 0.55, pullRefreshMaxDistance);
+    pullRefreshContent?.classList.add('pulling');
+    pullRefreshContent?.style.setProperty('--pull-content-distance', `${pullRefreshDistance}px`);
+    pullRefreshIndicator?.classList.add('pulling');
+    pullRefreshIndicator?.style.setProperty('--pull-distance', `${pullRefreshDistance}px`);
+    document.body.classList.add('pull-refresh-active');
+}
+
+async function refreshPageContent(visibleDistance) {
+    pullRefreshInProgress = true;
+    pullRefreshIndicator?.classList.remove('pulling');
+    pullRefreshIndicator?.classList.add('refreshing');
+    pullRefreshContent?.classList.remove('pulling');
+    pullRefreshContent?.classList.add('refreshing');
+    pullRefreshIndicator?.style.setProperty('--pull-distance', `${visibleDistance}px`);
+    pullRefreshIndicator?.setAttribute('aria-label', 'Refreshing page content');
+
+    try {
+        await Promise.all([
+            loadLinkCards({ refresh: true }),
+            window.refreshProfileStats?.()
+        ]);
+    } finally {
+        pullRefreshInProgress = false;
+        pullRefreshStartY = null;
+        pullRefreshDistance = 0;
+        pullRefreshContent?.style.removeProperty('--pull-content-distance');
+        pullRefreshContent?.classList.remove('pulling', 'refreshing');
+        pullRefreshIndicator?.classList.remove('refreshing');
+        pullRefreshIndicator?.style.removeProperty('--pull-distance');
+        pullRefreshIndicator?.setAttribute('aria-label', 'Pull to refresh');
+        document.body.classList.remove('pull-refresh-active');
+    }
+}
+
+function handlePullRefreshEnd() {
+    if (pullRefreshStartY === null) return;
+
+    const shouldRefresh = pullRefreshDistance >= pullRefreshThreshold;
+    const visibleDistance = pullRefreshDistance;
+    pullRefreshStartY = null;
+    pullRefreshDistance = 0;
+
+    if (shouldRefresh) {
+        refreshPageContent(visibleDistance);
+        return;
+    }
+
+    pullRefreshIndicator?.classList.remove('pulling');
+    pullRefreshIndicator?.style.removeProperty('--pull-distance');
+    pullRefreshContent?.classList.remove('pulling', 'refreshing');
+    pullRefreshContent?.style.removeProperty('--pull-content-distance');
+    document.body.classList.remove('pull-refresh-active');
+}
+
+function handlePullRefreshCancel() {
+    pullRefreshStartY = null;
+    pullRefreshDistance = 0;
+    pullRefreshIndicator?.classList.remove('pulling');
+    pullRefreshIndicator?.style.removeProperty('--pull-distance');
+    pullRefreshContent?.classList.remove('pulling', 'refreshing');
+    pullRefreshContent?.style.removeProperty('--pull-content-distance');
+    document.body.classList.remove('pull-refresh-active');
+}
+
+document.addEventListener('touchstart', handlePullRefreshStart, { passive: true });
+document.addEventListener('touchmove', handlePullRefreshMove, { passive: false });
+document.addEventListener('touchend', handlePullRefreshEnd, { passive: true });
+document.addEventListener('touchcancel', handlePullRefreshCancel, { passive: true });
+
+
 // sender toast
 let senderTimer;
+let senderPointer = null;
+
+function finishSenderSwipe(direction) {
+    const toast = document.getElementById("senderToast");
+    if (!toast) return;
+
+    clearTimeout(senderTimer);
+    toast.classList.remove("dragging", "show");
+    toast.classList.add(`dismiss-${direction}`);
+    toast.style.transform = "";
+    senderPointer = null;
+}
+
+function handleSenderPointerDown(event) {
+    const toast = event.currentTarget;
+    if (!event.isPrimary || event.button !== 0 || !toast.classList.contains("show")) return;
+
+    senderPointer = {
+        id: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        x: 0,
+        y: 0
+    };
+    toast.setPointerCapture(event.pointerId);
+    toast.classList.add("dragging");
+}
+
+function handleSenderPointerMove(event) {
+    const toast = event.currentTarget;
+    if (!senderPointer || senderPointer.id !== event.pointerId) return;
+
+    senderPointer.x = event.clientX - senderPointer.startX;
+    senderPointer.y = event.clientY - senderPointer.startY;
+    toast.style.transform =
+        `translate(calc(-50% + ${senderPointer.x}px), ${Math.min(senderPointer.y, 0)}px)`;
+}
+
+function handleSenderPointerUp(event) {
+    const toast = event.currentTarget;
+    if (!senderPointer || senderPointer.id !== event.pointerId) return;
+
+    const { x, y } = senderPointer;
+    const horizontalSwipe = Math.abs(x) >= 70 && Math.abs(x) > Math.abs(y);
+    const upwardSwipe = y <= -55 && Math.abs(y) > Math.abs(x);
+
+    if (horizontalSwipe) {
+        finishSenderSwipe(x < 0 ? "left" : "right");
+        return;
+    }
+    if (upwardSwipe) {
+        finishSenderSwipe("up");
+        return;
+    }
+
+    senderPointer = null;
+    toast.classList.remove("dragging");
+    toast.style.transform = "";
+}
+
+function handleSenderPointerCancel(event) {
+    const toast = event.currentTarget;
+    if (!senderPointer || senderPointer.id !== event.pointerId) return;
+
+    senderPointer = null;
+    toast.classList.remove("dragging");
+    toast.style.transform = "";
+}
+
+const senderToast = document.getElementById("senderToast");
+senderToast?.addEventListener("pointerdown", handleSenderPointerDown);
+senderToast?.addEventListener("pointermove", handleSenderPointerMove);
+senderToast?.addEventListener("pointerup", handleSenderPointerUp);
+senderToast?.addEventListener("pointercancel", handleSenderPointerCancel);
 
 function sender(text) {
     const toast = document.getElementById("senderToast");
     const textElement = toast.querySelector(".sender-text");
 
     clearTimeout(senderTimer);
+    senderPointer = null;
+    toast.style.transform = "";
+    toast.classList.remove("dragging", "dismiss-left", "dismiss-right", "dismiss-up");
 
     textElement.textContent = text;
 
