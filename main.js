@@ -1943,7 +1943,7 @@ function isPullRefreshExcludedTarget(target) {
     return target instanceof Element &&
         target.closest(
             '.top-navbar, .floating-comment-widget, .link-search-backdrop, .history-delete-backdrop, ' +
-            '.image-modal, .site-sidebar, button, a, input, textarea, select, [contenteditable="true"]'
+            '.image-modal, .site-sidebar, input, textarea, select, [contenteditable="true"]'
         ) !== null;
 }
 

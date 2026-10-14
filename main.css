@@ -9,6 +9,7 @@
     html {
         scrollbar-width: thin;
         scrollbar-color: rgba(82, 96, 127, 0.7) transparent;
+        overscroll-behavior-y: none;
     }
 
     *::-webkit-scrollbar {
