@@ -171,13 +171,20 @@ const profileImg = document.querySelector('.profile-img');
 const imageModal = document.getElementById('imageModal');
 const modalClose = document.getElementById('modalClose');
 const modalBackdrop = document.getElementById('modalBackdrop');
-
 const modalImageEl = document.getElementById('modalImage');
 const modalLoader = document.getElementById('modalLoader');
+const profilePopupMessage = document.getElementById('profilePopupMessage');
+const profilePopupCopy = document.getElementById('profilePopupCopy');
 
 function openModal() {
+    if (!imageModal) return;
+
     if (modalLoader) modalLoader.classList.remove('hidden');
     imageModal.classList.add('open');
+    imageModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    modalClose?.focus();
+
     if (modalImageEl) {
         if (modalImageEl.complete) {
             if (modalLoader) modalLoader.classList.add('hidden');
@@ -189,14 +196,40 @@ function openModal() {
     }
 }
 
-function closeModal() {
+function closeModal(restoreFocus = true) {
+    if (!imageModal) return;
+
     imageModal.classList.remove('open');
+    imageModal.setAttribute('aria-hidden', 'true');
     if (modalLoader) modalLoader.classList.add('hidden');
+    document.body.style.overflow = floatingCommentIsOpen ? 'hidden' : '';
+    if (restoreFocus) profileImg?.focus();
 }
 
-profileImg.addEventListener('click', openModal);
-modalClose.addEventListener('click', closeModal);
-modalBackdrop.addEventListener('click', closeModal);
+profileImg?.addEventListener('click', openModal);
+profileImg?.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    openModal();
+});
+modalClose?.addEventListener('click', () => closeModal());
+modalBackdrop?.addEventListener('click', event => {
+    if (event.target === modalBackdrop) closeModal();
+});
+profilePopupCopy?.addEventListener('click', () => {
+    closeModal(false);
+    copyLinkButton?.click();
+});
+profilePopupMessage?.addEventListener('click', () => {
+    closeModal(false);
+    floatingTriggerButton?.focus();
+    floatingTriggerButton?.click();
+});
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && imageModal?.classList.contains('open')) {
+        closeModal();
+    }
+});
 
 let i = 0;
 let deleting = false;
@@ -321,6 +354,7 @@ const floatingNameInput = document.getElementById('floatingNameInput');
 const floatingSubmitButton = document.getElementById('floatingSubmitText');
 const sentHistoryToggle = document.getElementById('sentHistoryToggle');
 const sentHistory = document.getElementById('sentHistory');
+const floatingCommentContent = floatingCommentWidget?.querySelector('.floating-comment-content');
 const sentHistoryHeader = sentHistory?.querySelector('.sent-history-header');
 const sentHistoryList = document.getElementById('sentHistoryList');
 const sentHistoryClose = document.getElementById('sentHistoryClose');
@@ -504,6 +538,7 @@ function setSentHistoryOpen(isOpen, updateHistory = true) {
 
     const isCurrentlyOpen = floatingCommentWidget.classList.contains('show-sent-history');
     if (isOpen === isCurrentlyOpen) return;
+    clearTimeout(sentHistoryResizeTimer);
 
     if (isOpen) {
         pushMessageOverlayHistoryLayer('history');
@@ -512,11 +547,11 @@ function setSentHistoryOpen(isOpen, updateHistory = true) {
         window.history.back();
     }
 
-    clearTimeout(sentHistoryResizeTimer);
     const currentHeight = floatingCommentWidget.getBoundingClientRect().height;
     floatingCommentWidget.style.height = `${currentHeight}px`;
 
     if (isOpen) renderSentMessageHistory();
+    floatingCommentWidget.classList.remove('history-closing');
     sentHistory.classList.remove('is-dragging');
     sentHistory.style.transform = '';
     floatingCommentWidget.classList.toggle('show-sent-history', isOpen);
@@ -526,27 +561,32 @@ function setSentHistoryOpen(isOpen, updateHistory = true) {
     sentHistoryToggle.setAttribute('aria-label', isOpen ? 'Hide my messages' : 'Show my messages');
 
     if (isOpen) {
-        sentHistoryBaseHeight = currentHeight;
+        const messageContentHeight = floatingCommentContent?.getBoundingClientRect().height ?? 0;
+        sentHistoryBaseHeight = messageContentHeight > 0
+            ? Math.min(currentHeight, Math.ceil(messageContentHeight) + 2)
+            : currentHeight;
         requestAnimationFrame(() => {
             if (!floatingCommentWidget.classList.contains('show-sent-history')) return;
 
             const isMobile = window.innerWidth <= 600;
-            const maxHeight = window.innerHeight * (isMobile ? 0.88 : 0.92);
+            const maxHeight = window.innerHeight * (isMobile ? 0.78 : 0.82);
             const desiredHeight = isMobile
-                ? Math.max(0, window.innerHeight - 96)
+                ? Math.max(0, window.innerHeight - 160)
                 : Math.min(maxHeight, 720);
             floatingCommentWidget.style.height = `${desiredHeight}px`;
         });
     } else {
+        floatingCommentWidget.classList.add('history-closing');
         const targetHeight = sentHistoryBaseHeight ?? currentHeight;
         requestAnimationFrame(() => {
             floatingCommentWidget.style.height = `${targetHeight}px`;
         });
         sentHistoryResizeTimer = window.setTimeout(() => {
             if (floatingCommentWidget.classList.contains('closing')) return;
+            floatingCommentWidget.classList.remove('history-closing');
             floatingCommentWidget.style.height = '';
             sentHistoryBaseHeight = null;
-        }, 800);
+        }, 280);
     }
 }
 
@@ -645,6 +685,8 @@ function setFloatingCommentOpen(isOpen) {
     if (!floatingCommentWidget) return;
 
     if (isOpen) {
+        clearTimeout(sentHistoryResizeTimer);
+        floatingCommentWidget.classList.remove('history-closing');
         if (floatingCommentIsOpen && !floatingCommentWidget.classList.contains('hidden')) return;
         if (!['message', 'history'].includes(getMessageOverlayHistoryLayer())) {
             pushMessageOverlayHistoryLayer('message');
@@ -739,6 +781,8 @@ function setFloatingCommentOpen(isOpen) {
         floatingCommentWidget.style.overflow = '';
         floatingCommentWidget.style.visibility = 'hidden';
         floatingCommentWidget.style.removeProperty('--sheet-close-height');
+        floatingCommentWidget.classList.remove('history-closing');
+        sentHistoryBaseHeight = null;
     }, closeDuration);
 }
 
@@ -1063,8 +1107,8 @@ floatingCommentForm.addEventListener('submit', async (event) => {
             await saveSentMessage(name, message, device);
             await incrementAnonymousMessages();
         } catch (storageError) {
-            console.error('The message was sent, but local data could not be saved.', storageError);
-            toastt('Message sent, but unable to save local data');
+
+            toastt('Message sent (error)');
         }
 
     } catch (error) {
@@ -1093,7 +1137,7 @@ floatingCommentForm.addEventListener('submit', async (event) => {
             try {
                 await setAnonymousMessageBlocked();
             } catch (storageError) {
-                console.error('Unable to save the anonymous message block.', storageError);
+                console.error(storageError);
             }
             toastt('You have already sent 3 messages today');
             return;
@@ -1350,7 +1394,7 @@ function createLinksLoadError() {
 
     const title = document.createElement('strong');
     title.className = 'links-load-error-title';
-    title.textContent = 'Unable to Load Links';
+    title.textContent = 'Failed to load data';
 
     const description = document.createElement('span');
     description.className = 'links-load-error-description';
@@ -1890,10 +1934,167 @@ const pullRefreshMaxDistance = 92;
 let pullRefreshStartY = null;
 let pullRefreshDistance = 0;
 let pullRefreshInProgress = false;
+let pullRefreshReturnTimer = null;
+let edgeOverscrollGesture = null;
+let edgeOverscrollResetTimer = null;
+const edgeOverscrollMaxDistance = 72;
 
 function isPullRefreshExcludedTarget(target) {
     return target instanceof Element &&
-        target.closest('.top-navbar, button, a, input, textarea, select, [contenteditable="true"]') !== null;
+        target.closest(
+            '.top-navbar, .floating-comment-widget, .link-search-backdrop, .history-delete-backdrop, ' +
+            '.image-modal, .site-sidebar, button, a, input, textarea, select, [contenteditable="true"]'
+        ) !== null;
+}
+
+function isAtPageBottom() {
+    const scrollElement = document.scrollingElement || document.documentElement;
+    return window.scrollY + window.innerHeight >= scrollElement.scrollHeight - 2;
+}
+
+function isEdgeOverscrollExcludedTarget(target) {
+    return target instanceof Element &&
+        target.closest(
+            '.top-navbar, input, textarea, select, [contenteditable="true"]'
+        ) !== null;
+}
+
+function findEdgeOverscrollTarget(target) {
+    if (!(target instanceof Element) || isEdgeOverscrollExcludedTarget(target)) return null;
+
+    for (let element = target; element && element !== document.body; element = element.parentElement) {
+        const overflowY = window.getComputedStyle(element).overflowY;
+        if (
+            (overflowY === 'auto' || overflowY === 'scroll') &&
+            element.scrollHeight > element.clientHeight + 1
+        ) {
+            return element;
+        }
+    }
+
+    return pullRefreshContent?.contains(target) ? pullRefreshContent : null;
+}
+
+function findEdgeOverscrollVisualTarget(scrollTarget) {
+    if (scrollTarget === pullRefreshContent) return scrollTarget;
+    if (scrollTarget.matches('.modal-body, .sent-history-list')) return scrollTarget;
+    return scrollTarget.closest('.sent-history, .link-search-panel') || scrollTarget;
+}
+
+function isScrollTargetAtEdge(target, edge) {
+    if (target === pullRefreshContent) {
+        return edge === 'bottom'
+            ? isAtPageBottom()
+            : window.scrollY <= 1;
+    }
+
+    const maxScrollTop = target.scrollHeight - target.clientHeight;
+    return edge === 'top'
+        ? target.scrollTop <= 1
+        : target.scrollTop >= maxScrollTop - 1;
+}
+
+function handleEdgeOverscrollStart(event) {
+    if (
+        event.touches.length !== 1 ||
+        pullRefreshInProgress ||
+        isEdgeOverscrollExcludedTarget(event.target)
+    ) {
+        edgeOverscrollGesture = null;
+        return;
+    }
+
+    const scrollTarget = findEdgeOverscrollTarget(event.target);
+    if (!scrollTarget) {
+        edgeOverscrollGesture = null;
+        return;
+    }
+
+    edgeOverscrollGesture = {
+        target: scrollTarget,
+        visualTarget: findEdgeOverscrollVisualTarget(scrollTarget),
+        movesInnerContent: scrollTarget.matches('.modal-body, .sent-history-list'),
+        lastY: event.touches[0].clientY,
+        edge: null,
+        distance: 0
+    };
+}
+
+function handleEdgeOverscrollMove(event) {
+    if (!edgeOverscrollGesture || event.touches.length !== 1) return;
+
+    const currentY = event.touches[0].clientY;
+    const deltaY = currentY - edgeOverscrollGesture.lastY;
+    edgeOverscrollGesture.lastY = currentY;
+    if (deltaY === 0) return;
+
+    const gesture = edgeOverscrollGesture;
+    if (gesture.edge) event.preventDefault();
+    const requestedEdge = deltaY > 0 ? 'top' : 'bottom';
+    if (gesture.distance !== 0) {
+        const nextDistance = gesture.distance + deltaY * 0.36;
+        gesture.distance = Math.sign(nextDistance) === Math.sign(gesture.distance)
+            ? nextDistance
+            : 0;
+        if (gesture.distance === 0) {
+            gesture.edge = null;
+            gesture.visualTarget.classList.remove('edge-overscroll-pulling');
+            gesture.visualTarget.classList.add('edge-overscroll-return');
+            gesture.visualTarget.classList.add('edge-overscroll-target');
+            if (gesture.movesInnerContent) gesture.visualTarget.classList.add('edge-overscroll-inner');
+            gesture.visualTarget.style.setProperty('--edge-overscroll-offset', '0px');
+            clearTimeout(edgeOverscrollResetTimer);
+            edgeOverscrollResetTimer = window.setTimeout(() => {
+                gesture.visualTarget.classList.remove(
+                    'edge-overscroll-target',
+                    'edge-overscroll-return',
+                    'edge-overscroll-inner'
+                );
+                gesture.visualTarget.style.removeProperty('--edge-overscroll-offset');
+            }, 560);
+            return;
+        }
+    } else {
+        if (
+            (gesture.target === pullRefreshContent && requestedEdge === 'top') ||
+            !isScrollTargetAtEdge(gesture.target, requestedEdge)
+        ) return;
+        gesture.edge = requestedEdge;
+        gesture.distance = deltaY * 0.36;
+    }
+
+    event.preventDefault();
+    clearTimeout(edgeOverscrollResetTimer);
+    gesture.distance = Math.max(
+        -edgeOverscrollMaxDistance,
+        Math.min(gesture.distance, edgeOverscrollMaxDistance)
+    );
+    gesture.visualTarget.classList.remove('edge-overscroll-return');
+    gesture.visualTarget.classList.add('edge-overscroll-pulling');
+    gesture.visualTarget.classList.add('edge-overscroll-target');
+    if (gesture.movesInnerContent) gesture.visualTarget.classList.add('edge-overscroll-inner');
+    gesture.visualTarget.style.setProperty('--edge-overscroll-offset', `${gesture.distance}px`);
+}
+
+function resetEdgeOverscroll() {
+    const gesture = edgeOverscrollGesture;
+    edgeOverscrollGesture = null;
+    if (!gesture || gesture.distance === 0) return;
+
+    gesture.visualTarget.classList.remove('edge-overscroll-pulling');
+    gesture.visualTarget.classList.add('edge-overscroll-return');
+    gesture.visualTarget.classList.add('edge-overscroll-target');
+    if (gesture.movesInnerContent) gesture.visualTarget.classList.add('edge-overscroll-inner');
+    gesture.visualTarget.style.setProperty('--edge-overscroll-offset', '0px');
+    clearTimeout(edgeOverscrollResetTimer);
+    edgeOverscrollResetTimer = window.setTimeout(() => {
+        gesture.visualTarget.classList.remove(
+            'edge-overscroll-target',
+            'edge-overscroll-return',
+            'edge-overscroll-inner'
+        );
+        gesture.visualTarget.style.removeProperty('--edge-overscroll-offset');
+    }, 560);
 }
 
 function handlePullRefreshStart(event) {
@@ -1909,6 +2110,8 @@ function handlePullRefreshStart(event) {
         return;
     }
 
+    clearTimeout(pullRefreshReturnTimer);
+    pullRefreshContent?.classList.remove('pull-return');
     pullRefreshStartY = event.touches[0].clientY;
     pullRefreshDistance = 0;
 }
@@ -1950,8 +2153,9 @@ async function refreshPageContent(visibleDistance) {
         pullRefreshInProgress = false;
         pullRefreshStartY = null;
         pullRefreshDistance = 0;
+        clearTimeout(pullRefreshReturnTimer);
         pullRefreshContent?.style.removeProperty('--pull-content-distance');
-        pullRefreshContent?.classList.remove('pulling', 'refreshing');
+        pullRefreshContent?.classList.remove('pulling', 'refreshing', 'pull-return');
         pullRefreshIndicator?.classList.remove('refreshing');
         pullRefreshIndicator?.style.removeProperty('--pull-distance');
         pullRefreshIndicator?.setAttribute('aria-label', 'Pull to refresh');
@@ -1975,20 +2179,36 @@ function handlePullRefreshEnd() {
         return;
     }
 
+    pullRefreshContent?.classList.remove('pulling', 'refreshing');
+    pullRefreshContent?.classList.add('pull-return');
+    pullRefreshContent?.style.setProperty('--pull-content-distance', '0px');
+    pullRefreshReturnTimer = window.setTimeout(() => {
+        pullRefreshContent?.classList.remove('pull-return');
+        pullRefreshContent?.style.removeProperty('--pull-content-distance');
+    }, 560);
     pullRefreshIndicator?.classList.remove('pulling');
     pullRefreshIndicator?.style.removeProperty('--pull-distance');
-    pullRefreshContent?.classList.remove('pulling', 'refreshing');
-    pullRefreshContent?.style.removeProperty('--pull-content-distance');
     document.body.classList.remove('pull-refresh-active');
 }
 
 function handlePullRefreshCancel() {
+    const hadPullDistance = pullRefreshDistance > 0;
     pullRefreshStartY = null;
     pullRefreshDistance = 0;
     pullRefreshIndicator?.classList.remove('pulling');
     pullRefreshIndicator?.style.removeProperty('--pull-distance');
     pullRefreshContent?.classList.remove('pulling', 'refreshing');
-    pullRefreshContent?.style.removeProperty('--pull-content-distance');
+    if (hadPullDistance) {
+        pullRefreshContent?.classList.add('pull-return');
+        pullRefreshContent?.style.setProperty('--pull-content-distance', '0px');
+        clearTimeout(pullRefreshReturnTimer);
+        pullRefreshReturnTimer = window.setTimeout(() => {
+            pullRefreshContent?.classList.remove('pull-return');
+            pullRefreshContent?.style.removeProperty('--pull-content-distance');
+        }, 560);
+    } else {
+        pullRefreshContent?.style.removeProperty('--pull-content-distance');
+    }
     document.body.classList.remove('pull-refresh-active');
 }
 
@@ -1996,6 +2216,10 @@ document.addEventListener('touchstart', handlePullRefreshStart, { passive: true 
 document.addEventListener('touchmove', handlePullRefreshMove, { passive: false });
 document.addEventListener('touchend', handlePullRefreshEnd, { passive: true });
 document.addEventListener('touchcancel', handlePullRefreshCancel, { passive: true });
+document.addEventListener('touchstart', handleEdgeOverscrollStart, { passive: true });
+document.addEventListener('touchmove', handleEdgeOverscrollMove, { passive: false });
+document.addEventListener('touchend', resetEdgeOverscroll, { passive: true });
+document.addEventListener('touchcancel', resetEdgeOverscroll, { passive: true });
 
 
 // sender toast

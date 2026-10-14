@@ -9,7 +9,6 @@
     html {
         scrollbar-width: thin;
         scrollbar-color: rgba(82, 96, 127, 0.7) transparent;
-        overscroll-behavior-y: none;
     }
 
     *::-webkit-scrollbar {
@@ -163,6 +162,38 @@
 
     .pull-refresh-content.pulling {
         transition: none;
+    }
+
+    .pull-refresh-content.pull-return {
+        transition: transform .52s cubic-bezier(.2, .75, .25, 1);
+    }
+
+    .edge-overscroll-target {
+        translate: 0 var(--edge-overscroll-offset, 0px);
+    }
+
+    .edge-overscroll-inner {
+        translate: none;
+    }
+
+    .edge-overscroll-inner > * {
+        translate: 0 var(--edge-overscroll-offset, 0px);
+    }
+
+    .edge-overscroll-inner.edge-overscroll-pulling > * {
+        transition: none !important;
+    }
+
+    .edge-overscroll-inner.edge-overscroll-return > * {
+        transition: translate .52s cubic-bezier(.2, .75, .25, 1);
+    }
+
+    .edge-overscroll-pulling {
+        transition: none !important;
+    }
+
+    .edge-overscroll-return {
+        transition: translate .52s cubic-bezier(.2, .75, .25, 1);
     }
 
     .pull-refresh-content.pulling,
@@ -1406,15 +1437,13 @@
     .image-modal {
         position: fixed;
         inset: 0;
-
         display: flex;
         justify-content: center;
         align-items: center;
-
         visibility: hidden;
         pointer-events: none;
-
         z-index: 9999;
+        padding: 18px;
     }
 
     .image-modal.open {
@@ -1425,92 +1454,170 @@
     .image-modal-backdrop {
         position: absolute;
         inset: 0;
-
-        background: rgba(15, 15, 20, .24);
-
-        backdrop-filter: blur(8px) saturate(130%);
-        -webkit-backdrop-filter: blur(8px) saturate(130%);
+        background: rgba(15, 15, 20, .48);
+        opacity: 0;
+        backdrop-filter: blur(16px) saturate(140%);
+        -webkit-backdrop-filter: blur(16px) saturate(140%);
+        transition: opacity .3s ease;
     }
 
+    .image-modal.open .image-modal-backdrop {
+        opacity: 1;
+    }
 
     .image-modal-content {
         position: relative;
-
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-
-        max-width: 95vw;
-        max-height: 95vh;
-
-        transform: scale(.92);
+        width: min(350px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transform: translateY(18px) scale(.92);
         opacity: 0;
-
         transition:
-            transform .35s cubic-bezier(.22, 1, .36, 1),
-            opacity .25s ease;
-
+            transform .42s cubic-bezier(.2, .9, .25, 1.12),
+            opacity .3s ease;
         z-index: 1;
     }
 
     .image-modal.open .image-modal-content {
-        transform: scale(1);
+        transform: translateY(0) scale(1);
         opacity: 1;
     }
 
+    .profile-popup-header {
+        position: relative;
+        height: 38px;
+    }
 
-    .image-modal-content img {
+    .profile-popup-card {
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, .16);
+        border-radius: 28px;
+        background: rgba(44, 44, 48, .88);
+        color: rgba(255, 255, 255, .94);
+        box-shadow: 0 24px 72px rgba(0, 0, 0, .32);
+        backdrop-filter: blur(30px) saturate(180%);
+        -webkit-backdrop-filter: blur(30px) saturate(180%);
+    }
+
+    .profile-popup-portrait {
+        position: relative;
+    }
+
+    .profile-popup-portrait img {
         display: block;
+        width: 176px;
+        height: 176px;
+        margin: 18px auto 0;
+        border: 2px solid rgba(255, 255, 255, .78);
+        border-radius: 50%;
+        object-fit: cover;
+    }
 
-        max-width: 95vw;
-        max-height: 95vh;
+    .profile-popup-details {
+        padding: 14px 20px 20px;
+        text-align: center;
+    }
 
-        width: auto;
-        height: auto;
+    .profile-popup-details h2 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.2;
+        font-weight: 700;
+        color: rgba(255, 255, 255, .96);
+    }
 
-        object-fit: contain;
+    .profile-popup-actions {
+        display: grid;
+        gap: 9px;
+    }
 
-        border-radius: 14px;
+    .profile-popup-action {
+        width: 100%;
+        min-height: 50px;
+        padding: 12px 16px;
+        border: 1px solid rgba(255, 255, 255, .14);
+        border-radius: 16px;
+        background: rgba(54, 54, 60, .9);
+        color: #54a8ff;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        font: inherit;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: opacity .18s ease, transform .18s ease;
+    }
 
-        box-shadow:
-            0 20px 60px rgba(0, 0, 0, .3);
+    .profile-popup-action:active {
+        transform: scale(.985);
+        opacity: .65;
+    }
+
+    body.bright .profile-popup-card {
+        border-color: rgba(60, 60, 67, .12);
+        background: rgba(250, 250, 252, .9);
+        color: #24252a;
+        box-shadow: 0 24px 72px rgba(0, 0, 0, .18);
+    }
+
+    body.bright .profile-popup-details h2 {
+        color: #24252a;
+    }
+
+    body.bright .profile-popup-action {
+        border-color: rgba(60, 60, 67, .12);
+        background: rgba(250, 250, 252, .94);
+        color: #0066cc;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, .1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .image-modal-backdrop,
+        .image-modal-content {
+            transition-duration: .01ms;
+        }
     }
 
 
     .image-modal-close {
         position: absolute;
-
-        top: 10px;
-        right: 10px;
-
-        width: 38px;
-        height: 38px;
-
-        border: 1px solid rgba(255, 255, 255, .25);
+        top: 7px;
+        right: 12px;
+        width: 28px;
+        height: 28px;
+        border: 0;
         border-radius: 50%;
-
-        background: rgba(0, 0, 0, .45);
-
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-
-        color: #fff;
-
-        font-size: 26px;
+        background: rgba(80, 80, 86, .72);
+        color: rgba(255, 255, 255, .92);
+        font-size: 20px;
         font-weight: 600;
-
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
-
         display: flex;
         justify-content: center;
         align-items: center;
-
         z-index: 2;
-
         transition:
             transform .25s cubic-bezier(.22, 1, .36, 1),
             background .25s ease;
+    }
+
+    @media (max-width: 420px) {
+        .image-modal-content {
+            width: min(350px, 100%);
+        }
+
+        .profile-popup-details {
+            padding: 14px 18px 18px;
+        }
+
+        .profile-popup-portrait img {
+            width: 160px;
+            height: 160px;
+        }
     }
 
     .image-modal-close i {
@@ -1520,7 +1627,7 @@
     }
 
     .image-modal-close:hover {
-        background: rgba(0, 0, 0, .65);
+        background: rgba(100, 100, 106, .82);
     }
 
     .image-modal-close:active {
@@ -2182,6 +2289,18 @@
         .pull-refresh-indicator {
             transition-duration: 0.01ms;
         }
+
+        .pull-refresh-content.pull-return {
+            transition-duration: 0.01ms;
+        }
+
+        .edge-overscroll-return {
+            transition-duration: 0.01ms;
+        }
+
+        .edge-overscroll-inner.edge-overscroll-return > * {
+            transition-duration: 0.01ms;
+        }
     }
 
     .modal-loader {
@@ -2569,25 +2688,44 @@
         position: relative;
         z-index: 1;
         transition:
-            opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-            transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+            opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+            transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .floating-comment-widget.show-sent-history .floating-comment-content {
         opacity: 0;
         pointer-events: none;
         transform: translateY(-8px) scale(0.99);
+        visibility: hidden;
+    }
+
+    .floating-comment-widget.history-closing {
+        overflow: hidden;
+        transition:
+            transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+            opacity 0.28s ease,
+            box-shadow 0.24s ease,
+            height 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .floating-comment-widget.history-closing .floating-comment-content {
+        transition-duration: .18s;
+    }
+
+    .floating-comment-widget.history-closing .sent-history.hidden {
+        transition:
+            transform .22s cubic-bezier(.22, 1, .36, 1),
+            opacity .2s cubic-bezier(.22, 1, .36, 1),
+            visibility 0s linear .22s;
     }
 
     .floating-comment-widget.show-sent-history {
         overflow: hidden;
         transition:
-            transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1),
-            opacity 0.32s ease,
-            box-shadow 0.28s ease,
-            height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
+            transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+            opacity 0.28s ease,
+            box-shadow 0.24s ease,
+            height 0.34s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .floating-comment-widget.history-dragging {
@@ -2615,8 +2753,8 @@
         transform: translateY(0) scale(1);
         opacity: 1;
         transition:
-            transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-            opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+            transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
             visibility 0s;
     }
 
@@ -2632,9 +2770,9 @@
         pointer-events: none;
         transform: translateY(14px) scale(0.985);
         transition:
-            transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-            opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-            visibility 0s linear 0.42s;
+            transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+            visibility 0s linear 0.3s;
     }
 
     .sent-history.is-dragging {
@@ -2643,6 +2781,7 @@
 
     @media (prefers-reduced-motion: reduce) {
         .floating-comment-widget.show-sent-history,
+        .floating-comment-widget.history-closing,
         .floating-comment-content,
         .sent-history,
         .sent-history.hidden {
@@ -3304,8 +3443,8 @@
         }
 
         .floating-comment-widget.show-sent-history {
-            max-height: calc(100vh - 96px);
-            max-height: calc(100dvh - 96px);
+            max-height: calc(100vh - 160px);
+            max-height: calc(100dvh - 160px);
             overflow: hidden;
         }
 
