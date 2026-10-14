@@ -1942,7 +1942,7 @@ const edgeOverscrollMaxDistance = 72;
 function isPullRefreshExcludedTarget(target) {
     return target instanceof Element &&
         target.closest(
-            '.top-navbar, .floating-comment-widget, .link-search-backdrop, .history-delete-backdrop, ' +
+            '.floating-comment-widget, .link-search-backdrop, .history-delete-backdrop, ' +
             '.image-modal, .site-sidebar, input, textarea, select, [contenteditable="true"]'
         ) !== null;
 }
@@ -2103,7 +2103,6 @@ function handlePullRefreshStart(event) {
         window.scrollY > 0 ||
         pullRefreshInProgress ||
         !(event.target instanceof Element) ||
-        !pullRefreshContent?.contains(event.target) ||
         isPullRefreshExcludedTarget(event.target)
     ) {
         pullRefreshStartY = null;
@@ -2212,10 +2211,10 @@ function handlePullRefreshCancel() {
     document.body.classList.remove('pull-refresh-active');
 }
 
-document.addEventListener('touchstart', handlePullRefreshStart, { passive: true });
-document.addEventListener('touchmove', handlePullRefreshMove, { passive: false });
-document.addEventListener('touchend', handlePullRefreshEnd, { passive: true });
-document.addEventListener('touchcancel', handlePullRefreshCancel, { passive: true });
+document.addEventListener('touchstart', handlePullRefreshStart, { passive: true, capture: true });
+document.addEventListener('touchmove', handlePullRefreshMove, { passive: false, capture: true });
+document.addEventListener('touchend', handlePullRefreshEnd, { passive: true, capture: true });
+document.addEventListener('touchcancel', handlePullRefreshCancel, { passive: true, capture: true });
 document.addEventListener('touchstart', handleEdgeOverscrollStart, { passive: true });
 document.addEventListener('touchmove', handleEdgeOverscrollMove, { passive: false });
 document.addEventListener('touchend', resetEdgeOverscroll, { passive: true });
