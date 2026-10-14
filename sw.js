@@ -1,4 +1,4 @@
-const CACHE_NAME = "itswahyuna-v1.3.10";
+const CACHE_NAME = "itswahyuna-v1.3.11";
 console.log("versi cache=" + CACHE_NAME);
 const CACHE_FILES = [ 
     "./", 
