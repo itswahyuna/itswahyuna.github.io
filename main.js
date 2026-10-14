@@ -137,7 +137,7 @@ async function _apply_() {
 function toggleColorMode() {
     document.body.classList.toggle("bright");
     save_mode().catch(error => {
-        console.error('Unable to save the selected theme.', error);
+        console.error(error);
         toastt('Unable to save theme preference');
     });
     change_modee();
@@ -162,7 +162,7 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 _apply_().catch(error => {
-    console.error('Unable to load the saved theme.', error);
+    console.error(error);
 });
 change_mode();
 updateNavbarState();
@@ -1062,7 +1062,7 @@ floatingCommentForm.addEventListener('submit', async (event) => {
     try {
         allowedToSend = await canSendToday();
     } catch (error) {
-        console.error('Unable to check the daily message limit.', error);
+        console.error(error);
         toastt('Unable to check message limit');
         return;
     }
@@ -1501,7 +1501,7 @@ async function handleLinkCardClick(event, container) {
         try {
             await rememberOpenedSearchLink(href);
         } catch (error) {
-            console.error('Unable to save opened link history.', error);
+            console.error(error);
         }
         closeLinkSearch();
     }
@@ -1517,7 +1517,7 @@ async function handleLinkCardClick(event, container) {
 [linkCards, linkSearchResults].filter(Boolean).forEach(container => {
     container.addEventListener('click', event => {
         handleLinkCardClick(event, container).catch(error => {
-            console.error('Unable to handle link card click.', error);
+            console.error(error);
         });
     });
 });
@@ -1546,7 +1546,7 @@ function showLinkActionDialog(card, trigger = card) {
             previewCanvas.height = image.naturalHeight;
             const context = previewCanvas.getContext('2d');
             if (!context) {
-                console.error('Unable to create link image preview.');
+                console.error('error');
                 return;
             }
 
@@ -1696,7 +1696,7 @@ async function removeOpenedSearchLink(href) {
         }
         return true;
     } catch (error) {
-        console.error('Unable to remove link from search history.', error);
+        console.error(error);
         toastt('Failed to remove link from search history');
         return false;
     }
@@ -1709,7 +1709,7 @@ async function renderOpenedLinkHistory() {
     try {
         savedUrls = await getOpenedLinkHistory();
     } catch (error) {
-        console.error('Unable to read opened link history.', error);
+        console.error(error);
         const message = document.createElement('p');
         message.className = 'link-search-empty';
         message.textContent = 'Unable to load link history';
@@ -1899,7 +1899,7 @@ linkActionRemoveHistory?.addEventListener('click', async () => {
         renderLinkSearchResults();
         linkSearchInput?.focus({ preventScroll: true });
     } catch (error) {
-        console.error('Unable to remove link from search history.', error);
+        console.error(error);
         toastt('Failed to remove link from search history');
     }
 });
