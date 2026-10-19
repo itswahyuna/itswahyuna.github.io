@@ -31,6 +31,27 @@
             });
         }
     </script>
+
+    <!-- maintenance -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.innerWidth >= 1024 && !('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
+                document.body.style.margin = "0";
+                document.body.style.display = "flex";
+                document.body.style.justifyContent = "center";
+                document.body.style.backgroundColor = "#f3f4f6";
+                document.body.style.fontFamily = "sans-serif";
+
+                document.body.innerHTML = `
+      <div style="text-align: center; padding: 20px; margin-top: 10vh;">
+        <h1 style="font-size: 2.5rem; color: #1f2937; margin-bottom: 10px;">Mode PC Dalam Maintenance</h1>
+        <p style="font-size: 1.1rem; color: #4b5563;">Silakan buka situs web ini melalui perangkat mobile untuk sementara waktu.</p>
+      </div>
+    `;
+            }
+        });
+
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -135,144 +156,142 @@
         </div>
 
         <div id="pullRefreshContent" class="pull-refresh-content">
-        <div class="biodata">
+            <div class="biodata">
 
-            <div class="profile-main">
-                <img class="profile-img" src="assets/wahyuna.jpeg" alt="Wahyuna - Professional Profile Picture"
-                    role="button" tabindex="0" aria-haspopup="dialog" aria-controls="imageModal"
-                    aria-label="Open Wahyuna's profile">
+                <div class="profile-main">
+                    <img class="profile-img" src="assets/wahyuna.jpeg" alt="Wahyuna - Professional Profile Picture"
+                        role="button" tabindex="0" aria-haspopup="dialog" aria-controls="imageModal"
+                        aria-label="Open Wahyuna's profile">
 
-                <div class="text">
+                    <div class="text">
 
-                    <h1 id="typ" translate="no">Wahyuna</h1>
-                    <span class="visitors" id="visitors" translate="no" data-nosnippet></span>
-                    <span class="anonymous-messages" id="anonymous-messages" translate="no"
-                        data-nosnippet></span>
+                        <h1 id="typ" translate="no">Wahyuna</h1>
+                        <span class="visitors" id="visitors" translate="no" data-nosnippet></span>
+                        <span class="anonymous-messages" id="anonymous-messages" translate="no" data-nosnippet></span>
 
+                    </div>
                 </div>
+
+                <p class="bio">
+
+                    I want to explore the universe.
+                </p>
+
+                <div class="profile-actions">
+                    <div class="profile-action-row">
+                        <button type="button" id="floatingTriggerButton" class="floating-trigger-button"
+                            data-nosnippet>Message</button>
+                        <button type="button" id="copyLinkButton" class="copy-link-button" data-nosnippet>Copy
+                            Link</button>
+                    </div>
+                </div>
+
             </div>
 
-            <p class="bio">
-
-                I want to explore the universe.
-            </p>
-
-            <div class="profile-actions">
-                <div class="profile-action-row">
-                    <button type="button" id="floatingTriggerButton" class="floating-trigger-button"
-                        data-nosnippet>Message</button>
-                    <button type="button" id="copyLinkButton" class="copy-link-button" data-nosnippet>Copy Link</button>
+            <div class="connect">
+                <div class="link-slide-carousel" id="profileLinkCarousel">
+                    <div class="link-slide-nav" role="tablist" aria-label="Profile links">
+                        <button class="link-slide-tab active" id="profile-social-tab" type="button" role="tab"
+                            aria-selected="true" aria-controls="profile-social-panel" data-link-slide="0">
+                            <span class="link-slide-tab-label">Social</span>
+                        </button>
+                        <button class="link-slide-tab" id="profile-from-me-tab" type="button" role="tab"
+                            aria-selected="false" aria-controls="profile-from-me-panel" data-link-slide="1">
+                            <span class="link-slide-tab-label">From me</span>
+                        </button>
+                    </div>
+                    <div class="link-slides" aria-label="Swipe between Social and From me">
+                        <section class="link-slide" id="profile-social-panel" role="tabpanel"
+                            aria-labelledby="profile-social-tab">
+                            <h2 class="link-slide-title">Social</h2>
+                            <div class="links" id="linkCards" aria-busy="true" aria-label="Social links">
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="link-slide" id="profile-from-me-panel" role="tabpanel"
+                            aria-labelledby="profile-from-me-tab">
+                            <h2 class="link-slide-title">From me</h2>
+                            <div class="links" id="fromMeCards" aria-busy="true" aria-label="Links from me">
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
                 </div>
+
+                <p class="connect-copyright">© 2026 Wahyuna</p>
+
             </div>
-
-        </div>
-
-        <div class="connect">
-            <div class="link-slide-carousel" id="profileLinkCarousel">
-                <div class="link-slide-nav" role="tablist" aria-label="Profile links">
-                    <button class="link-slide-tab active" id="profile-social-tab" type="button" role="tab"
-                        aria-selected="true" aria-controls="profile-social-panel" data-link-slide="0">
-                        <span class="link-slide-tab-label">Social</span>
-                    </button>
-                    <button class="link-slide-tab" id="profile-from-me-tab" type="button" role="tab"
-                        aria-selected="false" aria-controls="profile-from-me-panel" data-link-slide="1">
-                        <span class="link-slide-tab-label">From me</span>
-                    </button>
-                </div>
-                <div class="link-slides" aria-label="Swipe between Social and From me">
-                    <section class="link-slide" id="profile-social-panel" role="tabpanel"
-                        aria-labelledby="profile-social-tab">
-                        <h2 class="link-slide-title">Social</h2>
-                        <div class="links" id="linkCards" aria-busy="true" aria-label="Social links">
-                            <div class="link-card-skeleton" aria-hidden="true">
-                                <span class="link-skeleton-icon"></span>
-                                <span class="link-skeleton-text">
-                                    <span class="link-skeleton-bar title"></span>
-                                    <span class="link-skeleton-bar description"></span>
-                                </span>
-                                <span class="link-skeleton-arrow"></span>
-                            </div>
-                            <div class="link-card-skeleton" aria-hidden="true">
-                                <span class="link-skeleton-icon"></span>
-                                <span class="link-skeleton-text">
-                                    <span class="link-skeleton-bar title"></span>
-                                    <span class="link-skeleton-bar description"></span>
-                                </span>
-                                <span class="link-skeleton-arrow"></span>
-                            </div>
-                            <div class="link-card-skeleton" aria-hidden="true">
-                                <span class="link-skeleton-icon"></span>
-                                <span class="link-skeleton-text">
-                                    <span class="link-skeleton-bar title"></span>
-                                    <span class="link-skeleton-bar description"></span>
-                                </span>
-                                <span class="link-skeleton-arrow"></span>
-                            </div>
-                            <div class="link-card-skeleton" aria-hidden="true">
-                                <span class="link-skeleton-icon"></span>
-                                <span class="link-skeleton-text">
-                                    <span class="link-skeleton-bar title"></span>
-                                    <span class="link-skeleton-bar description"></span>
-                                </span>
-                                <span class="link-skeleton-arrow"></span>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="link-slide" id="profile-from-me-panel" role="tabpanel"
-                        aria-labelledby="profile-from-me-tab">
-                        <h2 class="link-slide-title">From me</h2>
-                        <div class="links" id="fromMeCards" aria-busy="true" aria-label="Links from me">
-                            <div class="link-card-skeleton" aria-hidden="true">
-                                <span class="link-skeleton-icon"></span>
-                                <span class="link-skeleton-text">
-                                    <span class="link-skeleton-bar title"></span>
-                                    <span class="link-skeleton-bar description"></span>
-                                </span>
-                                <span class="link-skeleton-arrow"></span>
-                            </div>
-                            <div class="link-card-skeleton" aria-hidden="true">
-                                <span class="link-skeleton-icon"></span>
-                                <span class="link-skeleton-text">
-                                    <span class="link-skeleton-bar title"></span>
-                                    <span class="link-skeleton-bar description"></span>
-                                </span>
-                                <span class="link-skeleton-arrow"></span>
-                            </div>
-                            <div class="link-card-skeleton" aria-hidden="true">
-                                <span class="link-skeleton-icon"></span>
-                                <span class="link-skeleton-text">
-                                    <span class="link-skeleton-bar title"></span>
-                                    <span class="link-skeleton-bar description"></span>
-                                </span>
-                                <span class="link-skeleton-arrow"></span>
-                            </div>
-                            <div class="link-card-skeleton" aria-hidden="true">
-                                <span class="link-skeleton-icon"></span>
-                                <span class="link-skeleton-text">
-                                    <span class="link-skeleton-bar title"></span>
-                                    <span class="link-skeleton-bar description"></span>
-                                </span>
-                                <span class="link-skeleton-arrow"></span>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-
-            <p class="connect-copyright">© 2026 Wahyuna</p>
-
-        </div>
         </div>
 
 
         <div class="image-modal" id="imageModal" aria-hidden="true" data-nosnippet>
             <div class="image-modal-backdrop" id="modalBackdrop"></div>
-            <section class="image-modal-content" role="dialog" aria-modal="true"
-                aria-labelledby="profilePopupName">
+            <section class="image-modal-content" role="dialog" aria-modal="true" aria-labelledby="profilePopupName">
                 <div class="profile-popup-card">
                     <div class="profile-popup-header">
-                        <button class="image-modal-close" id="modalClose" type="button"
-                            aria-label="Close profile">
+                        <button class="image-modal-close" id="modalClose" type="button" aria-label="Close profile">
                             <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -304,8 +323,8 @@
             <div class="link-search-header">
                 <label class="link-search-input-wrap">
                     <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input id="linkSearchInput" type="search" placeholder="Search"
-                        autocomplete="off" inputmode="search" enterkeyhint="search" aria-label="Search links">
+                    <input id="linkSearchInput" type="search" placeholder="Search" autocomplete="off" inputmode="search"
+                        enterkeyhint="search" aria-label="Search links">
                 </label>
                 <button class="link-search-close" id="linkSearchClose" type="button">Cancel</button>
             </div>
