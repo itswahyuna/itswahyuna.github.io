@@ -1159,6 +1159,8 @@ floatingCommentForm.addEventListener('submit', async (event) => {
 });
 
 const linkCards = document.getElementById('linkCards');
+const fromMeCards = document.getElementById('fromMeCards');
+const profileLinkCarousel = document.getElementById('profileLinkCarousel');
 const sidebarToggle = document.getElementById('sidebarToggle');
 const siteSidebar = document.getElementById('siteSidebar');
 const sidebarBackdrop = document.getElementById('sidebarBackdrop');
@@ -1191,6 +1193,8 @@ let linkCardPointerIsDown = false;
 let suppressLinkCardClick = null;
 let suppressLinkCardClickTimer = null;
 let loadedLinkData = [];
+let loadedFromMeData = [];
+let linkCarouselId = 0;
 let linkSearchPreviousOverflow = '';
 let sidebarPreviousOverflow = '';
 
@@ -1340,6 +1344,328 @@ function validateLinkData(links) {
     });
 }
 
+function createLinkSlideCarousel(socialLinks, fromMeLinks, recentLinks = {}, suggestedLinks = {}) {
+    const carouselId = `link-carousel-${++linkCarouselId}`;
+    const carousel = document.createElement('div');
+    const navigation = document.createElement('div');
+    const slides = document.createElement('div');
+    const categories = [
+        { key: 'social', label: 'Social', links: socialLinks },
+        { key: 'fromMe', label: 'From me', links: fromMeLinks }
+    ];
+
+    carousel.className = 'link-slide-carousel link-search-slide-carousel';
+    navigation.className = 'link-slide-nav';
+    navigation.setAttribute('role', 'tablist');
+    navigation.setAttribute('aria-label', 'Search link categories');
+    slides.className = 'link-slides';
+    slides.setAttribute('aria-label', 'Swipe between Social and From me');
+
+    categories.forEach((category, index) => {
+        const tab = document.createElement('button');
+        const panel = document.createElement('section');
+        const heading = document.createElement('h2');
+        const links = document.createElement('div');
+        const tabId = `${carouselId}-tab-${index}`;
+        const panelId = `${carouselId}-panel-${index}`;
+
+        tab.className = `link-slide-tab${index === 0 ? ' active' : ''}`;
+        tab.type = 'button';
+        tab.id = tabId;
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-selected', String(index === 0));
+        tab.setAttribute('aria-controls', panelId);
+        tab.dataset.linkSlide = String(index);
+        tab.textContent = category.label;
+
+        panel.className = 'link-slide';
+        panel.id = panelId;
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', tabId);
+
+        heading.className = 'link-slide-title';
+        heading.textContent = category.label;
+        links.className = 'links';
+
+        panel.append(heading);
+
+        if (recentLinks[category.key]?.length || suggestedLinks[category.key]?.length) {
+            const history = document.createElement('div');
+            const historyHeading = document.createElement('h3');
+            const suggestions = document.createElement('div');
+            const suggestionsHeading = document.createElement('h3');
+            history.className = 'link-search-slide-section';
+            historyHeading.className = 'link-search-history-title';
+            historyHeading.textContent = 'Recently opened';
+            suggestions.className = 'link-search-slide-section';
+            suggestionsHeading.className = 'link-search-history-title';
+            suggestionsHeading.textContent = 'Suggestions';
+
+            const categoryRecentLinks = recentLinks[category.key] ?? [];
+            if (categoryRecentLinks.length) {
+                history.append(
+                    historyHeading,
+                    ...categoryRecentLinks.map(link => {
+                        const card = createLinkCard(link);
+                        card.dataset.searchHistoryUrl = link.url;
+                        return card;
+                    })
+                );
+            }
+
+            const categorySuggestions = suggestedLinks[category.key] ?? [];
+            if (categorySuggestions.length) {
+                suggestions.append(
+                    suggestionsHeading,
+                    ...categorySuggestions.map(createLinkCard)
+                );
+            } else {
+                const emptySuggestions = document.createElement('p');
+                emptySuggestions.className = 'link-search-empty';
+                emptySuggestions.textContent = 'No suggestions available';
+                suggestions.append(suggestionsHeading, emptySuggestions);
+            }
+
+            if (categoryRecentLinks.length) panel.append(history);
+            if (categorySuggestions.length) panel.append(suggestions);
+        } else {
+            if (category.links.length) {
+                links.replaceChildren(...category.links.map(createLinkCard));
+            } else {
+                const emptyState = document.createElement('p');
+                emptyState.className = 'link-search-empty';
+                emptyState.textContent = `No ${category.label} links found`;
+                links.append(emptyState);
+            }
+            panel.append(links);
+        }
+
+        navigation.append(tab);
+        slides.append(panel);
+    });
+
+    carousel.append(navigation, slides);
+    setupLinkSlideCarousel(carousel);
+    return carousel;
+}
+
+function setupLinkSlideCarousel(carousel) {
+    const slides = carousel.querySelector('.link-slides');
+    const panels = Array.from(carousel.querySelectorAll('.link-slide'));
+    const tabs = Array.from(carousel.querySelectorAll('.link-slide-tab'));
+    if (!slides || panels.length !== tabs.length) return;
+
+    const navigation = carousel.querySelector('.link-slide-nav');
+    const getActiveSlideIndex = () => {
+        if (!slides.clientWidth) return 0;
+        return Math.min(
+            Math.max(Math.round(slides.scrollLeft / slides.clientWidth), 0),
+            panels.length - 1
+        );
+    };
+    const updateActiveSlideHeight = () => {
+        if (carousel.id !== 'profileLinkCarousel') return;
+        const activePanel = panels[getActiveSlideIndex()];
+        if (!activePanel) return;
+        slides.style.setProperty('--active-link-slide-height', `${activePanel.scrollHeight}px`);
+    };
+    const updateBiodataHeight = () => {
+        if (carousel.id !== 'profileLinkCarousel') return;
+        const biodata = document.querySelector('.biodata');
+        if (!biodata) return;
+        slides.style.setProperty('--biodata-height', `${biodata.getBoundingClientRect().height}px`);
+    };
+    const profileSlideHistoryKey = '__profileLinkSlide';
+    let profileSlideUrlTimer;
+
+    if (carousel.id === 'profileLinkCarousel') {
+        const panelResizeObserver = new ResizeObserver(() => {
+            updateActiveSlideHeight();
+            updateBiodataHeight();
+        });
+        panels.forEach(panel => panelResizeObserver.observe(panel));
+        const biodata = document.querySelector('.biodata');
+        if (biodata) panelResizeObserver.observe(biodata);
+        updateActiveSlideHeight();
+        updateBiodataHeight();
+        window.addEventListener('resize', updateBiodataHeight);
+    }
+
+    if (carousel.id === 'profileLinkCarousel' && navigation) {
+        const tabLabels = tabs.map(tab => tab.querySelector('.link-slide-tab-label'));
+        let stickyUpdateFrame = 0;
+        const updateStickyNavigation = () => {
+            stickyUpdateFrame = 0;
+            const stickyTop = Number.parseFloat(getComputedStyle(navigation).top) || 0;
+            const navigationRect = navigation.getBoundingClientRect();
+            const carouselRect = carousel.getBoundingClientRect();
+            const hasReachedStickyPosition = navigationRect.top <= stickyTop + 1;
+            const carouselHasRoomBelow = carouselRect.bottom > stickyTop + navigationRect.height;
+            const shouldStick = hasReachedStickyPosition && carouselHasRoomBelow;
+            if (navigation.classList.contains('is-stuck') === shouldStick) return;
+
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const activeAnimations = [...tabs, ...tabLabels.filter(Boolean)]
+                .map(element => element.getAnimations());
+            activeAnimations.flat().forEach(animation => animation.cancel());
+            const beforeRects = tabs.map(tab => tab.getBoundingClientRect());
+            const beforeLabelRects = tabLabels.map(label => label?.getBoundingClientRect());
+
+            navigation.classList.toggle('is-stuck', shouldStick);
+            if (reduceMotion) return;
+
+            const afterRects = tabs.map(tab => tab.getBoundingClientRect());
+            const afterLabelRects = tabLabels.map(label => label?.getBoundingClientRect());
+            tabs.forEach((tab, index) => {
+                const before = beforeRects[index];
+                const after = afterRects[index];
+                if (!before.width || !after.width) return;
+
+                tab.animate(
+                    [
+                        {
+                            width: `${before.width}px`,
+                            transform: `translateX(${before.left - after.left}px)`
+                        },
+                        {
+                            width: `${after.width}px`,
+                            transform: 'translateX(0)'
+                        }
+                    ],
+                    {
+                        duration: 360,
+                        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
+                    }
+                );
+
+                const label = tabLabels[index];
+                const beforeLabel = beforeLabelRects[index];
+                const afterLabel = afterLabelRects[index];
+                if (!label || !beforeLabel || !afterLabel) return;
+                const beforeLabelOffset = beforeLabel.left - before.left;
+                const afterLabelOffset = afterLabel.left - after.left;
+                label.animate(
+                    [
+                        { transform: `translateX(${beforeLabelOffset - afterLabelOffset}px)` },
+                        { transform: 'translateX(0)' }
+                    ],
+                    {
+                        duration: 360,
+                        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
+                    }
+                );
+            });
+        };
+        const scheduleStickyNavigationUpdate = () => {
+            if (stickyUpdateFrame) return;
+            stickyUpdateFrame = window.requestAnimationFrame(updateStickyNavigation);
+        };
+
+        window.addEventListener('scroll', scheduleStickyNavigationUpdate, { passive: true });
+        window.addEventListener('resize', scheduleStickyNavigationUpdate);
+        updateStickyNavigation();
+    }
+
+    const setActiveTab = index => {
+        tabs.forEach((tab, tabIndex) => {
+            const active = tabIndex === index;
+            tab.classList.toggle('active', active);
+            tab.setAttribute('aria-selected', String(active));
+        });
+    };
+
+    const setActiveSlideFromHistory = index => {
+        const targetIndex = Math.min(Math.max(index, 0), panels.length - 1);
+        slides.scrollTo({ left: panels[targetIndex].offsetLeft, behavior: 'auto' });
+        setActiveTab(targetIndex);
+        updateActiveSlideHeight();
+    };
+
+    let profileSlideHistoryReady = false;
+    if (carousel.id === 'profileLinkCarousel') {
+        const currentUrl = new URL(window.location.href);
+        const isFromMeQuery = currentUrl.searchParams.get('k') === 'from-me';
+        if (isFromMeQuery) {
+            currentUrl.searchParams.delete('k');
+            window.history.replaceState(
+                { ...(window.history.state ?? {}), [profileSlideHistoryKey]: 'social' },
+                '',
+                currentUrl
+            );
+
+            const fromMeUrl = new URL(currentUrl);
+            fromMeUrl.searchParams.set('k', 'from-me');
+            window.history.pushState(
+                { ...(window.history.state ?? {}), [profileSlideHistoryKey]: 'from-me' },
+                '',
+                fromMeUrl
+            );
+            setActiveSlideFromHistory(1);
+            profileSlideHistoryReady = true;
+        } else {
+            window.history.replaceState(
+                { ...(window.history.state ?? {}), [profileSlideHistoryKey]: 'social' },
+                '',
+                currentUrl
+            );
+            profileSlideHistoryReady = true;
+        }
+
+        window.addEventListener('popstate', event => {
+            clearTimeout(profileSlideUrlTimer);
+            const routeIsFromMe = new URL(window.location.href).searchParams.get('k') === 'from-me' ||
+                event.state?.[profileSlideHistoryKey] === 'from-me';
+            setActiveSlideFromHistory(routeIsFromMe ? 1 : 0);
+        });
+    }
+
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+            slides.scrollTo({
+                left: panels[index].offsetLeft,
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                    ? 'auto'
+                    : 'smooth'
+            });
+            setActiveTab(index);
+        });
+    });
+
+    slides.addEventListener('scroll', () => {
+        const index = getActiveSlideIndex();
+        setActiveTab(Math.min(Math.max(index, 0), tabs.length - 1));
+        updateActiveSlideHeight();
+
+        if (carousel.id === 'profileLinkCarousel') {
+            clearTimeout(profileSlideUrlTimer);
+            profileSlideUrlTimer = window.setTimeout(() => {
+                if (!profileSlideHistoryReady) return;
+                const currentUrl = new URL(window.location.href);
+                const isFromMeQuery = currentUrl.searchParams.get('k') === 'from-me';
+                if (index === 1 && !isFromMeQuery) {
+                    currentUrl.searchParams.set('k', 'from-me');
+                    window.history.pushState(
+                        { ...(window.history.state ?? {}), [profileSlideHistoryKey]: 'from-me' },
+                        '',
+                        currentUrl
+                    );
+                } else if (index === 0 && isFromMeQuery) {
+                    if (window.history.state?.[profileSlideHistoryKey] === 'from-me') {
+                        window.history.back();
+                    } else {
+                        currentUrl.searchParams.delete('k');
+                        window.history.replaceState(
+                            { ...(window.history.state ?? {}), [profileSlideHistoryKey]: 'social' },
+                            '',
+                            currentUrl
+                        );
+                    }
+                }
+            }, 180);
+        }
+    }, { passive: true });
+}
+
 function createLinkCardSkeleton(cardToMatch) {
     const skeleton = document.createElement('div');
     skeleton.className = 'link-card-skeleton';
@@ -1410,29 +1736,43 @@ function createLinksLoadError() {
 }
 
 async function loadLinkCards({ refresh = false } = {}) {
-    if (!linkCards) return;
+    const cardContainers = [linkCards, fromMeCards].filter(Boolean);
+    if (!cardContainers.length) return;
 
     const skeletonStartedAt = performance.now();
-    const previousCards = refresh
-        ? Array.from(linkCards.querySelectorAll('.link-card'))
-        : [];
-    const skeletonCount = previousCards.length || 4;
-    if (refresh) linkCards.classList.add('refreshing-cards');
-    linkCards.setAttribute('aria-busy', 'true');
-    linkCards.replaceChildren(...Array.from(
-        { length: skeletonCount },
-        (_, index) => createLinkCardSkeleton(previousCards[index])
-    ));
+    const previousCards = cardContainers.map(container => refresh
+        ? Array.from(container.querySelectorAll('.link-card'))
+        : []);
+    cardContainers.forEach((container, containerIndex) => {
+        const cards = previousCards[containerIndex];
+        const skeletonCount = cards.length || 4;
+        if (refresh) container.classList.add('refreshing-cards');
+        container.setAttribute('aria-busy', 'true');
+        container.replaceChildren(...Array.from(
+            { length: skeletonCount },
+            (_, index) => createLinkCardSkeleton(cards[index])
+        ));
+    });
 
     let refreshedLinks;
+    let refreshedFromMeLinks;
     let loadError;
     try {
-        const response = await fetch('./data/links.json', { cache: 'no-store' });
-        if (!response.ok) {
-            throw new Error(`error`);
+        const [socialResponse, fromMeResponse] = await Promise.all([
+            fetch('./data/links.json', { cache: 'no-store' }),
+            fetch('./data/from_me.json', { cache: 'no-store' })
+        ]);
+        if (!socialResponse.ok) {
+            throw new Error(`Failed to load Social links (HTTP ${socialResponse.status})`);
+        }
+        if (!fromMeResponse.ok) {
+            throw new Error(`Failed to load From me links (HTTP ${fromMeResponse.status})`);
         }
 
-        refreshedLinks = validateLinkData(await response.json());
+        [refreshedLinks, refreshedFromMeLinks] = await Promise.all([
+            socialResponse.json().then(validateLinkData),
+            fromMeResponse.json().then(validateLinkData)
+        ]);
     } catch (error) {
         console.error(error);
         loadError = error;
@@ -1447,18 +1787,22 @@ async function loadLinkCards({ refresh = false } = {}) {
 
     try {
         if (loadError) {
-            linkCards.replaceChildren(createLinksLoadError());
-        } else if (refreshedLinks) {
+            cardContainers.forEach(container => container.replaceChildren(createLinksLoadError()));
+        } else if (refreshedLinks && refreshedFromMeLinks) {
             loadedLinkData = refreshedLinks;
-            linkCards.replaceChildren(...loadedLinkData.map(createLinkCard));
+            loadedFromMeData = refreshedFromMeLinks;
+            linkCards?.replaceChildren(...loadedLinkData.map(createLinkCard));
+            fromMeCards?.replaceChildren(...loadedFromMeData.map(createLinkCard));
             renderLinkSearchResults();
         }
     } catch (error) {
         console.error(error);
-        linkCards.replaceChildren(createLinksLoadError());
+        cardContainers.forEach(container => container.replaceChildren(createLinksLoadError()));
     } finally {
-        linkCards.setAttribute('aria-busy', 'false');
-        if (refresh) linkCards.classList.remove('refreshing-cards');
+        cardContainers.forEach(container => {
+            container.setAttribute('aria-busy', 'false');
+            if (refresh) container.classList.remove('refreshing-cards');
+        });
     }
 }
 
@@ -1514,7 +1858,7 @@ async function handleLinkCardClick(event, container) {
     }, 170);
 }
 
-[linkCards, linkSearchResults].filter(Boolean).forEach(container => {
+[linkCards, fromMeCards, linkSearchResults].filter(Boolean).forEach(container => {
     container.addEventListener('click', event => {
         handleLinkCardClick(event, container).catch(error => {
             console.error(error);
@@ -1618,7 +1962,7 @@ function handleLinkCardPointerMove(event) {
     }
 }
 
-[linkCards, linkSearchResults].filter(Boolean).forEach(container => {
+[linkCards, fromMeCards, linkSearchResults].filter(Boolean).forEach(container => {
     container.addEventListener('pointerdown', event => {
         if (event.button !== 0 || !(event.target instanceof Element)) return;
         const card = event.target.closest('.link-card');
@@ -1675,7 +2019,7 @@ async function getOpenedLinkHistory() {
 }
 
 async function rememberOpenedSearchLink(href) {
-    if (!loadedLinkData.some(link => link.url === href)) return;
+    if (![...loadedLinkData, ...loadedFromMeData].some(link => link.url === href)) return;
 
     const updatedHistory = [
         href,
@@ -1702,64 +2046,74 @@ async function removeOpenedSearchLink(href) {
     }
 }
 
-async function renderOpenedLinkHistory() {
-    if (!linkSearchResults) return;
-
-    let savedUrls;
-    try {
-        savedUrls = await getOpenedLinkHistory();
-    } catch (error) {
-        console.error(error);
-        const message = document.createElement('p');
-        message.className = 'link-search-empty';
-        message.textContent = 'Unable to load link history';
-        linkSearchResults.replaceChildren(message);
-        return;
-    }
-
-    const historyLinks = savedUrls
-        .map(url => loadedLinkData.find(link => link.url === url))
+async function getOpenedLinkHistoryData() {
+    const savedUrls = await getOpenedLinkHistory();
+    const getLinksForUrls = links => savedUrls
+        .map(url => links.find(link => link.url === url))
         .filter(link => link !== undefined);
-    if (!historyLinks.length) {
-        linkSearchResults.replaceChildren();
-        return;
-    }
+    return {
+        social: getLinksForUrls(loadedLinkData),
+        fromMe: getLinksForUrls(loadedFromMeData)
+    };
+}
 
-    const heading = document.createElement('h2');
-    heading.className = 'link-search-history-title';
-    heading.textContent = 'Recently opened';
-    const historyCards = historyLinks.map(link => {
-        const card = createLinkCard(link);
-        card.dataset.searchHistoryUrl = link.url;
-        return card;
-    });
-    linkSearchResults.replaceChildren(
-        heading,
-        ...historyCards
-    );
+function getRandomSuggestions(links, recentLinks = []) {
+    const recentUrls = new Set(recentLinks.map(link => link.url));
+    const candidates = links.filter(link => !recentUrls.has(link.url));
+    for (let index = candidates.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [candidates[index], candidates[randomIndex]] = [candidates[randomIndex], candidates[index]];
+    }
+    return candidates.slice(0, 5);
 }
 
 async function renderLinkSearchResults(query = linkSearchInput?.value ?? '') {
     if (!linkSearchResults) return;
 
     const normalizedQuery = query.trim().toLocaleLowerCase();
+    let recentLinks = {};
+    let suggestedLinks = {};
     if (!normalizedQuery) {
-        await renderOpenedLinkHistory();
-        return;
+        try {
+            recentLinks = await getOpenedLinkHistoryData();
+            suggestedLinks = {
+                social: getRandomSuggestions(loadedLinkData, recentLinks.social),
+                fromMe: getRandomSuggestions(loadedFromMeData, recentLinks.fromMe)
+            };
+        } catch (error) {
+            console.error(error);
+            const message = document.createElement('p');
+            message.className = 'link-search-empty';
+            message.textContent = 'Unable to load link history';
+            linkSearchResults.replaceChildren(
+                createLinkSlideCarousel(
+                    loadedLinkData,
+                    loadedFromMeData,
+                    {},
+                    {
+                        social: getRandomSuggestions(loadedLinkData),
+                        fromMe: getRandomSuggestions(loadedFromMeData)
+                    }
+                ),
+                message
+            );
+            return;
+        }
     }
 
-    const matches = loadedLinkData.filter(link =>
+    const matchesSocial = loadedLinkData.filter(link =>
         `${link.name} ${link.description} ${link.url}`.toLocaleLowerCase().includes(normalizedQuery)
     );
-    if (matches.length) {
-        linkSearchResults.replaceChildren(...matches.map(createLinkCard));
-        return;
-    }
-
-    const emptyState = document.createElement('p');
-    emptyState.className = 'link-search-empty';
-    emptyState.textContent = 'No links found';
-    linkSearchResults.replaceChildren(emptyState);
+    const matchesFromMe = loadedFromMeData.filter(link =>
+        `${link.name} ${link.description} ${link.url}`.toLocaleLowerCase().includes(normalizedQuery)
+    );
+    const carousel = createLinkSlideCarousel(
+        matchesSocial,
+        matchesFromMe,
+        recentLinks,
+        suggestedLinks
+    );
+    linkSearchResults.replaceChildren(carousel);
 }
 
 function setLinkSearchUrl(query) {
@@ -1924,6 +2278,7 @@ document.addEventListener('keydown', event => {
     }
 });
 
+if (profileLinkCarousel) setupLinkSlideCarousel(profileLinkCarousel);
 loadLinkCards();
 
 

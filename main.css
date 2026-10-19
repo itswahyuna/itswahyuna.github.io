@@ -509,7 +509,7 @@
 
 
     .connect {
-        margin-top: 12px;
+        margin-top: 5px;
         margin-bottom: 28px;
     }
 
@@ -519,27 +519,8 @@
         }
 
         .connect {
-            margin-top: 20px;
+            margin-top: 12px;
         }
-    }
-
-    .connect-title {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 25px;
-    }
-
-    .connect-title span {
-        flex: 1;
-        height: 1px;
-        background: rgba(255, 255, 255, .2);
-    }
-
-    .connect-title h2 {
-        font-size: 14px;
-        letter-spacing: 5px;
-        color: #aaa;
     }
 
     .links {
@@ -548,9 +529,204 @@
         gap: 12px;
     }
 
+    .link-slide-carousel {
+        width: 100%;
+        overflow: visible;
+    }
+
+    .link-slide-nav {
+        display: flex;
+        width: 100%;
+        justify-content: stretch;
+        column-gap: 0;
+        margin: 0 0 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: column-gap 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #profileLinkCarousel .link-slide-nav {
+        position: sticky;
+        top: 60px;
+        z-index: 39;
+        background: #010203;
+        transition: background-color 0.2s ease;
+    }
+
+    #profileLinkCarousel .link-slide-nav.is-stuck {
+        justify-content: flex-start;
+        column-gap: 6px;
+        padding: 4px 0 1px;
+        border-bottom-color: transparent;
+        background: #010203;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
+    #profileLinkCarousel .link-slide-nav.is-stuck::before {
+        position: absolute;
+        bottom: -1px;
+        left: calc(50% - 50vw);
+        width: 100vw;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        content: "";
+        pointer-events: none;
+    }
+
+    .link-slide-tab {
+        position: relative;
+        flex: 0 0 auto;
+        width: 50%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: rgba(220, 225, 235, 0.66);
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: min-height 0.32s cubic-bezier(0.22, 1, 0.36, 1), color 0.18s ease;
+    }
+
+    #profileLinkCarousel .link-slide-nav.is-stuck .link-slide-tab {
+        width: auto;
+        flex: 0 0 auto;
+        padding-right: 10px;
+        padding-left: 10px;
+        min-height: 46px;
+        font-size: 14px;
+    }
+
+    #profileLinkCarousel .link-slide-nav.is-stuck .link-slide-tab.active::after {
+        right: 0;
+        left: 0;
+    }
+
+    .link-slide-tab.active {
+        color: #fff;
+    }
+
+    .link-slide-tab-label {
+        display: inline-block;
+    }
+
+    .link-slide-tab.active::after {
+        position: absolute;
+        right: 25%;
+        bottom: -1px;
+        left: 25%;
+        height: 2px;
+        border-radius: 999px;
+        background: rgba(138, 180, 248, 0.9);
+        content: "";
+    }
+
+    .link-slide-tab:focus-visible {
+        outline: 2px solid rgba(35, 113, 255, 0.75);
+        outline-offset: 2px;
+    }
+
+    .link-slides {
+        position: relative;
+        display: flex;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x pan-y;
+    }
+
+    #profileLinkCarousel .link-slides {
+        height: var(--active-link-slide-height, auto);
+        min-height: calc(100vh - var(--biodata-height, 0px));
+        min-height: calc(100dvh - var(--biodata-height, 0px));
+        align-items: flex-start;
+        transition: height 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .link-slides::-webkit-scrollbar {
+        display: none;
+    }
+
+    .link-slide {
+        flex: 0 0 100%;
+        width: 100%;
+        min-width: 0;
+        padding: 2px 1px 5px;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+    }
+
+    #profileLinkCarousel .link-card {
+        min-height: 0;
+    }
+
+    .link-slide-title {
+        margin: 0 2px 12px;
+        color: rgba(220, 225, 235, 0.86);
+        font-size: 17px;
+        font-weight: 650;
+        letter-spacing: 0.015em;
+        text-align: left;
+    }
+
+    #profileLinkCarousel .link-slide-title {
+        display: none;
+    }
+
+    .link-search-slide-section {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin-bottom: 20px;
+    }
+
+    .link-search-slide-section .link-search-history-title {
+        margin: 0 2px 1px;
+    }
+
+    body.bright .link-slide-nav {
+        border-bottom-color: rgba(60, 64, 67, 0.12);
+    }
+
+    body.bright #profileLinkCarousel .link-slide-nav {
+        background: #fff;
+    }
+
+    body.bright #profileLinkCarousel .link-slide-nav.is-stuck::before {
+        background: rgba(60, 64, 67, 0.12);
+    }
+
+    body.bright .link-slide-tab {
+        color: #3c4043;
+    }
+
+    body.bright .link-slide-tab.active {
+        color: #174ea6;
+    }
+
+    body.bright .link-slide-tab.active::after {
+        background: rgba(26, 115, 232, 0.82);
+    }
+
+    body.bright .link-slide-title {
+        color: rgba(17, 24, 39, 0.86);
+    }
+
     .connect-copyright {
-        margin: 22px 0 0;
-        padding-top: 14px;
+        margin: 10px 0 0;
+        padding-top: 6px;
         color: rgba(220, 225, 235, 0.48);
         font-size: 11px;
         letter-spacing: 0.045em;
@@ -1057,6 +1233,10 @@
         margin-bottom: 18px;
     }
 
+    .link-search-panel > .link-search-header {
+        margin-bottom: 8px;
+    }
+
     .link-search-input-wrap {
         display: flex;
         flex: 1;
@@ -1123,6 +1303,10 @@
         .link-search-close {
             transition-duration: 0.01ms;
         }
+
+        .link-slides {
+            scroll-behavior: auto;
+        }
     }
 
     .link-search-results {
@@ -1135,6 +1319,44 @@
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-width: thin;
+    }
+
+    .link-search-slide-carousel {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .link-search-slide-carousel .link-slide-nav {
+        flex: 0 0 auto;
+        justify-content: flex-start;
+        column-gap: 6px;
+        margin-bottom: 16px;
+        padding-top: 4px;
+    }
+
+    .link-search-slide-carousel .link-slide-tab {
+        width: auto;
+        flex: 0 0 auto;
+        min-height: 46px;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .link-search-slide-carousel .link-slide-tab.active::after {
+        right: 0;
+        left: 0;
+    }
+
+    .link-search-slide-carousel .link-slide-title {
+        display: none;
+    }
+
+    .link-search-slide-carousel .link-slides {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
     }
 
     .link-search-results:empty::after {
@@ -1374,6 +1596,11 @@
     @media (prefers-reduced-motion: reduce) {
         .link-search-backdrop,
         .link-search-panel {
+            transition-duration: 0.01ms;
+        }
+
+        .link-slide-nav,
+        .link-slide-tab {
             transition-duration: 0.01ms;
         }
     }
@@ -1728,18 +1955,6 @@
     }
 
 
-    body.bright .connect-title h2 {
-
-        color: #aaaaaa;
-
-    }
-
-    body.bright .connect-title span {
-
-        background: rgba(42, 44, 49, 0.16);
-
-    }
-
     @media (min-width: 601px) {
 
         .profile-action-row button,
@@ -1866,9 +2081,23 @@
             margin-right: 12px;
         }
 
-        .connect-title h2 {
-            font-size: 12px;
-            letter-spacing: 3px;
+        .link-slide-nav {
+            margin-bottom: 20px;
+        }
+
+        #profileLinkCarousel .link-slide-nav {
+            top: 52px;
+        }
+
+        .link-slide-tab {
+            min-height: 46px;
+            padding-right: 8px;
+            padding-left: 8px;
+            font-size: 14px;
+        }
+
+        .link-slide-title {
+            font-size: 16px;
         }
     }
 

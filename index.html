@@ -168,49 +168,94 @@
         </div>
 
         <div class="connect">
-
-            <div class="connect-title">
-
-                <span></span>
-
-                <h2 class="cwm" style="user-select: none;" data-nosnippet>CONNECT WITH ME</h2>
-
-                <span></span>
-
-            </div>
-
-            <div class="links" id="linkCards" aria-busy="true" aria-label="Social links">
-                <div class="link-card-skeleton" aria-hidden="true">
-                    <span class="link-skeleton-icon"></span>
-                    <span class="link-skeleton-text">
-                        <span class="link-skeleton-bar title"></span>
-                        <span class="link-skeleton-bar description"></span>
-                    </span>
-                    <span class="link-skeleton-arrow"></span>
+            <div class="link-slide-carousel" id="profileLinkCarousel">
+                <div class="link-slide-nav" role="tablist" aria-label="Profile links">
+                    <button class="link-slide-tab active" id="profile-social-tab" type="button" role="tab"
+                        aria-selected="true" aria-controls="profile-social-panel" data-link-slide="0">
+                        <span class="link-slide-tab-label">Social</span>
+                    </button>
+                    <button class="link-slide-tab" id="profile-from-me-tab" type="button" role="tab"
+                        aria-selected="false" aria-controls="profile-from-me-panel" data-link-slide="1">
+                        <span class="link-slide-tab-label">From me</span>
+                    </button>
                 </div>
-                <div class="link-card-skeleton" aria-hidden="true">
-                    <span class="link-skeleton-icon"></span>
-                    <span class="link-skeleton-text">
-                        <span class="link-skeleton-bar title"></span>
-                        <span class="link-skeleton-bar description"></span>
-                    </span>
-                    <span class="link-skeleton-arrow"></span>
-                </div>
-                <div class="link-card-skeleton" aria-hidden="true">
-                    <span class="link-skeleton-icon"></span>
-                    <span class="link-skeleton-text">
-                        <span class="link-skeleton-bar title"></span>
-                        <span class="link-skeleton-bar description"></span>
-                    </span>
-                    <span class="link-skeleton-arrow"></span>
-                </div>
-                <div class="link-card-skeleton" aria-hidden="true">
-                    <span class="link-skeleton-icon"></span>
-                    <span class="link-skeleton-text">
-                        <span class="link-skeleton-bar title"></span>
-                        <span class="link-skeleton-bar description"></span>
-                    </span>
-                    <span class="link-skeleton-arrow"></span>
+                <div class="link-slides" aria-label="Swipe between Social and From me">
+                    <section class="link-slide" id="profile-social-panel" role="tabpanel"
+                        aria-labelledby="profile-social-tab">
+                        <h2 class="link-slide-title">Social</h2>
+                        <div class="links" id="linkCards" aria-busy="true" aria-label="Social links">
+                            <div class="link-card-skeleton" aria-hidden="true">
+                                <span class="link-skeleton-icon"></span>
+                                <span class="link-skeleton-text">
+                                    <span class="link-skeleton-bar title"></span>
+                                    <span class="link-skeleton-bar description"></span>
+                                </span>
+                                <span class="link-skeleton-arrow"></span>
+                            </div>
+                            <div class="link-card-skeleton" aria-hidden="true">
+                                <span class="link-skeleton-icon"></span>
+                                <span class="link-skeleton-text">
+                                    <span class="link-skeleton-bar title"></span>
+                                    <span class="link-skeleton-bar description"></span>
+                                </span>
+                                <span class="link-skeleton-arrow"></span>
+                            </div>
+                            <div class="link-card-skeleton" aria-hidden="true">
+                                <span class="link-skeleton-icon"></span>
+                                <span class="link-skeleton-text">
+                                    <span class="link-skeleton-bar title"></span>
+                                    <span class="link-skeleton-bar description"></span>
+                                </span>
+                                <span class="link-skeleton-arrow"></span>
+                            </div>
+                            <div class="link-card-skeleton" aria-hidden="true">
+                                <span class="link-skeleton-icon"></span>
+                                <span class="link-skeleton-text">
+                                    <span class="link-skeleton-bar title"></span>
+                                    <span class="link-skeleton-bar description"></span>
+                                </span>
+                                <span class="link-skeleton-arrow"></span>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="link-slide" id="profile-from-me-panel" role="tabpanel"
+                        aria-labelledby="profile-from-me-tab">
+                        <h2 class="link-slide-title">From me</h2>
+                        <div class="links" id="fromMeCards" aria-busy="true" aria-label="Links from me">
+                            <div class="link-card-skeleton" aria-hidden="true">
+                                <span class="link-skeleton-icon"></span>
+                                <span class="link-skeleton-text">
+                                    <span class="link-skeleton-bar title"></span>
+                                    <span class="link-skeleton-bar description"></span>
+                                </span>
+                                <span class="link-skeleton-arrow"></span>
+                            </div>
+                            <div class="link-card-skeleton" aria-hidden="true">
+                                <span class="link-skeleton-icon"></span>
+                                <span class="link-skeleton-text">
+                                    <span class="link-skeleton-bar title"></span>
+                                    <span class="link-skeleton-bar description"></span>
+                                </span>
+                                <span class="link-skeleton-arrow"></span>
+                            </div>
+                            <div class="link-card-skeleton" aria-hidden="true">
+                                <span class="link-skeleton-icon"></span>
+                                <span class="link-skeleton-text">
+                                    <span class="link-skeleton-bar title"></span>
+                                    <span class="link-skeleton-bar description"></span>
+                                </span>
+                                <span class="link-skeleton-arrow"></span>
+                            </div>
+                            <div class="link-card-skeleton" aria-hidden="true">
+                                <span class="link-skeleton-icon"></span>
+                                <span class="link-skeleton-text">
+                                    <span class="link-skeleton-bar title"></span>
+                                    <span class="link-skeleton-bar description"></span>
+                                </span>
+                                <span class="link-skeleton-arrow"></span>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
 
