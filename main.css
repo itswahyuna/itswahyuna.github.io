@@ -1358,6 +1358,11 @@
         display: none;
     }
 
+    .link-search-slide-carousel .link-slide {
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+
     .link-search-slide-carousel .link-slides {
         flex: 1 1 auto;
         min-height: 0;
