@@ -194,7 +194,7 @@
     };
 
     api.ready.catch(error => {
-        console.error('Unable to initialize encrypted local storage.', error);
+        console.error(error);
     });
     window.encryptedStorage = api;
 })();

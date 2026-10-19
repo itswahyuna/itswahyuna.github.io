@@ -43,7 +43,7 @@ async function getCachedStats() {
         !Number.isFinite(stats.totalMessages) ||
         stats.totalMessages < 0
     ) {
-        throw new Error("Stored profile statistics are invalid.");
+        throw new Error("invalid");
     }
 
     return stats;
@@ -133,9 +133,9 @@ async function nos(forceRefresh = false) {
 }
 
 window.refreshProfileStats = () => nos(true).catch(error => {
-    console.error("Unable to refresh profile statistics.", error);
+    console.error(error);
 });
 
 nos().catch(error => {
-    console.error("Unable to initialize profile statistics.", error);
+    console.error(error);
 });
