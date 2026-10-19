@@ -535,13 +535,26 @@
     }
 
     .link-slide-nav {
+        position: relative;
         display: flex;
         width: 100%;
         justify-content: stretch;
         column-gap: 0;
         margin: 0 0 24px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid transparent;
         transition: column-gap 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .link-slide-nav::after {
+        position: absolute;
+        z-index: 0;
+        bottom: -1px;
+        left: calc(50% - 50vw);
+        width: 100vw;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        content: "";
+        pointer-events: none;
     }
 
     #profileLinkCarousel .link-slide-nav {
@@ -560,17 +573,6 @@
         background: #010203;
         -webkit-backdrop-filter: none;
         backdrop-filter: none;
-    }
-
-    #profileLinkCarousel .link-slide-nav.is-stuck::before {
-        position: absolute;
-        bottom: -1px;
-        left: calc(50% - 50vw);
-        width: 100vw;
-        height: 1px;
-        background: rgba(255, 255, 255, 0.1);
-        content: "";
-        pointer-events: none;
     }
 
     .link-slide-tab {
@@ -701,16 +703,12 @@
         margin: 0 2px 1px;
     }
 
-    body.bright .link-slide-nav {
-        border-bottom-color: rgba(60, 64, 67, 0.12);
+    body.bright .link-slide-nav::after {
+        background: rgba(60, 64, 67, 0.12);
     }
 
     body.bright #profileLinkCarousel .link-slide-nav {
         background: #fff;
-    }
-
-    body.bright #profileLinkCarousel .link-slide-nav.is-stuck::before {
-        background: rgba(60, 64, 67, 0.12);
     }
 
     body.bright .link-slide-tab {
