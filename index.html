@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        const pageUrl = new URL(window.location.href);
+        const manualSmartwatchMode = pageUrl.searchParams.get("open") === "smartwatch";
+        const smartwatchViewport = window.matchMedia("(max-width: 320px) and (max-height: 420px)");
+        window.__smartwatchNeedsConfirmation = manualSmartwatchMode && !smartwatchViewport.matches;
+        const syncSmartwatchMode = () => {
+            const enabled = manualSmartwatchMode || smartwatchViewport.matches;
+            document.documentElement.classList.toggle("smartwatch-mode", enabled);
+            document.documentElement.classList.toggle(
+                "smartwatch-nonwatch",
+                manualSmartwatchMode && !smartwatchViewport.matches
+            );
+            window.__smartwatchNeedsConfirmation = manualSmartwatchMode && !smartwatchViewport.matches;
+
+            if (!manualSmartwatchMode) {
+                if (smartwatchViewport.matches && !pageUrl.searchParams.has("open")) {
+                    pageUrl.searchParams.set("open", "smartwatch");
+                } else if (
+                    !smartwatchViewport.matches &&
+                    pageUrl.searchParams.get("open") === "smartwatch"
+                ) {
+                    pageUrl.searchParams.delete("open");
+                }
+                window.history.replaceState(window.history.state, "", pageUrl);
+            }
+        };
+        syncSmartwatchMode();
+        smartwatchViewport.addEventListener("change", syncSmartwatchMode);
+
+        if ("serviceWorker" in navigator) {
+            let cts = false;
+            window.notifyOfflineCacheUsed = function () {
+                if (cts) return;
+                if (typeof window.toastt !== "function") {
+                    window.__pendingOfflineCacheToast = true;
+                    return;
+                }
+
+                cts = true;
+                window.toastt("using offline mode");
+            };
+
+            navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            navigator.serviceWorker.addEventListener("message", event => {
+                if (
+                    event.data?.type === "CACHE_USED" &&
+                    !cts
+                ) {
+                    window.notifyOfflineCacheUsed();
+                }
+            });
+        }
+    </script>
+
+
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="application-name" content="Wahyuna">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Wahyuna">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description"
+        content="Wahyuna's personal profile — discover social links, projects, and ways to connect.">
+    <meta name="keywords" content="Wahyuna, portfolio, profile, social links, personal website">
+    <meta name="author" content="Wahyuna">
+    <link rel="canonical" href="https://itswahyuna.github.io/">
+    <meta property="og:title" content="Wahyuna">
+    <meta property="og:description" content="Explore Wahyuna's profile and connect via social links.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://itswahyuna.github.io/assets/wahyuna.jpeg">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="800">
+    <meta property="og:image:alt" content="Wahyuna Profile Picture">
+    <meta property="og:url" content="https://itswahyuna.github.io/">
+    <meta property="og:site_name" content="Wahyuna">
+    <meta property="og:locale" content="en_US">
+    <meta name="google-site-verification" content="8vH2oksOwbey3zBds7evcjApORqOhrApb6K6uZMNHWM" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Wahyuna">
+    <meta name="twitter:description" content="Explore Wahyuna's profile and connect via social links.">
+    <meta name="twitter:image" content="https://itswahyuna.github.io/assets/wahyuna.jpeg">
+    <title>Wahyuna</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/wahyuna-192.png">
+    <link rel="shortcut icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/wahyuna-i.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Wahyuna",
+        "url": "https://itswahyuna.github.io/",
+        "description": "Connect with Wahyuna's profile and social links.",
+         "image": "https://itswahyuna.github.io/assets/wahyuna.jpeg",
+        "sameAs": [
+              "https://www.instagram.com/its.wahyuna/",
+                "https://github.com/itswahyuna/"
+            ]
+    }
+    </script>
+    <link rel="stylesheet" href="main.css?v=1.3.46">
+
+
+</head>
+
+<body class="bright page-loading">
+    <div id="pageLoader" class="page-loader" role="status" aria-live="polite">
+        <div class="loader-inner">
+            <div class="splash-title" data-nosnippet>WAHYUNA</div>
+            <div class="loader-dots" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="mobile-page-skeleton" aria-hidden="true">
+            <div class="mobile-skeleton-navbar">
+                <span class="mobile-skeleton-bar brand"></span>
+                <span class="mobile-skeleton-bar nav-action"></span>
+                <span class="mobile-skeleton-bar nav-action"></span>
+            </div>
+            <div class="mobile-skeleton-content">
+                <section class="mobile-skeleton-profile">
+                    <div class="mobile-skeleton-profile-main">
+                        <span class="mobile-skeleton-avatar"></span>
+                        <span class="mobile-skeleton-profile-details">
+                            <span class="mobile-skeleton-bar name"></span>
+                            <span class="mobile-skeleton-bar stat"></span>
+                            <span class="mobile-skeleton-bar stat short"></span>
+                        </span>
+                    </div>
+                    <span class="mobile-skeleton-bar bio"></span>
+                    <span class="mobile-skeleton-bar bio short"></span>
+                    <div class="mobile-skeleton-actions">
+                        <span class="mobile-skeleton-bar action"></span>
+                        <span class="mobile-skeleton-bar action"></span>
+                    </div>
+                </section>
+                <div class="mobile-skeleton-tabs">
+                    <span class="mobile-skeleton-bar tab"></span>
+                    <span class="mobile-skeleton-bar tab"></span>
+                </div>
+                <div class="mobile-skeleton-links">
+                    <div class="mobile-skeleton-link">
+                        <span class="mobile-skeleton-bar icon"></span>
+                        <span class="mobile-skeleton-link-text">
+                            <span class="mobile-skeleton-bar title"></span>
+                            <span class="mobile-skeleton-bar description"></span>
+                        </span>
+                        <span class="mobile-skeleton-bar arrow"></span>
+                    </div>
+                    <div class="mobile-skeleton-link">
+                        <span class="mobile-skeleton-bar icon"></span>
+                        <span class="mobile-skeleton-link-text">
+                            <span class="mobile-skeleton-bar title"></span>
+                            <span class="mobile-skeleton-bar description"></span>
+                        </span>
+                        <span class="mobile-skeleton-bar arrow"></span>
+                    </div>
+                    <div class="mobile-skeleton-link">
+                        <span class="mobile-skeleton-bar icon"></span>
+                        <span class="mobile-skeleton-link-text">
+                            <span class="mobile-skeleton-bar title"></span>
+                            <span class="mobile-skeleton-bar description"></span>
+                        </span>
+                        <span class="mobile-skeleton-bar arrow"></span>
+                    </div>
+                    <div class="mobile-skeleton-link">
+                        <span class="mobile-skeleton-bar icon"></span>
+                        <span class="mobile-skeleton-link-text">
+                            <span class="mobile-skeleton-bar title"></span>
+                            <span class="mobile-skeleton-bar description"></span>
+                        </span>
+                        <span class="mobile-skeleton-bar arrow"></span>
+                    </div>
+                    <div class="mobile-skeleton-link">
+                        <span class="mobile-skeleton-bar icon"></span>
+                        <span class="mobile-skeleton-link-text">
+                            <span class="mobile-skeleton-bar title"></span>
+                            <span class="mobile-skeleton-bar description"></span>
+                        </span>
+                        <span class="mobile-skeleton-bar arrow"></span>
+                    </div>
+                    <div class="mobile-skeleton-link">
+                        <span class="mobile-skeleton-bar icon"></span>
+                        <span class="mobile-skeleton-link-text">
+                            <span class="mobile-skeleton-bar title"></span>
+                            <span class="mobile-skeleton-bar description"></span>
+                        </span>
+                        <span class="mobile-skeleton-bar arrow"></span>
+                    </div>
+                    <div class="mobile-skeleton-link">
+                        <span class="mobile-skeleton-bar icon"></span>
+                        <span class="mobile-skeleton-link-text">
+                            <span class="mobile-skeleton-bar title"></span>
+                            <span class="mobile-skeleton-bar description"></span>
+                        </span>
+                        <span class="mobile-skeleton-bar arrow"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app">
+
+        <nav class="smartwatch-return-nav" aria-label="Smartwatch navigation">
+            <button type="button" class="smartwatch-return-button" id="smartwatchNavbarReturn"
+                data-i18n="smartwatchModeReturnNav">
+                Return to normal view
+            </button>
+        </nav>
+
+        <header class="top-navbar" aria-label="Main navigation">
+            <div class="top-navbar-inner">
+                <div class="top-navbar-brand-group">
+                    <button id="sidebarToggle" class="sidebar-toggle-btn" type="button"
+                        aria-label="Open navigation menu" data-i18n-aria-label="openNavigation"
+                        aria-controls="siteSidebar" aria-expanded="false">
+                        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                    </button>
+                    <button class="top-navbar-brand" id="scrollToTopButton" type="button"
+                        aria-label="Scroll to top" translate="no" data-nosnippet>WAHYUNA</button>
+                </div>
+                <div class="top-navbar-actions">
+                    <button id="searchToggle" class="theme-toggle-btn search-toggle-btn" type="button"
+                        aria-label="Search links" data-i18n-aria-label="searchLinks"
+                        aria-controls="linkSearchBackdrop" aria-expanded="false">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    </button>
+                    <button id="th" class="theme-toggle-btn" type="button" aria-label="Appearance"
+                        data-i18n-aria-label="appearance" aria-haspopup="dialog" aria-controls="themeBackdrop">
+                        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div id="pullRefreshIndicator" class="pull-refresh-indicator" role="status" aria-live="polite"
+            aria-label="Pull to refresh">
+            <div class="loader-spinner" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div id="pullRefreshContent" class="pull-refresh-content">
+            <div class="biodata">
+
+                <div class="profile-main">
+                    <img class="profile-img" src="assets/wahyuna.jpeg" alt="Wahyuna - Professional Profile Picture"
+                        role="button" tabindex="0" aria-haspopup="dialog" aria-controls="imageModal"
+                        aria-label="Open Wahyuna's profile">
+
+                    <div class="text">
+
+                        <h1 id="typ" translate="no"></h1>
+                        <span class="visitors" id="visitors" translate="no" data-nosnippet></span>
+                        <span class="anonymous-messages" id="anonymous-messages" translate="no" data-nosnippet></span>
+
+                    </div>
+                </div>
+
+                <p class="bio" hidden></p>
+
+                <div class="profile-actions">
+                    <div class="profile-action-row">
+                        <button type="button" id="floatingTriggerButton" class="floating-trigger-button"
+                            data-i18n="message" data-nosnippet>Message</button>
+                        <button type="button" id="copyLinkButton" class="copy-link-button" data-i18n="copyLink"
+                            data-nosnippet>Copy Link</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="connect">
+                <div class="link-slide-carousel" id="profileLinkCarousel">
+                    <div class="link-slide-nav" role="tablist" aria-label="Profile links">
+                        <button class="link-slide-tab active" id="profile-all-tab" type="button" role="tab"
+                            aria-selected="true" aria-controls="profile-all-panel" data-link-slide="0">
+                            <span class="link-slide-tab-label" data-i18n="all">All</span>
+                        </button>
+                        <button class="link-slide-tab" id="profile-social-tab" type="button" role="tab"
+                            aria-selected="false" aria-controls="profile-social-panel" data-link-slide="1">
+                            <span class="link-slide-tab-label" data-i18n="socialMedia">Social media</span>
+                        </button>
+                        <button class="link-slide-tab" id="profile-from-me-tab" type="button" role="tab"
+                            aria-selected="false" aria-controls="profile-from-me-panel" data-link-slide="2">
+                            <span class="link-slide-tab-label" data-i18n="projects">Projects</span>
+                        </button>
+                    </div>
+                    <div class="link-slides" data-i18n-aria-label="profileLinkCategories"
+                        aria-label="Swipe between all links, Wahyuna's social media, and projects by Wahyuna">
+                        <section class="link-slide" id="profile-all-panel" role="tabpanel"
+                            aria-labelledby="profile-all-tab">
+                            <h2 class="link-slide-title" data-i18n="allLinks">All links</h2>
+                            <div class="links" id="allLinkCards" aria-busy="true" aria-label="All links">
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="link-slide" id="profile-social-panel" role="tabpanel"
+                            aria-labelledby="profile-social-tab">
+                            <h2 class="link-slide-title" data-i18n="socialMedia">Social media</h2>
+                            <div class="links" id="linkCards" aria-busy="true"
+                                aria-label="Wahyuna's social media links">
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="link-slide" id="profile-from-me-panel" role="tabpanel"
+                            aria-labelledby="profile-from-me-tab">
+                            <h2 class="link-slide-title" data-i18n="projects">Projects</h2>
+                            <div class="links" id="fromMeCards" aria-busy="true"
+                                aria-label="Projects by Wahyuna">
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                                <div class="link-card-skeleton" aria-hidden="true">
+                                    <span class="link-skeleton-icon"></span>
+                                    <span class="link-skeleton-text">
+                                        <span class="link-skeleton-bar title"></span>
+                                        <span class="link-skeleton-bar description"></span>
+                                    </span>
+                                    <span class="link-skeleton-arrow"></span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <p class="connect-copyright">© 2026 Wahyuna</p>
+
+            </div>
+        </div>
+
+
+        <div class="image-modal" id="imageModal" aria-hidden="true" data-nosnippet>
+            <div class="image-modal-backdrop" id="modalBackdrop"></div>
+            <section class="image-modal-content" role="dialog" aria-modal="true" aria-labelledby="profilePopupName">
+                <div class="profile-popup-card">
+                    <div class="profile-popup-header">
+                        <button class="image-modal-close" id="modalClose" type="button" aria-label="Close profile">
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="profile-popup-portrait">
+                        <div id="modalLoader" class="modal-loader hidden" aria-hidden="true">
+                            <div class="loader-ring" style="width:48px;height:48px;"></div>
+                        </div>
+                        <img id="modalImage" src="assets/wahyuna.jpeg" alt="Wahyuna">
+                    </div>
+                    <div class="profile-popup-details">
+                        <h2 id="profilePopupName"></h2>
+                    </div>
+                </div>
+                <div class="profile-popup-actions">
+                    <button type="button" class="profile-popup-action" id="profilePopupMessage"
+                        data-i18n="message">
+                        Message
+                    </button>
+                    <button type="button" class="profile-popup-action" id="profilePopupCopy"
+                        data-i18n="copyLink">
+                        Copy Link
+                    </button>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <div class="link-search-backdrop" id="linkSearchBackdrop" aria-hidden="true">
+        <section class="link-search-panel" role="dialog" aria-modal="true" data-i18n-aria-label="searchLinks"
+            aria-label="Search links">
+            <div class="link-search-header">
+                <label class="link-search-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="linkSearchInput" type="search" data-i18n-placeholder="search"
+                        data-i18n-aria-label="searchLinks" placeholder="Search" autocomplete="off" inputmode="search"
+                        enterkeyhint="search" aria-label="Search links">
+                </label>
+                <button class="link-search-close" id="linkSearchClose" type="button" data-i18n="cancel">Cancel</button>
+            </div>
+            <div class="link-search-results" id="linkSearchResults" aria-live="polite"></div>
+        </section>
+    </div>
+
+    <div class="floating-comment-overlay hidden" id="floatingCommentOverlay"></div>
+
+    <div class="floating-comment-widget hidden" id="floatingCommentWidget" data-nosnippet>
+        <div class="floating-comment-content">
+            <div class="floating-comment-header" id="floatingCommentHeader">
+                <div class="floating-comment-title">
+                    <span id="floatingCommentTitleText" data-i18n="message">Message</span>
+                </div>
+                <button type="button" class="floating-comment-close" id="floatingCommentClose"
+                    aria-label="Close message form">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <form class="floating-comment-form" id="floatingCommentForm" data-nosnippet>
+                <input type="hidden" name="device" id="deviceInput" value="">
+
+                <label class="floating-field" data-nosnippet>
+                    <span data-i18n="name">Name</span>
+                    <input type="text" id="floatingNameInput" maxlength="100" data-i18n-placeholder="anonymousName"
+                        placeholder="Enter your anonymous name">
+                </label>
+
+                <label class="floating-field" data-nosnippet>
+                    <span data-i18n="message">Message</span>
+                    <textarea name="message" rows="3" maxlength="1000"
+                        data-i18n-placeholder="anonymousMessage"
+                        placeholder="Enter your anonymous message"></textarea>
+                </label>
+
+                <div class="floating-actions" data-nosnippet>
+                    <button type="button" class="floating-history-toggle" id="sentHistoryToggle"
+                        aria-label="Show my messages" data-i18n-aria-label="showMyMessages"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                        <span data-i18n="myMessages">My Messages</span>
+                    </button>
+                    <button type="submit" class="floating-primary" id="floatingSubmitText"
+                        data-i18n="send">Send</button>
+                </div>
+            </form>
+        </div>
+
+        <section class="sent-history hidden" id="sentHistory" aria-label="My messages"
+            data-i18n-aria-label="myMessages" aria-hidden="true">
+            <div class="sent-history-header">
+                <span data-i18n="myMessages">My Messages</span>
+                <button type="button" id="sentHistoryClose" aria-label="Close sent messages"
+                    data-i18n-aria-label="closeSentMessages">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="sent-history-list" id="sentHistoryList"></div>
+        </section>
+    </div>
+
+    <aside class="desktop-history-sidebar" id="desktopHistorySidebar" aria-label="My Messages"
+        data-i18n-aria-label="myMessages" aria-hidden="true" hidden></aside>
+
+    <div class="history-delete-backdrop hidden" id="historyDeleteBackdrop">
+        <section class="history-delete-dialog" id="historyDeleteDialog" role="alertdialog" aria-modal="true"
+            aria-labelledby="historyDeleteTitle" aria-describedby="historyDeleteDescription">
+            <h2 id="historyDeleteTitle" data-i18n="deleteForYou">Delete for you?</h2>
+            <p id="historyDeleteDescription" data-i18n="deleteMessageDescription">This message will only be removed
+                from your history on this device.</p>
+            <div class="history-delete-actions">
+                <button type="button" class="history-delete-cancel" id="historyDeleteCancel"
+                    data-i18n="cancel">Cancel</button>
+                <button type="button" class="history-delete-confirm" id="historyDeleteConfirm"
+                    data-i18n="delete">Delete</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="history-delete-backdrop hidden" id="copyLinkConfirmBackdrop">
+        <section class="history-delete-dialog" id="copyLinkConfirmDialog" role="alertdialog" aria-modal="true"
+            aria-labelledby="copyLinkConfirmTitle" aria-describedby="copyLinkConfirmDescription">
+            <h2 id="copyLinkConfirmTitle" data-i18n="copyProfileLinkQuestion">Copy profile link?</h2>
+            <p id="copyLinkConfirmDescription" data-i18n="copyProfileLinkDescription">Would you like to copy this
+                profile link?</p>
+            <div class="history-delete-actions">
+                <button type="button" class="history-delete-cancel" id="copyLinkConfirmCancel"
+                    data-i18n="cancel">Cancel</button>
+                <button type="button" class="copy-link-confirm-button" id="copyLinkConfirm"
+                    data-i18n="copy">Copy</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="history-delete-backdrop hidden" id="smartwatchModeConfirmBackdrop">
+        <section class="history-delete-dialog" id="smartwatchModeConfirmDialog" role="alertdialog" aria-modal="true"
+            aria-labelledby="smartwatchModeConfirmTitle" aria-describedby="smartwatchModeConfirmDescription">
+            <h2 id="smartwatchModeConfirmTitle" data-i18n="smartwatchModeTitle">Smartwatch-only layout</h2>
+            <p id="smartwatchModeConfirmDescription" data-i18n="smartwatchModeDescription">
+                This layout is designed for smartwatches. You are viewing it on a larger screen. Would you like to
+                return to the standard layout?
+            </p>
+            <div class="history-delete-actions">
+                <button type="button" class="history-delete-cancel" id="smartwatchModeStay"
+                    data-i18n="smartwatchModeStay">Stay here</button>
+                <button type="button" class="copy-link-confirm-button" id="smartwatchModeReturn"
+                    data-i18n="smartwatchModeReturn">Return to standard layout</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="link-action-backdrop" id="linkActionBackdrop" aria-hidden="true">
+        <section class="link-action-dialog" id="linkActionDialog" role="dialog" aria-modal="true"
+            aria-labelledby="linkActionTitle" aria-describedby="linkActionDescription">
+            <div class="link-action-preview">
+                <div class="link-action-image-container" id="linkActionImageContainer"></div>
+                <h2 id="linkActionTitle"></h2>
+                <p id="linkActionDescription"></p>
+            </div>
+            <div class="link-action-buttons">
+                <button type="button" class="link-action-button" id="linkActionOpen" data-i18n="open">Open</button>
+                <button type="button" class="link-action-button" id="linkActionCopy"
+                    data-i18n="copyLink">Copy Link</button>
+                <button type="button" class="link-action-button link-action-remove-history" id="linkActionRemoveHistory"
+                    data-i18n="removeFromSearchHistory" hidden>Remove from Search History</button>
+            </div>
+            <button type="button" class="link-action-cancel" id="linkActionCancel" data-i18n="cancel">Cancel</button>
+        </section>
+    </div>
+
+    <div id="toast" class="toast" data-nosnippet></div>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+    <aside class="site-sidebar" id="siteSidebar" aria-label="Site navigation" aria-hidden="true">
+        <div class="sidebar-header">
+            <div class="top-navbar-brand" translate="no" data-nosnippet>WAHYUNA</div>
+            <button class="sidebar-close-btn" id="sidebarClose" type="button" aria-label="Close navigation menu"
+                data-i18n-aria-label="closeNavigation">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <nav class="sidebar-links" aria-label="Site information">
+            <button class="sidebar-link-btn" id="languageSettingsButton" type="button"
+                aria-haspopup="dialog" aria-controls="languageDialog" data-i18n-aria-label="language">
+                <i class="sidebar-icon fa-solid fa-globe" aria-hidden="true"></i>
+                <span data-i18n="language">Language</span>
+            </button>
+            <button class="sidebar-link-btn" type="button" data-policy-type="privacy">
+                <i class="sidebar-icon sidebar-icon-privacy fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <span data-i18n="privacyPolicy">Privacy Policy</span>
+            </button>
+            <button class="sidebar-link-btn" type="button" data-policy-type="tos">
+                <i class="sidebar-icon sidebar-icon-terms fa-solid fa-file-contract" aria-hidden="true"></i>
+                <span data-i18n="termsOfService">Terms of Service</span>
+            </button>
+            <button class="sidebar-link-btn" type="button" data-policy-type="version">
+                <i class="sidebar-icon fa-solid fa-circle-info" aria-hidden="true"></i>
+                <span data-i18n="version">Version</span>
+            </button>
+            <button class="sidebar-link-btn sidebar-theme-toggle" id="sidebarThemeToggle" type="button"
+                aria-haspopup="dialog" aria-controls="themeBackdrop">
+                <i class="sidebar-icon sidebar-icon-theme fa-solid fa-moon" aria-hidden="true"></i>
+                <span data-i18n="appearance">Appearance</span>
+            </button>
+        </nav>
+        <p class="sidebar-copyright">© 2026 Wahyuna</p>
+    </aside>
+
+    <div class="language-backdrop" id="languageBackdrop" aria-hidden="true">
+        <section class="language-dialog" id="languageDialog" role="dialog" aria-modal="true"
+            aria-labelledby="languageDialogTitle" aria-describedby="languageDialogStatus">
+            <div class="language-dialog-heading">
+                <h2 id="languageDialogTitle" data-i18n="language">Language</h2>
+                <p id="languageDialogStatus"></p>
+            </div>
+            <div class="language-options-clip">
+                <div class="language-options" role="group" data-i18n-aria-label="languageOptions"
+                    aria-label="Language options">
+                    <button type="button" class="language-option" data-language-option="en" aria-pressed="false">
+                        <span data-i18n="english">English</span>
+                        <i class="language-current-mark fa-solid fa-check" aria-hidden="true" hidden></i>
+                    </button>
+                    <button type="button" class="language-option" data-language-option="id" aria-pressed="false">
+                        <span data-i18n="indonesian">Indonesia</span>
+                        <i class="language-current-mark fa-solid fa-check" aria-hidden="true" hidden></i>
+                    </button>
+                    <button type="button" class="language-option" data-language-option="su" aria-pressed="false">
+                        <span data-i18n="sundanese">Sundanese</span>
+                        <i class="language-current-mark fa-solid fa-check" aria-hidden="true" hidden></i>
+                    </button>
+                    <button type="button" class="language-option" data-language-option="jv" aria-pressed="false">
+                        <span data-i18n="javanese">Javanese</span>
+                        <i class="language-current-mark fa-solid fa-check" aria-hidden="true" hidden></i>
+                    </button>
+                    <button type="button" class="language-option" data-language-option="zh" aria-pressed="false">
+                        <span data-i18n="chinese">中文</span>
+                        <i class="language-current-mark fa-solid fa-check" aria-hidden="true" hidden></i>
+                    </button>
+                </div>
+            </div>
+            <p class="language-device-detection" id="languageDeviceDetection"></p>
+            <button type="button" class="language-cancel" id="languageCancel" data-i18n="cancel">Cancel</button>
+        </section>
+    </div>
+
+    <div class="language-backdrop theme-backdrop" id="themeBackdrop" aria-hidden="true">
+        <section class="language-dialog theme-dialog" id="themeDialog" role="dialog" aria-modal="true"
+            aria-labelledby="themeDialogTitle" aria-describedby="themeDialogStatus">
+            <div class="language-dialog-heading">
+                <h2 id="themeDialogTitle" data-i18n="appearance">Appearance</h2>
+                <p id="themeDialogStatus"></p>
+            </div>
+            <div class="language-options-clip">
+                <div class="language-options" role="group" id="themeOptions"
+                    data-i18n-aria-label="appearanceOptions" aria-label="Appearance options">
+                    <button type="button" class="language-option" data-theme-option="bright" aria-pressed="false">
+                        <span data-i18n="lightMode">Light Mode</span>
+                        <i class="language-current-mark fa-solid fa-check" aria-hidden="true" hidden></i>
+                    </button>
+                    <button type="button" class="language-option" data-theme-option="dark" aria-pressed="false">
+                        <span data-i18n="darkMode">Dark Mode</span>
+                        <i class="language-current-mark fa-solid fa-check" aria-hidden="true" hidden></i>
+                    </button>
+                    <button type="button" class="language-option theme-soft-option" data-theme-option="soft-dark"
+                        aria-pressed="false">
+                        <span data-i18n="softDarkMode">Dim Dark</span>
+                        <i class="language-current-mark fa-solid fa-check" aria-hidden="true" hidden></i>
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="language-cancel" id="themeCancel" data-i18n="cancel">Cancel</button>
+        </section>
+    </div>
+
+    <div class="theme-loading-overlay" id="themeLoadingOverlay" aria-hidden="true">
+        <div class="theme-loading-card" role="status" aria-live="polite">
+            <span class="theme-loading-spinner" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </span>
+            <span data-i18n="changingAppearance">Changing appearance...</span>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="policyBackdrop" onclick="closePolicyModal()"></div>
+
+    <div class="modal-card" id="policyModal" data-nosnippet>
+        <div class="modal-header">
+            <h3 class="modal-title" id="policyModalTitle"></h3>
+        </div>
+
+        <div class="modal-body" id="policyBody" data-nosnippet aria-live="polite">
+        </div>
+
+        <div class="modal-footer">
+            <button class="modal-close-btn" onclick="closePolicyModal()" data-i18n="close">Close</button>
+        </div>
+    </div>
+
+    <div id="senderToast" class="sender-toast" role="status" aria-live="polite" aria-atomic="true">
+        <div class="sender-icon" aria-hidden="true">
+            <i class="fa-solid fa-comment"></i>
+        </div>
+        <div class="sender-content">
+            <div class="sender-text"></div>
+        </div>
+    </div>
+
+
+    <script>
+        let policyRequestId = 0;
+        let policyCloseTimer = null;
+        let policyCloseHandler = null;
+
+        function clearPolicyCloseCleanup(modal) {
+            clearTimeout(policyCloseTimer);
+            policyCloseTimer = null;
+
+            if (policyCloseHandler && modal) {
+                modal.removeEventListener('transitionend', policyCloseHandler);
+                policyCloseHandler = null;
+            }
+        }
+
+        function renderPolicyContent(container, policy) {
+            if (!policy || typeof policy.title !== 'string' || !Array.isArray(policy.blocks)) {
+                throw new Error('error');
+            }
+
+            const content = document.createDocumentFragment();
+
+            policy.blocks.forEach(block => {
+                if (block.type === 'heading' && typeof block.text === 'string') {
+                    const heading = document.createElement('h4');
+                    heading.textContent = block.text;
+                    heading.style.margin = '16px 0 6px';
+                    heading.style.fontWeight = '600';
+                    content.appendChild(heading);
+                    return;
+                }
+
+                if (block.type === 'paragraph' && typeof block.text === 'string') {
+                    const paragraph = document.createElement('p');
+                    paragraph.textContent = block.text;
+                    content.appendChild(paragraph);
+                    return;
+                }
+
+                if (block.type === 'list' && Array.isArray(block.items) &&
+                    block.items.every(item => typeof item === 'string')) {
+                    const list = document.createElement('ul');
+                    list.style.paddingLeft = '18px';
+                    list.style.marginBottom = '12px';
+
+                    block.items.forEach(item => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = item;
+                        list.appendChild(listItem);
+                    });
+
+                    content.appendChild(list);
+                    return;
+                }
+
+                throw new Error('error');
+            });
+
+            container.replaceChildren(content);
+        }
+
+        function showPolicyLoading(container) {
+            const loading = document.createElement('div');
+            loading.className = 'policy-skeleton';
+            loading.setAttribute('role', 'status');
+            loading.setAttribute('aria-label', 'Loading policy document');
+            loading.setAttribute('aria-busy', 'true');
+
+            const preview = document.createElement('div');
+            preview.className = 'policy-skeleton-preview';
+            preview.setAttribute('aria-hidden', 'true');
+
+            const skeletonLines = [
+                'title',
+                'line line-long',
+                'line line-medium',
+                'line line-short'
+            ];
+            for (let section = 0; section < 4; section++) {
+                skeletonLines.push(
+                    'heading',
+                    'line line-long',
+                    'line line-medium',
+                    'line line-long',
+                    'line line-short'
+                );
+            }
+
+            skeletonLines.forEach(className => {
+                const line = document.createElement('span');
+                line.className = `policy-skeleton-bar ${className}`;
+                preview.appendChild(line);
+            });
+
+            loading.appendChild(preview);
+            container.replaceChildren(loading);
+        }
+
+        function showVersionLoading(container) {
+            const loading = document.createElement('div');
+            loading.className = 'policy-skeleton version-skeleton';
+            loading.setAttribute('role', 'status');
+            loading.setAttribute(
+                'aria-label',
+                window.translateInterface('loadingVersion')
+            );
+            loading.setAttribute('aria-busy', 'true');
+
+            const label = document.createElement('span');
+            label.className = 'policy-skeleton-bar version-skeleton-label';
+            label.setAttribute('aria-hidden', 'true');
+
+            const value = document.createElement('span');
+            value.className = 'policy-skeleton-bar version-skeleton-value';
+            value.setAttribute('aria-hidden', 'true');
+
+            const description = document.createElement('span');
+            description.className = 'policy-skeleton-bar version-skeleton-description';
+            description.setAttribute('aria-hidden', 'true');
+
+            loading.append(label, value, description);
+            container.replaceChildren(loading);
+        }
+
+        function renderVersionContent(container, version) {
+            const content = document.createElement('div');
+            content.className = 'version-info';
+
+            const label = document.createElement('span');
+            label.className = 'version-info-label';
+            label.textContent = window.translateInterface('currentVersion');
+
+            const value = document.createElement('strong');
+            value.className = 'version-info-value';
+            value.textContent = version;
+
+            const description = document.createElement('p');
+            description.className = 'version-info-description';
+            description.textContent = window.translateInterface('versionDescription');
+
+            content.append(label, value, description);
+            container.replaceChildren(content);
+        }
+
+        async function openPolicyModal(policyType) {
+            const titleElement = document.getElementById('policyModalTitle');
+            const body = document.getElementById('policyBody');
+            const backdrop = document.getElementById('policyBackdrop');
+            const modal = document.getElementById('policyModal');
+            const policies = {
+                privacy: { title: 'Privacy Policy', path: './assets/pp.json' },
+                tos: { title: 'Terms of Service', path: './assets/tos.json' },
+                version: { title: 'Version', path: './sw.js' }
+            };
+            const selectedPolicy = policies[policyType];
+
+            if (!titleElement || !body || !backdrop || !modal) {
+                console.error('error');
+                return;
+            }
+
+            if (!selectedPolicy) {
+                console.error(policyType);
+                return;
+            }
+
+            const requestId = ++policyRequestId;
+            clearPolicyCloseCleanup(modal);
+            const loadingStartedAt = performance.now();
+            const policyTitleKeys = {
+                privacy: 'privacyPolicy',
+                tos: 'termsOfService',
+                version: 'version'
+            };
+            titleElement.textContent = window.translateInterface(policyTitleKeys[policyType]);
+            if (policyType === 'version') {
+                showVersionLoading(body);
+            } else {
+                showPolicyLoading(body);
+            }
+            backdrop.classList.add('open');
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            let policy;
+            let version;
+            let loadError;
+
+            try {
+                const response = await fetch(selectedPolicy.path, { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`error`);
+                }
+
+                if (policyType === 'version') {
+                    const serviceWorkerSource = await response.text();
+                    const cacheName = serviceWorkerSource.match(/\bconst\s+CACHE_NAME\s*=\s*(["'])(.*?)\1/);
+                    if (!cacheName) {
+                        throw new Error('CACHE_NAME was not found in sw.js');
+                    }
+                    version = cacheName[2];
+                } else {
+                    policy = await response.json();
+                }
+            } catch (error) {
+                loadError = error;
+            }
+
+            const loadingDuration = performance.now() - loadingStartedAt;
+            if (loadingDuration < 500) {
+                await new Promise(resolve => setTimeout(resolve, 500 - loadingDuration));
+            }
+
+            if (requestId !== policyRequestId) return;
+            if (loadError) {
+                console.error(loadError);
+                body.textContent = policyType === 'version'
+                    ? 'e'
+                    : 'error';
+                return;
+            }
+
+            if (policyType === 'version') {
+                if (!version) {
+                    console.error('e');
+                    body.textContent = 'error';
+                    return;
+                }
+                renderVersionContent(body, version);
+                return;
+            }
+
+            try {
+                renderPolicyContent(body, policy);
+            } catch (error) {
+                console.error(error);
+                body.textContent = 'error';
+            }
+        }
+
+        function closePolicyModal() {
+            const backdrop = document.getElementById('policyBackdrop');
+            const modal = document.getElementById('policyModal');
+            const body = document.getElementById('policyBody');
+            const titleElement = document.getElementById('policyModalTitle');
+
+            if (!backdrop || !modal) return;
+
+            policyRequestId++;
+            backdrop.classList.remove('open');
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+
+            clearPolicyCloseCleanup(modal);
+            const resetPolicyContent = event => {
+                if (event && (event.target !== modal || event.propertyName !== 'transform')) return;
+                if (modal.classList.contains('open')) return;
+
+                clearPolicyCloseCleanup(modal);
+                body?.replaceChildren();
+                titleElement?.replaceChildren();
+            };
+
+            policyCloseHandler = resetPolicyContent;
+            modal.addEventListener('transitionend', policyCloseHandler);
+            policyCloseTimer = window.setTimeout(resetPolicyContent, 400);
+        }
+    </script>
+
+
+
+    <script src="language.js?v=1.3.46"></script>
+    <script src="encrypted-storage.js"></script>
+    <script src="main.js?v=1.3.46"></script>
+    <script src="number-of-senders.js"></script>
+
+</body>
+
+</html>

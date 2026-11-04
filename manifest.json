@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "Wahyuna",
+  "short_name": "Wahyuna",
+  "description": "Wahyuna's personal profile and social links.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/assets/wahyunaa.jpeg",
+      "sizes": "1080x1080",
+      "purpose": "any"
+    }
+  ]
+}
