@@ -1,0 +1,65 @@
+{
+  "title": "Terms of Service",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Using this website and its anonymous messaging feature means you agree to the following Terms of Service."
+    },
+    {
+      "type": "heading",
+      "text": "1. Use of the Anonymous Messaging Feature"
+    },
+    {
+      "type": "paragraph",
+      "text": "You may send messages anonymously as long as you follow these requirements:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Do not send content containing hate speech, threats, harassment, discrimination, or cyberbullying.",
+        "Do not spread defamation, false information, scams, or unwanted promotional/spam messages.",
+        "Do not attempt to damage, hack, disrupt, or interfere with the website or its systems."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "2. Moderation & Enforcement"
+    },
+    {
+      "type": "paragraph",
+      "text": "The profile owner reserves the right to:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Delete or ignore messages that violate these terms or basic standards of conduct without prior notice.",
+        "Block the sender's IP address if repeated spam or abuse of the messaging feature is detected.",
+        "Report messages containing potentially criminal content to the appropriate authorities, along with the available IP data."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Disclaimer"
+    },
+    {
+      "type": "paragraph",
+      "text": "This service is provided free of charge and on an \"as is\" basis. The website owner is not responsible for the content of messages submitted by anonymous third-party users."
+    },
+    {
+      "type": "heading",
+      "text": "4. Copyright & Intellectual Property"
+    },
+    {
+      "type": "paragraph",
+      "text": "All designs, code, text, and visual elements on this profile page are owned by the website owner (Wahyuna), except for open-source components and third-party icons used in accordance with their respective licenses."
+    },
+    {
+      "type": "heading",
+      "text": "5. Contact Us"
+    },
+    {
+      "type": "paragraph",
+      "text": "Questions or reports regarding violations of these terms can be sent via email to: wahyunapub@gmail.com."
+    }
+  ]
+}
