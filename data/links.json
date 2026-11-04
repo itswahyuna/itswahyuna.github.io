@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Instagram",
+    "description": "Visit my Instagram profile",
+    "url": "https://instagram.com/its.wahyuna",
+    "image": "assets/instagram.webp",
+    "target": "_blank"
+  },
+  {
+    "name": "GitHub",
+    "description": "Visit my GitHub profile",
+    "url": "https://github.com/itswahyuna",
+    "image": "assets/github.webp",
+    "target": "_blank"
+  },
+  {
+    "name": "Threads",
+    "description": "Visit my Threads profile",
+    "url": "https://www.threads.com/@its.wahyuna",
+    "image": "assets/trd.png",
+    "target": "_blank"
+  },
+  {
+    "name": "Roblox",
+    "description": "Play with me on Roblox.",
+    "url": "https://www.roblox.com/share?code=888d8f8d7834eb4eb600c3bba9605e5a&type=Profile&source=ProfileShare&stamp=1784466825138",
+    "image": "assets/roblox.webp",
+    "target": "_blank"
+  },
+  {
+    "name": "Contact me",
+    "description": "Email me anytime",
+    "url": "mailto:wahyunapub@gmail.com",
+    "image": "assets/gmail.webp",
+    "contact": true
+  }
+]
