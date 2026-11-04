@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f2f2f7">
+  <title>Itswahyuna | Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      --admin-background: #f2f2f7;
+      --admin-surface: #ffffff;
+      --admin-secondary-surface: #e5e5ea;
+      --admin-text: #1c1c1e;
+      --admin-secondary-text: #8e8e93;
+      --admin-separator: rgba(60, 60, 67, 0.12);
+      --admin-subtle-separator: rgba(60, 60, 67, 0.08);
+      --admin-blue: #007aff;
+      --admin-red: #ff3b30;
+      --admin-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.035);
+      color-scheme: light;
+      margin: 0;
+      min-height: 100vh;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Text",
+        Arial,
+        sans-serif;
+      background: var(--admin-background);
+      color: var(--admin-text);
+    }
+
+    body:not(.bright) {
+      --admin-background: #000000;
+      --admin-surface: #1c1c1e;
+      --admin-secondary-surface: #2c2c2e;
+      --admin-text: #f2f2f7;
+      --admin-secondary-text: #8e8e93;
+      --admin-separator: #38383a;
+      --admin-subtle-separator: rgba(84, 84, 88, 0.65);
+      --admin-blue: #0a84ff;
+      --admin-red: #ff453a;
+      --admin-card-shadow: none;
+      color-scheme: dark;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: clamp(48px, 12vh, 96px) 24px 24px;
+      background: var(--admin-background);
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.7px;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: var(--admin-secondary-text);
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    #password {
+      width: 100%;
+      height: 50px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      padding: 0 52px 0 15px;
+      font-size: 16px;
+      outline: none;
+      background: var(--admin-secondary-surface);
+      color: var(--admin-text);
+      transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #password:focus {
+      background: var(--admin-surface);
+      border-color: var(--admin-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.14);
+    }
+
+    .show-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: var(--admin-blue);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    #loginButton {
+      width: 100%;
+      height: 50px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 14px;
+      background: var(--admin-blue);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+
+    #loginButton:active {
+      opacity: 0.7;
+      transform: scale(0.98);
+    }
+
+    #loginButton:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .error {
+      min-height: 18px;
+      margin-top: 12px;
+      text-align: center;
+      color: var(--admin-red);
+      font-size: 13px;
+    }
+
+    .messages-screen {
+      display: none;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background: var(--admin-background);
+    }
+
+    @media (min-width: 768px) {
+      .messages-screen {
+        min-height: 100vh;
+        border-right: 1px solid var(--admin-separator);
+        border-left: 1px solid var(--admin-separator);
+      }
+    }
+
+    .messages-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -20px -20px 12px;
+      padding: 20px 20px 12px;
+      border-bottom: 1px solid var(--admin-separator);
+      background: var(--admin-background);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.7px;
+    }
+
+    .logout {
+      border: none;
+      background: var(--admin-surface);
+      color: var(--admin-blue);
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .message-tabs {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 0;
+      padding: 3px;
+      border: 1px solid var(--admin-subtle-separator);
+      border-radius: 12px;
+      background: var(--admin-secondary-surface);
+    }
+
+    .message-tab {
+      border: none;
+      flex: 1;
+      min-height: 36px;
+      border-radius: 9px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--admin-text);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.18s, box-shadow 0.18s;
+    }
+
+    .message-tab.active {
+      background: var(--admin-surface);
+      color: var(--admin-text);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    li {
+      background: var(--admin-surface);
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--admin-subtle-separator);
+      border-radius: 18px;
+      overflow-wrap: anywhere;
+      box-shadow: var(--admin-card-shadow);
+    }
+
+    .date {
+      font-size: 12px;
+      color: var(--admin-secondary-text);
+    }
+
+    .name {
+      font-weight: 600;
+      margin-top: 6px;
+      font-size: 16px;
+    }
+
+    .message {
+      margin: 7px 0;
+      font-size: 16px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .message-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .message-action {
+      flex: 0 0 auto;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: var(--admin-secondary-surface);
+      color: var(--admin-blue);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .logout:active,
+    .message-action:active {
+      opacity: 0.65;
+    }
+
+    .device {
+      min-width: 0;
+      font-size: 12px;
+      color: var(--admin-secondary-text);
+      overflow-wrap: anywhere;
+    }
+
+    .messages-error {
+      margin: 0 0 12px;
+      color: var(--admin-red);
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--admin-secondary-text);
+      padding: 25px;
+    }
+  </style>
+</head>
+
+<body class="bright">
+
+  <div class="login-screen" id="loginScreen">
+
+    <div class="login-box">
+
+      <div class="login-title">
+        Admin
+      </div>
+
+      <div class="login-subtitle">
+        Enter your admin password
+      </div>
+
+      <div class="password-wrapper">
+
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+
+        <button class="show-password" id="showPassword" type="button">
+          Show
+        </button>
+
+      </div>
+
+      <button id="loginButton" type="button">
+        Sign In
+      </button>
+
+      <div class="error" id="loginError"></div>
+
+    </div>
+
+  </div>
+
+  <main class="messages-screen" id="messagesScreen">
+
+    <div class="messages-navbar">
+      <div class="header">
+
+        <h2>
+          Messages
+        </h2>
+
+        <button class="logout" id="logoutButton">
+          Sign Out
+        </button>
+
+      </div>
+
+      <nav class="message-tabs" role="tablist" aria-label="Message views">
+        <button class="message-tab active" id="inboxTab" type="button" role="tab"
+          aria-selected="true" aria-controls="messages">Inbox</button>
+        <button class="message-tab" id="archiveTab" type="button" role="tab"
+          aria-selected="false" aria-controls="messages">Archived</button>
+      </nav>
+    </div>
+
+    <p class="messages-error" id="messagesError" role="alert" hidden></p>
+
+    <ul id="messages" role="tabpanel" aria-labelledby="inboxTab">
+
+      <li class="loading">
+        Loading messages...
+      </li>
+
+    </ul>
+
+  </main>
+
+  <script src="../encrypted-storage.js"></script>
+  <script src="main.js"></script>
+
+</body>
+
+</html>
