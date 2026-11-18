@@ -307,13 +307,14 @@ function openServer() {
     button.disabled = true;
     overlay.classList.add("show");
 
-    const newTab = window.open("about:blank", "_blank");
-
     setTimeout(() => {
-        if (newTab) {
-            newTab.location.href = "https://oddeyuna.aternos.me";
-        } else {
-            window.location.href = "https://oddeyuna.aternos.me";
+        const newTab = window.open(
+            "https://oddeyuna.aternos.me",
+            "_blank"
+        );
+
+        if (!newTab) {
+            alert("Izinkan pop-up pada browser untuk membuka server.");
         }
 
         button.disabled = false;
