@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddeyuna</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    min-height: 100vh;
+    background: #f2f2f7;
+    color: #1c1c1e;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Text",
+        "SF Pro Display",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Navbar */
+.navbar {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid #d1d1d6;
+    z-index: 10;
+}
+
+.navbar h2 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+}
+
+.back {
+  position: absolute;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: #007aff;
+  font-size: 17px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.back span {
+  display: block;
+  font-size: 29px;
+  font-weight: 300;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+/* Main content */
+.container {
+    min-height: calc(100vh - 56px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    padding-bottom: 65px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -.8px;
+    line-height: 1.25;
+    max-width: 330px;
+}
+
+/* Primary button */
+.play-button {
+    margin-top: 30px;
+    width: 190px;
+    height: 52px;
+    border: none;
+    border-radius: 13px;
+    background: #007aff;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+}
+
+.play-button:hover {
+    background: #0071ed;
+}
+
+.play-button:active {
+    transform: scale(.97);
+}
+
+.play-button:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+/* Username */
+.username {
+    margin-top: 13px;
+    font-size: 11px;
+    color: #8e8e93;
+    font-weight: 400;
+    letter-spacing: .2px;
+}
+
+/* Secondary button */
+.later-button {
+    margin-top: 20px;
+    width: 190px;
+    height: 46px;
+    border: 1px solid #d1d1d6;
+    border-radius: 13px;
+    background: rgba(255,255,255,.85);
+    color: #636366;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+}
+
+.later-button:hover {
+    background: #eaeaef;
+}
+
+.later-button:active {
+    transform: scale(.97);
+}
+
+/* Copyright */
+.copyright {
+    margin-top: 46px;
+    font-size: 11px;
+    color: #aeaeb2;
+    font-weight: 400;
+    letter-spacing: .3px;
+}
+
+/* Loading popup */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.22);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s, visibility .2s;
+}
+
+.loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-popup {
+    width: 270px;
+    padding: 27px 22px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.97);
+    box-shadow: 0 15px 50px rgba(0,0,0,.14);
+    text-align: center;
+    transform: scale(.94);
+    transition: transform .2s;
+}
+
+.loading-overlay.show .loading-popup {
+    transform: scale(1);
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    margin: 0 auto 17px;
+    border: 3px solid #e5e5ea;
+    border-top-color: #007aff;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-popup h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1c1c1e;
+}
+
+.loading-popup p {
+    margin-top: 7px;
+    font-size: 13px;
+    color: #8e8e93;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+    h1 {
+        font-size: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <button class="back" onclick="goBack()">
+        <span>‹</span>
+        Back
+    </button>
+
+    <h2>Oddeyuna</h2>
+</nav>
+
+<main class="container">
+
+    <h1>Main Minecraft di server ini yug</h1>
+
+    <button class="play-button" id="playButton" onclick="openServer()">
+        yH sayang
+    </button>
+
+    <p class="username">oddeyuna:Oddey_11</p>
+
+    <button class="later-button" onclick="goHome()">
+        Nanti ajh
+    </button>
+
+    <p class="copyright">© 2026 Wahyuna</p>
+
+</main>
+
+<!-- Loading Popup -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-popup">
+
+        <div class="spinner"></div>
+
+        <h3>Menghubungkan sabar yh sayang...</h3>
+        <p id="loadingText">Sedang membuka server Minecraft</p>
+
+    </div>
+</div>
+
+<script>
+function goBack() {
+    const previous = document.referrer;
+
+    if (previous) {
+        try {
+            if (new URL(previous).hostname === "itswahyuna.github.io") {
+                history.back();
+                return;
+            }
+        } catch (e) {}
+    }
+
+    goHome();
+}
+
+function goHome() {
+    window.location.href = "https://itswahyuna.github.io";
+}
+
+function openServer() {
+    const button = document.getElementById("playButton");
+    const overlay = document.getElementById("loadingOverlay");
+
+    if (button.disabled) return;
+
+    button.disabled = true;
+    overlay.classList.add("show");
+
+    setTimeout(() => {
+        window.location.href = "https://oddeyuna.aternos.me";
+    }, 1500);
+}
+</script>
+
+</body>
+</html>
