@@ -307,8 +307,17 @@ function openServer() {
     button.disabled = true;
     overlay.classList.add("show");
 
+    const newTab = window.open("about:blank", "_blank");
+
     setTimeout(() => {
-        window.location.href = "https://oddeyuna.aternos.me";
+        if (newTab) {
+            newTab.location.href = "https://oddeyuna.aternos.me";
+        } else {
+            window.location.href = "https://oddeyuna.aternos.me";
+        }
+
+        button.disabled = false;
+        overlay.classList.remove("show");
     }, 1500);
 }
 </script>
